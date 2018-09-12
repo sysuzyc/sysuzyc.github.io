@@ -97,7 +97,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/post.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/more.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/more_use.png">
-<meta property="og:updated_time" content="2018-09-12T10:12:38.893Z">
+<meta property="og:updated_time" content="2018-09-12T10:17:43.750Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hexo使用next主题">
 <meta name="twitter:description" content="我们在搭建好自己的小站之后，由于原始的主题并不是很让我满意，因此我找寻了一个比较满意的主题—next。 1、下载next主题进入到我们之前设定的hexo文件夹，也就是sysuzyc.github.io，右键打开Git Bash Here。 执行下面指令，将主题拷贝到本地仓库中： 12cd sysuzyc.github.iogit clone https://github.com/iissnan/h">
@@ -362,12 +362,10 @@
 <p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/theme_next.png" alt="theme_next.png"></p>
 <h2 id="2、修改Hexo的配置文件"><a href="#2、修改Hexo的配置文件" class="headerlink" title="2、修改Hexo的配置文件"></a>2、修改Hexo的配置文件</h2><p>我们在下载完一个新的主题之后，需要修改Hexo的文件来确保与该主题关联。要修改的文件如下：</p>
 <p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/root.png" alt="root.png"></p>
-<p>####基础信息</p>
-<p>我们打开_config.yml文件，修改以下内容：</p>
+<h4 id="基础信息"><a href="#基础信息" class="headerlink" title="基础信息"></a>基础信息</h4><p>我们打开_config.yml文件，修改以下内容：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># Site</span><br><span class="line">title: 亚琛的小站</span><br><span class="line">subtitle:</span><br><span class="line">description:</span><br><span class="line">author: sysuzyc</span><br><span class="line">language: zh-Hans</span><br><span class="line">timezone:</span><br></pre></td></tr></table></figure>
 <p>其中的title是我们的博客的名称，author是作者，language是语言的设置，这些是最基本的设置。</p>
-<p>####主题选择</p>
-<p>然后，修改以下内容：</p>
+<h4 id="主题选择"><a href="#主题选择" class="headerlink" title="主题选择"></a>主题选择</h4><p>然后，修改以下内容：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># Extensions</span><br><span class="line">## Plugins: https://hexo.io/plugins/</span><br><span class="line">## Themes: https://hexo.io/themes/</span><br><span class="line">theme: next</span><br></pre></td></tr></table></figure>
 <p>其中，theme改为next，也就是我们选用的主题的名称。</p>
 <p>剩下的一些配置文件可以根据自己的需要进行修改。</p>
@@ -379,15 +377,13 @@
 <p>我们可以在上面设置一些信息,也可以添加一些信息进去.</p>
 <h4 id="侧边栏设置"><a href="#侧边栏设置" class="headerlink" title="侧边栏设置"></a>侧边栏设置</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">sidebar:</span><br><span class="line">  # Sidebar Position, available value: left | right (only for Pisces | Gemini).</span><br><span class="line">  position: left</span><br><span class="line">  #position: right</span><br><span class="line"></span><br><span class="line">  # Sidebar Display, available value (only for Muse | Mist):</span><br><span class="line">  #  - post    expand on posts automatically. Default.</span><br><span class="line">  #  - always  expand for all pages automatically</span><br><span class="line">  #  - hide    expand only when click on the sidebar toggle icon.</span><br><span class="line">  #  - remove  Totally remove sidebar including sidebar toggle.</span><br><span class="line">  display: post</span><br><span class="line">  #display: always</span><br><span class="line">  #display: hide</span><br><span class="line">  #display: remove</span><br></pre></td></tr></table></figure>
 <p>我们可以按照需要选取对应的信息.</p>
-<p>##4、修改文章配置</p>
-<p>我们前面已经修改了Hexo主题的配置,那么对应的文章的配置也需要进行修改,根据自己设定的主页面的类别,进行修改,这里以我的网站为例:</p>
+<h2 id="4、修改文章配置"><a href="#4、修改文章配置" class="headerlink" title="4、修改文章配置"></a>4、修改文章配置</h2><p>我们前面已经修改了Hexo主题的配置,那么对应的文章的配置也需要进行修改,根据自己设定的主页面的类别,进行修改,这里以我的网站为例:</p>
 <p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/menu.png" alt="mune.png"></p>
 <p>我们可以看到一共有四类,分别是<strong>首页</strong>,<strong>标签</strong>,<strong>分类</strong>,<strong>归档</strong>.</p>
 <p>在配置界面中也是需要有相应的设置的:</p>
 <p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/menu_config.png" alt="menu_config.png"></p>
 <p>所以,我们的文章中也要有类似的设定,然而,初始的文章中没有那么多项,因此,我们需要先新建相应的文件夹.</p>
-<p>####生成”分类”</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page categories</span><br></pre></td></tr></table></figure>
+<h4 id="生成”分类”"><a href="#生成”分类”" class="headerlink" title="生成”分类”"></a>生成”分类”</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page categories</span><br></pre></td></tr></table></figure>
 <p>然后,我们发现创建成功了文件夹,进入文件夹找到index.md:</p>
 <p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/categories.png" alt="categories.png"></p>
 <p>找到对应的文件,然后添加<code>type: &quot;categories&quot;</code>到文档之中:</p>
@@ -591,7 +587,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、下载next主题"><span class="nav-number">1.</span> <span class="nav-text">1、下载next主题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、修改Hexo的配置文件"><span class="nav-number">2.</span> <span class="nav-text">2、修改Hexo的配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、修改next的配置文件"><span class="nav-number">3.</span> <span class="nav-text">3、修改next的配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#网站的格式："><span class="nav-number">3.0.1.</span> <span class="nav-text">网站的格式：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#菜单设置"><span class="nav-number">3.0.2.</span> <span class="nav-text">菜单设置:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#侧边栏设置"><span class="nav-number">3.0.3.</span> <span class="nav-text">侧边栏设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生成”标签”"><span class="nav-number">3.0.4.</span> <span class="nav-text">生成”标签”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#修改新建页面模板"><span class="nav-number">3.0.5.</span> <span class="nav-text">修改新建页面模板</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设置文档的分类标签信息"><span class="nav-number">3.0.6.</span> <span class="nav-text">设置文档的分类标签信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#展示部分文章"><span class="nav-number">3.0.7.</span> <span class="nav-text">展示部分文章</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、下载next主题"><span class="nav-number">1.</span> <span class="nav-text">1、下载next主题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、修改Hexo的配置文件"><span class="nav-number">2.</span> <span class="nav-text">2、修改Hexo的配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基础信息"><span class="nav-number">2.0.1.</span> <span class="nav-text">基础信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#主题选择"><span class="nav-number">2.0.2.</span> <span class="nav-text">主题选择</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、修改next的配置文件"><span class="nav-number">3.</span> <span class="nav-text">3、修改next的配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#网站的格式："><span class="nav-number">3.0.1.</span> <span class="nav-text">网站的格式：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#菜单设置"><span class="nav-number">3.0.2.</span> <span class="nav-text">菜单设置:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#侧边栏设置"><span class="nav-number">3.0.3.</span> <span class="nav-text">侧边栏设置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、修改文章配置"><span class="nav-number">4.</span> <span class="nav-text">4、修改文章配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#生成”分类”"><span class="nav-number">4.0.1.</span> <span class="nav-text">生成”分类”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生成”标签”"><span class="nav-number">4.0.2.</span> <span class="nav-text">生成”标签”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#修改新建页面模板"><span class="nav-number">4.0.3.</span> <span class="nav-text">修改新建页面模板</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设置文档的分类标签信息"><span class="nav-number">4.0.4.</span> <span class="nav-text">设置文档的分类标签信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#展示部分文章"><span class="nav-number">4.0.5.</span> <span class="nav-text">展示部分文章</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
