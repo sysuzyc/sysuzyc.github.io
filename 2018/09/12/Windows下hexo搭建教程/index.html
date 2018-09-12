@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="hexo,教程,Windows," />
+  <meta name="keywords" content="教程,hexo,Windows," />
 
 
 
@@ -80,7 +80,7 @@
 
 
 <meta name="description" content="1、安装Windows下的工具1.1、安装GitWindows下想要使本地仓库与GitHub进行连接，需要使用Git工具。 首先在Git的官网下载可执行文件。 然后，一路next安装即可。 再安装完git之后，可以看到鼠标右键多了两个工具：">
-<meta name="keywords" content="hexo,教程,Windows">
+<meta name="keywords" content="教程,hexo,Windows">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Windows下hexo搭建教程">
 <meta property="og:url" content="http://yoursite.com/2018/09/12/Windows下hexo搭建教程/index.html">
@@ -101,7 +101,8 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/ssh%20github.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/root.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/hexo_config.png">
-<meta property="og:updated_time" content="2018-09-12T03:29:03.826Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/deployment.png">
+<meta property="og:updated_time" content="2018-09-12T09:30:44.450Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Windows下hexo搭建教程">
 <meta name="twitter:description" content="1、安装Windows下的工具1.1、安装GitWindows下想要使本地仓库与GitHub进行连接，需要使用Git工具。 首先在Git的官网下载可执行文件。 然后，一路next安装即可。 再安装完git之后，可以看到鼠标右键多了两个工具：">
@@ -176,7 +177,7 @@
       </a>
     </div>
       
-        <p class="site-subtitle"></p>
+        <p class="site-subtitle">我的征程即将开始</p>
       
   </div>
 
@@ -416,7 +417,21 @@
 <p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/root.png" alt="root.png"></p>
 <p>打开_config.yml修改其中的部分内容：</p>
 <p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/hexo_config.png" alt="hexo_config.png"></p>
+<p>其中，language是可以选择的，这里我们选择的是简体中文。</p>
+<p>而，为了能够找到我们建立的repository，我们还需要更改下面的内容：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/deployment.png" alt="deployment.png"></p>
 <p>这样就可以得到属于自己的个人小站了。</p>
+<h2 id="3、使用Hexo提交文档"><a href="#3、使用Hexo提交文档" class="headerlink" title="3、使用Hexo提交文档"></a>3、使用Hexo提交文档</h2><p>我们可以使用一些基本的指令来进行本地文件的提交：</p>
+<p><code>hexo new  &quot;new title&quot;</code>：生成一个新的md文档，按自己需要命名</p>
+<p><code>hexo clean</code> ：删除旧的public文件</p>
+<p><code>hexo generate 或 hexo g</code>：生成新的public文件</p>
+<p><code>hexo deploye 或 hexo d</code>：开始部署到GitHub之中</p>
+<p>这个时候，我们输入<a href="https://sysuzyc.github.io就可以看到Hexo成功的提交了本地文件。如果出现404的问题，则输入下面的指令" target="_blank" rel="noopener">https://sysuzyc.github.io就可以看到Hexo成功的提交了本地文件。如果出现404的问题，则输入下面的指令</a>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+<p>再重复上面的生成和部署的操作，就可以看到成功部署了。</p>
+<p>其实，为了方便期间，我们可以只用一步就完成上面两部的操作：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo d -g</span><br></pre></td></tr></table></figure>
+<p>这样，我们就可以成功的部署文件到GitHub中了。</p>
 
       
     </div>
@@ -434,9 +449,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/hexo/" rel="tag"># hexo</a>
-          
             <a href="/tags/教程/" rel="tag"># 教程</a>
+          
+            <a href="/tags/hexo/" rel="tag"># hexo</a>
           
             <a href="/tags/Windows/" rel="tag"># Windows</a>
           
@@ -526,7 +541,7 @@
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
               <p class="site-author-name" itemprop="name">sysuzyc</p>
-              <p class="site-description motion-element" itemprop="description"></p>
+              <p class="site-description motion-element" itemprop="description">开开心心每一天</p>
           </div>
 
           <nav class="site-state motion-element">
@@ -536,7 +551,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -547,7 +562,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -558,7 +573,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -591,7 +606,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、安装Windows下的工具"><span class="nav-number">1.</span> <span class="nav-text">1、安装Windows下的工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1、安装Git"><span class="nav-number">1.1.</span> <span class="nav-text">1.1、安装Git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2、安装Hexo"><span class="nav-number">1.2.</span> <span class="nav-text">1.2、安装Hexo</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#搭建Node-js环境"><span class="nav-number">1.2.1.</span> <span class="nav-text">搭建Node.js环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装Hexo"><span class="nav-number">1.2.2.</span> <span class="nav-text">安装Hexo</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、搭建Hexo与GitHub的联系"><span class="nav-number">2.</span> <span class="nav-text">2、搭建Hexo与GitHub的联系</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1、构建github-io仓库"><span class="nav-number">2.1.</span> <span class="nav-text">2.1、构建github.io仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2、初始化本地Hexo工作区"><span class="nav-number">2.2.</span> <span class="nav-text">2.2、初始化本地Hexo工作区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3、构建Hexo与GitHub的链接"><span class="nav-number">2.3.</span> <span class="nav-text">2.3、构建Hexo与GitHub的链接</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#运行本地Hexo服务"><span class="nav-number">2.3.1.</span> <span class="nav-text">运行本地Hexo服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#关联GitHub与Hexo"><span class="nav-number">2.3.2.</span> <span class="nav-text">关联GitHub与Hexo</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置个人信息"><span class="nav-number">2.3.3.</span> <span class="nav-text">配置个人信息</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、安装Windows下的工具"><span class="nav-number">1.</span> <span class="nav-text">1、安装Windows下的工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1、安装Git"><span class="nav-number">1.1.</span> <span class="nav-text">1.1、安装Git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2、安装Hexo"><span class="nav-number">1.2.</span> <span class="nav-text">1.2、安装Hexo</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#搭建Node-js环境"><span class="nav-number">1.2.1.</span> <span class="nav-text">搭建Node.js环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装Hexo"><span class="nav-number">1.2.2.</span> <span class="nav-text">安装Hexo</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、搭建Hexo与GitHub的联系"><span class="nav-number">2.</span> <span class="nav-text">2、搭建Hexo与GitHub的联系</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1、构建github-io仓库"><span class="nav-number">2.1.</span> <span class="nav-text">2.1、构建github.io仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2、初始化本地Hexo工作区"><span class="nav-number">2.2.</span> <span class="nav-text">2.2、初始化本地Hexo工作区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3、构建Hexo与GitHub的链接"><span class="nav-number">2.3.</span> <span class="nav-text">2.3、构建Hexo与GitHub的链接</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#运行本地Hexo服务"><span class="nav-number">2.3.1.</span> <span class="nav-text">运行本地Hexo服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#关联GitHub与Hexo"><span class="nav-number">2.3.2.</span> <span class="nav-text">关联GitHub与Hexo</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置个人信息"><span class="nav-number">2.3.3.</span> <span class="nav-text">配置个人信息</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、使用Hexo提交文档"><span class="nav-number">3.</span> <span class="nav-text">3、使用Hexo提交文档</span></a></li></ol></div>
             
 
           </div>
