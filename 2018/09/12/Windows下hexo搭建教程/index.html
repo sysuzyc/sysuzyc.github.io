@@ -79,18 +79,33 @@
 
 
 
-<meta name="description" content="1、安装Windows下的工具1.1、安装GitWindows下想要使本地仓库与GitHub进行连接，需要使用Git工具。 首先在Git的官网下载可执行文件。 然后，一路next安装即可。 再安装完git之后，可以看到鼠标右键多了两个工具： git.png 然后，我们再打开Git Bash Here，输入git –version。如果出现了版本号，则说明配置成功： git bash.png 1.2">
+<meta name="description" content="1、安装Windows下的工具1.1、安装GitWindows下想要使本地仓库与GitHub进行连接，需要使用Git工具。 首先在Git的官网下载可执行文件。 然后，一路next安装即可。 再安装完git之后，可以看到鼠标右键多了两个工具：  然后，我们再打开Git Bash Here，输入git –version。如果出现了版本号，则说明配置成功：  1.2、安装Hexo搭建Node.js环境由">
 <meta name="keywords" content="hexo,教程,Windows">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Windows下hexo搭建教程">
 <meta property="og:url" content="http://yoursite.com/2018/09/12/Windows下hexo搭建教程/index.html">
 <meta property="og:site_name" content="亚琛的小站">
-<meta property="og:description" content="1、安装Windows下的工具1.1、安装GitWindows下想要使本地仓库与GitHub进行连接，需要使用Git工具。 首先在Git的官网下载可执行文件。 然后，一路next安装即可。 再安装完git之后，可以看到鼠标右键多了两个工具： git.png 然后，我们再打开Git Bash Here，输入git –version。如果出现了版本号，则说明配置成功： git bash.png 1.2">
+<meta property="og:description" content="1、安装Windows下的工具1.1、安装GitWindows下想要使本地仓库与GitHub进行连接，需要使用Git工具。 首先在Git的官网下载可执行文件。 然后，一路next安装即可。 再安装完git之后，可以看到鼠标右键多了两个工具：  然后，我们再打开Git Bash Here，输入git –version。如果出现了版本号，则说明配置成功：  1.2、安装Hexo搭建Node.js环境由">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-09-11T16:38:22.736Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/git.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/git%20bash.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/nodejs.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/hexo%20version.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/github%20repository.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/github.io.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/root.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/hexo_s.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/localhost.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/ssh.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/new%20ssh%20key.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/ssh%20github.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/root.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/hexo_config.png">
+<meta property="og:updated_time" content="2018-09-12T03:27:42.741Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Windows下hexo搭建教程">
-<meta name="twitter:description" content="1、安装Windows下的工具1.1、安装GitWindows下想要使本地仓库与GitHub进行连接，需要使用Git工具。 首先在Git的官网下载可执行文件。 然后，一路next安装即可。 再安装完git之后，可以看到鼠标右键多了两个工具： git.png 然后，我们再打开Git Bash Here，输入git –version。如果出现了版本号，则说明配置成功： git bash.png 1.2">
+<meta name="twitter:description" content="1、安装Windows下的工具1.1、安装GitWindows下想要使本地仓库与GitHub进行连接，需要使用Git工具。 首先在Git的官网下载可执行文件。 然后，一路next安装即可。 再安装完git之后，可以看到鼠标右键多了两个工具：  然后，我们再打开Git Bash Here，输入git –version。如果出现了版本号，则说明配置成功：  1.2、安装Hexo搭建Node.js环境由">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/git.png">
 
 
 
@@ -346,20 +361,62 @@
 <p>首先在<a href="https://git-scm.com/" target="_blank" rel="noopener">Git的官网</a>下载可执行文件。</p>
 <p>然后，一路next安装即可。</p>
 <p>再安装完git之后，可以看到鼠标右键多了两个工具：</p>
-<p>git.png</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/git.png" alt="Git Bash Here"></p>
 <p>然后，我们再打开Git Bash Here，输入git –version。如果出现了版本号，则说明配置成功：</p>
-<p>git bash.png</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/git%20bash.png" alt="git version"></p>
 <h3 id="1-2、安装Hexo"><a href="#1-2、安装Hexo" class="headerlink" title="1.2、安装Hexo"></a>1.2、安装Hexo</h3><h4 id="搭建Node-js环境"><a href="#搭建Node-js环境" class="headerlink" title="搭建Node.js环境"></a>搭建Node.js环境</h4><p>由于Hexo博客系统是基于Node.js编写的，所以，需要先搭配Node.js环境。</p>
 <p>从<a href="https://nodejs.org/en/" target="_blank" rel="noopener">Node.js官网</a>中下载对应的安装包，一路next即可安装成功。</p>
 <p>打开Terminal，输出以下指令：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br><span class="line">npm -v</span><br></pre></td></tr></table></figure>
 <p>如果看到以下指令，则证明博客搭建成功：</p>
-<p>nodejs.png</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/nodejs.png" alt="nodejs.png"></p>
 <h4 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h4><p>在安装好node.js之后，我们可以直接通过以下命令安装Hexo：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-cli -g</span><br></pre></td></tr></table></figure>
 <p>再安装成功后，还可以通过查看Hexo版本号来判断是否安装成功。</p>
-<p>hexo version.png</p>
-<h2 id="2、搭建Hexo与GitHub的联系"><a href="#2、搭建Hexo与GitHub的联系" class="headerlink" title="2、搭建Hexo与GitHub的联系"></a>2、搭建Hexo与GitHub的联系</h2>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/hexo%20version.png" alt="hexo version.png"></p>
+<h2 id="2、搭建Hexo与GitHub的联系"><a href="#2、搭建Hexo与GitHub的联系" class="headerlink" title="2、搭建Hexo与GitHub的联系"></a>2、搭建Hexo与GitHub的联系</h2><p>在上面，我们完成了相应的环境的搭建，现在需要构建起Hexo与GitHub之间的联系。</p>
+<h3 id="2-1、构建github-io仓库"><a href="#2-1、构建github-io仓库" class="headerlink" title="2.1、构建github.io仓库"></a>2.1、构建github.io仓库</h3><p>我们搭建的是github.io网站，所以，需要首先在GitHub中生成一个repository来存储相应的数据</p>
+<p>首先，登陆GitHub，然后，新建一个repository：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/github%20repository.png" alt="github repository.png"></p>
+<p>再构建完成之后，会看到GitHub仓库中多了一个github.io仓库：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/github.io.png" alt="github.io.png"></p>
+<p>这样，我们的仓库就构建完成了</p>
+<h3 id="2-2、初始化本地Hexo工作区"><a href="#2-2、初始化本地Hexo工作区" class="headerlink" title="2.2、初始化本地Hexo工作区"></a>2.2、初始化本地Hexo工作区</h3><p>我们需要在本地初始化Hexo的工作区，后面的所有博客都会放在这个工作区之中。</p>
+<p>首先是初始化一个文件夹，该文件夹需要和我们前面构建的仓库的名称一致：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo init sysuzyc.github.io</span><br></pre></td></tr></table></figure>
+<p>我们进入到该文件夹中并初始化：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd sysuzyc.github.io</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
+<p>如果构建成功的话，会看到文件夹内有以下文件：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/root.png" alt="root.png"></p>
+<p>这样的话，我们就已经初始化成功了Hexo的工作区</p>
+<h3 id="2-3、构建Hexo与GitHub的链接"><a href="#2-3、构建Hexo与GitHub的链接" class="headerlink" title="2.3、构建Hexo与GitHub的链接"></a>2.3、构建Hexo与GitHub的链接</h3><h4 id="运行本地Hexo服务"><a href="#运行本地Hexo服务" class="headerlink" title="运行本地Hexo服务"></a>运行本地Hexo服务</h4><p>首先，运行本地Hexo服务，看下是否搭建成功：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo s</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/hexo_s.png" alt="hexo_s.png"></p>
+<p>我们可以在浏览器中输入localhost:4000，如果出现了网站，则搭配成功，如果出现404的界面，则需要安装server才能运行本地服务：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo -server --save</span><br></pre></td></tr></table></figure>
+<p>这样的话，我们就可以看到构建成功了小站：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/localhost.png" alt="localhost.png"></p>
+<h4 id="关联GitHub与Hexo"><a href="#关联GitHub与Hexo" class="headerlink" title="关联GitHub与Hexo"></a>关联GitHub与Hexo</h4><p>我们使用<strong>SSH keys</strong>来进行Github与Hexo的关联</p>
+<p>首先输入自己的邮箱地址：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C &quot;zhyachen@mail2.sysu.edu.cn&quot;</span><br></pre></td></tr></table></figure>
+<p>这是会提示输入密码，如果直接空格，则不需要输入密码，为了方便起见，建议直接回车，不设置密码。</p>
+<p>然后，我们添加SSH keys到GitHub之中，进入到.ssh文件夹内，找到id_rsa.pub，复制该密钥到<a href="https://github.com/settings/ssh" target="_blank" rel="noopener">https://github.com/settings/ssh</a> 中的<strong><em>new SSH key</em></strong>中：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/ssh.png" alt=".ssh"></p>
+<p>我们打开id_rsa.pub将里面的文件复制粘贴到GitHub的new SSH key中</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/new%20ssh%20key.png" alt="new ssh key.png"></p>
+<p>再添加成功之后，进行测试，看下配置是否成功：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+<p>如果出现一些信息，则输入yes，最终会看到：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/ssh%20github.png" alt="ssh github.png"></p>
+<p>这样的话，我们就可以通过SSH链接到GitHub了。</p>
+<h4 id="配置个人信息"><a href="#配置个人信息" class="headerlink" title="配置个人信息"></a>配置个人信息</h4><p>由于我们是要上传到自己的GitHub之中，所以，为了避免上传的麻烦，我们提前部署好自己的信息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;sysuzyc&quot;</span><br><span class="line">git config --global user.email &quot;zhyachen@mail2.sysu.edu.cn&quot;</span><br></pre></td></tr></table></figure>
+<p>我们除了再这里进行配置之外，还需要去Hexo的配置文件中修改部分信息：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/root.png" alt="root.png"></p>
+<p>打开_config.yml修改其中的部分内容：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/hexo_config.png" alt="hexo_config.png"></p>
+<p>这样就可以得到属于自己的个人小站了。</p>
+
       
     </div>
     
@@ -533,7 +590,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、安装Windows下的工具"><span class="nav-number">1.</span> <span class="nav-text">1、安装Windows下的工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1、安装Git"><span class="nav-number">1.1.</span> <span class="nav-text">1.1、安装Git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2、安装Hexo"><span class="nav-number">1.2.</span> <span class="nav-text">1.2、安装Hexo</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#搭建Node-js环境"><span class="nav-number">1.2.1.</span> <span class="nav-text">搭建Node.js环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装Hexo"><span class="nav-number">1.2.2.</span> <span class="nav-text">安装Hexo</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、搭建Hexo与GitHub的联系"><span class="nav-number">2.</span> <span class="nav-text">2、搭建Hexo与GitHub的联系</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、安装Windows下的工具"><span class="nav-number">1.</span> <span class="nav-text">1、安装Windows下的工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1、安装Git"><span class="nav-number">1.1.</span> <span class="nav-text">1.1、安装Git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2、安装Hexo"><span class="nav-number">1.2.</span> <span class="nav-text">1.2、安装Hexo</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#搭建Node-js环境"><span class="nav-number">1.2.1.</span> <span class="nav-text">搭建Node.js环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装Hexo"><span class="nav-number">1.2.2.</span> <span class="nav-text">安装Hexo</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、搭建Hexo与GitHub的联系"><span class="nav-number">2.</span> <span class="nav-text">2、搭建Hexo与GitHub的联系</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1、构建github-io仓库"><span class="nav-number">2.1.</span> <span class="nav-text">2.1、构建github.io仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2、初始化本地Hexo工作区"><span class="nav-number">2.2.</span> <span class="nav-text">2.2、初始化本地Hexo工作区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3、构建Hexo与GitHub的链接"><span class="nav-number">2.3.</span> <span class="nav-text">2.3、构建Hexo与GitHub的链接</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#运行本地Hexo服务"><span class="nav-number">2.3.1.</span> <span class="nav-text">运行本地Hexo服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#关联GitHub与Hexo"><span class="nav-number">2.3.2.</span> <span class="nav-text">关联GitHub与Hexo</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置个人信息"><span class="nav-number">2.3.3.</span> <span class="nav-text">配置个人信息</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
