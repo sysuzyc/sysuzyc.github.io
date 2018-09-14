@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="地面检测,lidar,segmentation," />
 
 
 
@@ -79,16 +79,21 @@
 
 
 
-<meta name="description" content="开开心心每一天">
-<meta property="og:type" content="website">
-<meta property="og:title" content="亚琛的小站">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });     相关内容我们为了能够很好的检测出激光雷达数据中的地面信息，使用了一种地面检测的方法。 论文：Fast segmentation of 3d point clouds for ground vehicles 源代码：linefit_groun">
+<meta name="keywords" content="地面检测,lidar,segmentation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="地面检测---linefit_ground_segmentation">
+<meta property="og:url" content="http://yoursite.com/2018/09/13/地面检测-linefit-ground-segmentation/index.html">
 <meta property="og:site_name" content="亚琛的小站">
-<meta property="og:description" content="开开心心每一天">
+<meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });     相关内容我们为了能够很好的检测出激光雷达数据中的地面信息，使用了一种地面检测的方法。 论文：Fast segmentation of 3d point clouds for ground vehicles 源代码：linefit_groun">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/segment.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/bins.png">
+<meta property="og:updated_time" content="2018-09-14T08:33:22.585Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="亚琛的小站">
-<meta name="twitter:description" content="开开心心每一天">
+<meta name="twitter:title" content="地面检测---linefit_ground_segmentation">
+<meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });     相关内容我们为了能够很好的检测出激光雷达数据中的地面信息，使用了一种地面检测的方法。 论文：Fast segmentation of 3d point clouds for ground vehicles 源代码：linefit_groun">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/segment.png">
 
 
 
@@ -118,13 +123,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/09/13/地面检测-linefit-ground-segmentation/"/>
 
 
 
 
 
-  <title>亚琛的小站</title>
+  <title>地面检测---linefit_ground_segmentation | 亚琛的小站</title>
   
 
 
@@ -143,8 +148,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -237,9 +241,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -269,9 +273,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/13/地面检测-linefit-ground-segmentation/" itemprop="url">地面检测---linefit_ground_segmentation</a></h1>
+          <h1 class="post-title" itemprop="name headline">地面检测---linefit_ground_segmentation</h1>
         
 
         <div class="post-meta">
@@ -343,8 +345,7 @@
       
 
       
-        
-          <script type="text/x-mathjax-config">
+        <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
 tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 });
@@ -356,14 +357,40 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <p>论文：<a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=5548059" target="_blank" rel="noopener">Fast segmentation of 3d point clouds for ground vehicles</a></p>
 <p>源代码：<a href="https://github.com/sysuzyc/road_detecting.git" target="_blank" rel="noopener">linefit_ground_segmentation</a></p>
 <p>当然，为了方便期间，我把已经配通的代码放在了<a href="https://github.com/sysuzyc/road_detecting.git" target="_blank" rel="noopener">road_detecting</a>中。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/09/13/地面检测-linefit-ground-segmentation/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
+<a id="more"></a>
+<h2 id="论文研读"><a href="#论文研读" class="headerlink" title="论文研读"></a>论文研读</h2><p>我们在进行代码的阅读之前，需要先对于论文进行研读，理清整个文章的脉络。</p>
+<p>针对于本篇文章，我们可以将其划分为以下几个方面：</p>
+<h3 id="点云获取"><a href="#点云获取" class="headerlink" title="点云获取"></a>点云获取</h3><p>我们首先获取激光雷达传感器传来的数据，将其转变为欧式距离表示的3D点云数据集。这个是将激光雷达数据进行处理，获转化为自己需要的数据的方法。</p>
+<h3 id="点云划分"><a href="#点云划分" class="headerlink" title="点云划分"></a>点云划分</h3><p>首先，将整个的三维笛卡尔坐标系进行另一种形式的表示，我们进行点云的划分，将其从无序的点云划分为有序的点云。划分的标准有以下两个：<strong>segment</strong>，<strong>bins</strong>。</p>
+<p><strong>segment：</strong></p>
+<p>我们将整个笛卡尔坐标系中的<strong>X-Y</strong>平面转变为一个无穷长半径的圆面。设定一个弧度参数<strong>α</strong>。</p>
+<p>则，我们可以将整个X-Y平面转变为一个被弧度参数α划分为M份扇面的圆面。</p>
+<p>$$ M =\frac{ 2*\pi}{\alpha}  {，圆面划分的个数} $$</p>
+<p>这样的话，我们就可以将整个的X-Y平面进行划分，划分为M个segment。</p>
+<p>而，为了能够很好的将点进行segment的定位，我们使用以下的方式：</p>
+<p>$$ segment_ p(i) = \frac{atan2(y_i, x_i)}{\delta\alpha} {   ， segment划分函数} $$ </p>
+<p>这样的话，我们就可以对于每一个点进行X-Y平面的有序化处理。</p>
+<p>因此，可以对于所有的点云进行如下的划分：</p>
+<p>$$P_s = \lbrace p_i  \in P \mid segment(p_i) = s  \rbrace  {  , 得到属于segment s的点云集}$$</p>
+<p>其中，s是代表segment s；P代表所有的点云;$ p_i $代表的是点云i。$P_s $代表的是属于segment s的点云集合。这样的话，我们就将整个的无序点云转化为有segment划分的有序点云了。</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/segment.png" alt="segment.png"></p>
+<p><strong>bins:</strong></p>
+<p>在前面，我们进行了segment的划分，也就是说，将整个点云划分为M个segment，然而，为了能够进一步的进行点云的有序化划分，我们这里使用了bins的划分：</p>
+<p>我们针对于segment s中的点云$ P_s $ 来处理。</p>
+<p>我们可以设定两个距离参数$ r_j^{min} $ 和$r_j ^ {max} $ 来进行$ b_j ^ {s}$(第j个bins)的限制。所以，对于每一个点通过以下的条件进行划分：</p>
+<p>$$ r_j ^ {min} \leq \sqrt{(x_i^2 + y_i^2) } &lt; r_j^{max}  { , 判定点是否属于bins}$$</p>
+<p>因此，我们可以对于该点在X-Y平面上的投影来进行 $ p_i  \in P_s $的判断。</p>
+<p>这样的话，我们就可以将一个扇面划分为多个扇环。</p>
+<p>这样的话，我们就可以将segment里面的点再进行一次bins上点的划分。</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/bins.png" alt="bins.png"></p>
+<h3 id="选取最小z点"><a href="#选取最小z点" class="headerlink" title="选取最小z点"></a>选取最小z点</h3><p>我们在前面进行了点云的有序化处理，现在需要进行最小z点的选取，来进行地面点的筛选。</p>
+<p>因为，我们前面是进行了X-Y平面的投影，但是，却保留了该点的z坐标，也就是将一个三维坐标点，转变为一个二位坐标点，外加一个X-Y平面的角度信息。</p>
+<p>$$  \lbrace x,y,z \rbrace = \lbrace d, z \rbrace + \theta ， 其中 d =  \sqrt{(x_i^2 + y_i^2) }$$</p>
+<p>这样的话，我们就可以针对于每一个segment和bins进行相同$ \lbrace d , \theta \rbrace $的最小z值点的提取。</p>
+<p>这样的话，就可以将整个点云有序化表示后，进行地面点和障碍物点的筛选。</p>
+<h3 id="直线拟合"><a href="#直线拟合" class="headerlink" title="直线拟合"></a>直线拟合</h3><p>这里，是对于提取出来的最小z点的集合进行直线拟合，筛选出不属于地面点的数据。</p>
+<p>我们的激光雷达也会采集到一些建筑信息，这些建筑信息也会在X-Y平面内进行投影，所以，我们需要将这一部分进行删除，得到最终的点。</p>
+
       
     </div>
     
@@ -378,313 +405,40 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/12/Hexo使用next主题/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sysuzyc">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/shuimen.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="亚琛的小站">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/12/Hexo使用next主题/" itemprop="url">Hexo使用next主题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-12T16:51:47+08:00">
-                2018-09-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/hexo/" itemprop="url" rel="index">
-                    <span itemprop="name">hexo</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
+            <a href="/tags/地面检测/" rel="tag"># 地面检测</a>
           
-
+            <a href="/tags/lidar/" rel="tag"># lidar</a>
           
-            
+            <a href="/tags/segmentation/" rel="tag"># segmentation</a>
           
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
+      
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
+      
       
       
 
       
-        
-          <p>我们在搭建好自己的小站之后，由于原始的主题并不是很让我满意，因此我找寻了一个比较满意的主题—<a href="http://theme-next.iissnan.com/" target="_blank" rel="noopener">next</a>。</p>
-<h2 id="下载next主题"><a href="#下载next主题" class="headerlink" title="下载next主题"></a>下载next主题</h2><p>进入到我们之前设定的hexo文件夹，也就是<strong>sysuzyc.github.io</strong>，右键打开<strong>Git Bash Here</strong>。</p>
-<p>执行下面指令，将主题拷贝到本地仓库中：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd sysuzyc.github.io</span><br><span class="line">git clone https://github.com/iissnan/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
-<p>这样我们会发现在本地文件themes下有个next文件夹：</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/09/12/Hexo使用next主题/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/12/Hexo使用next主题/" rel="next" title="Hexo使用next主题">
+                <i class="fa fa-chevron-left"></i> Hexo使用next主题
+              </a>
+            
           </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
 
-    
+          <span class="post-nav-divider"></span>
 
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/12/Windows下hexo搭建教程/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sysuzyc">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/shuimen.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="亚琛的小站">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/12/Windows下hexo搭建教程/" itemprop="url">Windows下hexo搭建教程</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
+          <div class="post-nav-prev post-nav-item">
             
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-12T00:06:21+08:00">
-                2018-09-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/hexo/" itemprop="url" rel="index">
-                    <span itemprop="name">hexo</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          <h2 id="安装Windows下的工具"><a href="#安装Windows下的工具" class="headerlink" title="安装Windows下的工具"></a>安装Windows下的工具</h2><h3 id="安装Git"><a href="#安装Git" class="headerlink" title="安装Git"></a>安装Git</h3><p>Windows下想要使本地仓库与GitHub进行连接，需要使用Git工具。</p>
-<p>首先在<a href="https://git-scm.com/" target="_blank" rel="noopener">Git的官网</a>下载可执行文件。</p>
-<p>然后，一路next安装即可。</p>
-<p>再安装完git之后，可以看到鼠标右键多了两个工具：</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/09/12/Windows下hexo搭建教程/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -694,157 +448,11 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
   </article>
 
 
-    
-      
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/11/前言/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="sysuzyc">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/shuimen.png">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="亚琛的小站">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/11/前言/" itemprop="url">前言</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-11T10:39:00+08:00">
-                2018-09-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/散笔/" itemprop="url" rel="index">
-                    <span itemprop="name">散笔</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="建站初心"><a href="#建站初心" class="headerlink" title="建站初心"></a>建站初心</h2><p>已经步入研究生了，希望能有一个很好的整理习惯。</p>
-<p>之前在本科阶段也做了很多的研究，也整理了很多东西，博客也写了一些，但是一直都没有一个很集中的网站来归纳自己的东西。所以，我希望可以在研究生初始阶段，慢慢的养成一种很好的习惯，将所有的资料都放在这个网站上。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/09/11/前言/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
+    <div class="post-spread">
       
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </div>
-  
-  
-  
-  </article>
-
-
-    
-  </section>
-
-  
 
 
           </div>
@@ -852,6 +460,10 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 
 
           
+
+  
+
+
 
         </div>
         
@@ -872,8 +484,17 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -937,6 +558,22 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#相关内容"><span class="nav-number">1.</span> <span class="nav-text">相关内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#论文研读"><span class="nav-number">2.</span> <span class="nav-text">论文研读</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#点云获取"><span class="nav-number">2.1.</span> <span class="nav-text">点云获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#点云划分"><span class="nav-number">2.2.</span> <span class="nav-text">点云划分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选取最小z点"><span class="nav-number">2.3.</span> <span class="nav-text">选取最小z点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#直线拟合"><span class="nav-number">2.4.</span> <span class="nav-text">直线拟合</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1077,6 +714,10 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
