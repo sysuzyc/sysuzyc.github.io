@@ -88,7 +88,7 @@
 <meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });       1、理论说明考虑线性方程组 :    $$Ax = b$$  ,其中，A为n阶对称正定矩阵，b是给定的n维向量。则，可以使用共轭梯度发求解得到x，算法如下所示：">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/1646935428.jpg">
-<meta property="og:updated_time" content="2018-10-21T05:31:28.331Z">
+<meta property="og:updated_time" content="2018-10-21T05:32:18.022Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="共轭梯度法">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });       1、理论说明考虑线性方程组 :    $$Ax = b$$  ,其中，A为n阶对称正定矩阵，b是给定的n维向量。则，可以使用共轭梯度发求解得到x，算法如下所示：">
@@ -355,8 +355,8 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 
 
 <h2 id="1、理论说明"><a href="#1、理论说明" class="headerlink" title="1、理论说明"></a>1、理论说明</h2><p>考虑线性方程组 :    $$Ax = b$$  ,其中，A为n阶对称正定矩阵，b是给定的n维向量。则，可以使用共轭梯度发求解得到x，算法如下所示：</p>
-<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/1646935428.jpg" width="50%" height="50%"></p>
 <a id="more"></a>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/1646935428.jpg" width="50%" height="50%"></p>
 <h2 id="2、实验模型"><a href="#2、实验模型" class="headerlink" title="2、实验模型"></a>2、实验模型</h2><h3 id="2-1、-构建-A-b"><a href="#2-1、-构建-A-b" class="headerlink" title="2.1、 构建{A,b}"></a>2.1、 构建{A,b}</h3><p>我们首先需要构建满足共轭梯度法的线性方程组。</p>
 <p>我们使用如下代码随机生成一个对称正定方程组:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">dimention = 100;</span><br><span class="line"></span><br><span class="line">for i = 1:dimention</span><br><span class="line"></span><br><span class="line">    for j = i:dimention</span><br><span class="line"></span><br><span class="line">        temp = rand;</span><br><span class="line"></span><br><span class="line">        A(i,j) = round(10 * temp);</span><br><span class="line"></span><br><span class="line">        A(j,i) = A(i,j);</span><br><span class="line"></span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">for i = 1 : dimention</span><br><span class="line"></span><br><span class="line">    A(i,i) = 100;</span><br><span class="line"></span><br><span class="line">end</span><br></pre></td></tr></table></figure>
