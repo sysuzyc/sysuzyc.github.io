@@ -79,19 +79,19 @@
 
 
 
-<meta name="description" content="LeetCode 每日一题1、题目 2、解体思路 使用一个数组，对出现的字符进行标记，如果重复，则输出false 12345678910bool isUnique(string astr) &amp;#123;    int size = astr.size();    int a[26] = &amp;#123;0&amp;#125;;    for(int i=0;i&amp;lt;size;i++)&amp;#123;">
+<meta name="description" content="LeetCode 每日一题">
 <meta name="keywords" content="字符串,位运算">
 <meta property="og:type" content="article">
 <meta property="og:title" content="面试题 01.01 判定字符是否唯一">
 <meta property="og:url" content="http://yoursite.com/2020/03/01/面试题-01-01-判定字符是否唯一/index.html">
 <meta property="og:site_name" content="亚琛的小站">
-<meta property="og:description" content="LeetCode 每日一题1、题目 2、解体思路 使用一个数组，对出现的字符进行标记，如果重复，则输出false 12345678910bool isUnique(string astr) &amp;#123;    int size = astr.size();    int a[26] = &amp;#123;0&amp;#125;;    for(int i=0;i&amp;lt;size;i++)&amp;#123;">
+<meta property="og:description" content="LeetCode 每日一题">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/面试题01.01.png">
-<meta property="og:updated_time" content="2020-03-03T09:17:29.646Z">
+<meta property="og:updated_time" content="2020-03-03T09:20:33.234Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="面试题 01.01 判定字符是否唯一">
-<meta name="twitter:description" content="LeetCode 每日一题1、题目 2、解体思路 使用一个数组，对出现的字符进行标记，如果重复，则输出false 12345678910bool isUnique(string astr) &amp;#123;    int size = astr.size();    int a[26] = &amp;#123;0&amp;#125;;    for(int i=0;i&amp;lt;size;i++)&amp;#123;">
+<meta name="twitter:description" content="LeetCode 每日一题">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/面试题01.01.png">
 
 
@@ -355,7 +355,8 @@
       
 
       
-        <h2 id="LeetCode-每日一题"><a href="#LeetCode-每日一题" class="headerlink" title="LeetCode 每日一题"></a>LeetCode 每日一题</h2><h3 id="1、题目"><a href="#1、题目" class="headerlink" title="1、题目"></a>1、题目</h3><p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/面试题01.01.png" alt="每日一题"></p>
+        <h2 id="LeetCode-每日一题"><a href="#LeetCode-每日一题" class="headerlink" title="LeetCode 每日一题"></a>LeetCode 每日一题</h2><a id="more"></a>
+<h3 id="1、题目"><a href="#1、题目" class="headerlink" title="1、题目"></a>1、题目</h3><p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/面试题01.01.png" alt="每日一题"></p>
 <h3 id="2、解体思路"><a href="#2、解体思路" class="headerlink" title="2、解体思路"></a>2、解体思路</h3><ul>
 <li><p>使用一个数组，对出现的字符进行标记，如果重复，则输出false</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isUnique</span><span class="params">(<span class="built_in">string</span> astr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> size = astr.size();</span><br><span class="line">    <span class="keyword">int</span> a[<span class="number">26</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;size;i++)&#123;</span><br><span class="line">        <span class="keyword">int</span> temp = astr[i] - <span class="string">'a'</span>;</span><br><span class="line">        a[temp]++;</span><br><span class="line">        <span class="keyword">if</span>(a[temp] &gt; <span class="number">1</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
