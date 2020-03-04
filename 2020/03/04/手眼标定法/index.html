@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="链表," />
+  <meta name="keywords" content="标定,ros," />
 
 
 
@@ -79,20 +79,21 @@
 
 
 
-<meta name="description" content="每日一题，反转链表">
-<meta name="keywords" content="链表">
+<meta name="description" content="随着现在无人驾驶技术的发展，多个传感器开始被运用到了同一台无人驾驶车辆中。每一种传感器都可以获取对应的信息，并解算出想要的结果。然而，多个传感器坐标的统一，也是不得不解决的一个问题。 现在，我将整理一下多传感器融合比较常用的方法：手眼标定法。">
+<meta name="keywords" content="标定,ros">
 <meta property="og:type" content="article">
-<meta property="og:title" content="3.2-反转链表">
-<meta property="og:url" content="http://yoursite.com/2020/03/03/3.2-反转链表/index.html">
+<meta property="og:title" content="手眼标定法">
+<meta property="og:url" content="http://yoursite.com/2020/03/04/手眼标定法/index.html">
 <meta property="og:site_name" content="亚琛的小站">
-<meta property="og:description" content="每日一题，反转链表">
+<meta property="og:description" content="随着现在无人驾驶技术的发展，多个传感器开始被运用到了同一台无人驾驶车辆中。每一种传感器都可以获取对应的信息，并解算出想要的结果。然而，多个传感器坐标的统一，也是不得不解决的一个问题。 现在，我将整理一下多传感器融合比较常用的方法：手眼标定法。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/每日一题3.2.png">
-<meta property="og:updated_time" content="2020-03-03T09:32:44.279Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/机械臂.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/标定.bmp">
+<meta property="og:updated_time" content="2020-03-04T09:58:14.492Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="3.2-反转链表">
-<meta name="twitter:description" content="每日一题，反转链表">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/每日一题3.2.png">
+<meta name="twitter:title" content="手眼标定法">
+<meta name="twitter:description" content="随着现在无人驾驶技术的发展，多个传感器开始被运用到了同一台无人驾驶车辆中。每一种传感器都可以获取对应的信息，并解算出想要的结果。然而，多个传感器坐标的统一，也是不得不解决的一个问题。 现在，我将整理一下多传感器融合比较常用的方法：手眼标定法。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/机械臂.png">
 
 
 
@@ -122,13 +123,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/03/03/3.2-反转链表/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/03/04/手眼标定法/"/>
 
 
 
 
 
-  <title>3.2-反转链表 | 亚琛的小站</title>
+  <title>手眼标定法 | 亚琛的小站</title>
   
 
 
@@ -255,7 +256,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/03/3.2-反转链表/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/04/手眼标定法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sysuzyc">
@@ -272,7 +273,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">3.2-反转链表</h1>
+          <h1 class="post-title" itemprop="name headline">手眼标定法</h1>
         
 
         <div class="post-meta">
@@ -284,8 +285,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-03T17:23:42+08:00">
-                2020-03-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-04T14:53:15+08:00">
+                2020-03-04
               </time>
             
 
@@ -307,8 +308,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/LeetCode/" itemprop="url" rel="index">
-                    <span itemprop="name">LeetCode</span>
+                  <a href="/categories/多传感器融合/" itemprop="url" rel="index">
+                    <span itemprop="name">多传感器融合</span>
                   </a>
                 </span>
 
@@ -318,8 +319,8 @@
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/LeetCode/每日一题/" itemprop="url" rel="index">
-                    <span itemprop="name">每日一题</span>
+                  <a href="/categories/多传感器融合/标定/" itemprop="url" rel="index">
+                    <span itemprop="name">标定</span>
                   </a>
                 </span>
 
@@ -355,14 +356,89 @@
       
 
       
-        <p>每日一题，反转链表</p>
+        <p>随着现在无人驾驶技术的发展，多个传感器开始被运用到了同一台无人驾驶车辆中。每一种传感器都可以获取对应的信息，并解算出想要的结果。然而，多个传感器坐标的统一，也是不得不解决的一个问题。</p>
+<p>现在，我将整理一下多传感器融合比较常用的方法：手眼标定法。</p>
 <a id="more"></a>
-<h3 id="1、题目"><a href="#1、题目" class="headerlink" title="1、题目"></a>1、题目</h3><p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/每日一题3.2.png" alt="每日一题3.2"></p>
-<h3 id="2、思路"><a href="#2、思路" class="headerlink" title="2、思路"></a>2、思路</h3><p>设定当前节点 head，目标节点res。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">head -&gt; next = res;</span><br><span class="line"></span><br><span class="line">res = head;</span><br></pre></td></tr></table></figure>
-<p>这样就可以将head的值往res的左边插入了，就可以实现反转链表了。</p>
-<h3 id="3、代码"><a href="#3、代码" class="headerlink" title="3、代码"></a>3、代码</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ListNode* <span class="title">reverseList</span><span class="params">(ListNode* head)</span> </span>&#123;</span><br><span class="line">    ListNode* res = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">while</span>(head)&#123;</span><br><span class="line">        ListNode* temp = head-&gt;next;</span><br><span class="line">        head-&gt;next = res;</span><br><span class="line">        res = head;</span><br><span class="line">        head = temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>注意链表的<strong>初始化</strong>。</p>
+<h3 id="1、原理介绍"><a href="#1、原理介绍" class="headerlink" title="1、原理介绍"></a>1、原理介绍</h3><p>手眼标定法的依据于两个传感器之间的位姿变换，这个时候又可以分为两种情况：</p>
+<ul>
+<li>单传感器数据感知</li>
+<li>多传感器数据感知</li>
+</ul>
+<h3 id="单传感器数据感知"><a href="#单传感器数据感知" class="headerlink" title="单传感器数据感知"></a>单传感器数据感知</h3><p>单传感器的数据感知是指在需要标定的两个单元中，只有一个传感器可以获取感知数据，另一个无法获取感知数据。这个时候，需要接触标定板来实现传感器的标定。代表例子：机械臂标定。</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/机械臂.png" alt=""></p>
+<p>由于机械臂是可以需要算出摄像头和底座的姿态变换，所以，我们需要求的就是矩阵B。</p>
+<p>然而，由于一端可以测量，另一端不能测量，所以，使用标定板来方便处理。</p>
+<p>从上面的一侧可知：</p>
+<p>$T = A_1 \cdot B \cdot C_1^-$</p>
+<p>从下面的一侧可知：</p>
+<p>$T = A_2 \cdot B \cdot C_2^-$</p>
+<p>故，我们可以得到公式：</p>
+<p>$ A_1 \cdot B \cdot C_1^- = A_2 \cdot B \cdot C_2^-$</p>
+<p>则，进行推导，可以得到：</p>
+<p>$(A_2^- \cdot A_1) \cdot B = B \cdot (C_2^- \cdot C_1)$</p>
+<p>因此，我们就得到了手眼标定的最终公式：$Ax = xB$</p>
+<h4 id="多传感器数据感知"><a href="#多传感器数据感知" class="headerlink" title="多传感器数据感知"></a>多传感器数据感知</h4><p>多传感器数据感知是指两个标定单元都可以自身感知到数据，并解算出当前的变化量，所以，我们通过相邻时刻的变化来获取到对应的矩阵信息。代表样例：激光惯导标定。</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/标定.bmp" style="zoom:80%;"></p>
+<p>上图代表两个时刻激光雷达和GPS的姿态变换，其中TG21和TL21是可以通过传感器自身测量得到的。因此，我们可以得到公式：</p>
+<p>$G_2 = TG_{21} \cdot G_1 \qquad L_2 = TL_{21} \cdot L_1$</p>
+<p>$G_1 = T_{GL} \cdot L_1 \qquad G_2 = T_{GL} \cdot L_2$</p>
+<p>故，我们可以列出公式：<br>$$<br>\begin{align}<br>G_2 = TG_{21} \cdot G_1 =&amp; T_{GL} \cdot L_2 \<br>TG_{21} \cdot G_1 =&amp; T_{GL} \cdot TL_{21} \cdot L_1 \<br>TG_{21} \cdot T_{GL} \cdot L_1 =&amp; T_{GL} \cdot TL_{21} \cdot L_1 \<br>TG_{21} \cdot T_{GL} =&amp; T_{GL} \cdot TL_{21}<br>\end{align}<br>$$<br>故，我们最终得到了手眼标定的公式：$Ax = xB$</p>
+<h3 id="2、求解方法"><a href="#2、求解方法" class="headerlink" title="2、求解方法"></a>2、求解方法</h3><p>求解矩阵$Ax = xB$一直都是手眼标定的难题，不过现在很多库都已经封装好了，直接用就可以了。比如说ceres solver 和 opencv.</p>
+<p>下面我将着重推到下求解手眼标定的过程，主要的方法有四种：Tsai法，对偶四元数法，矩阵直积法以及迭代优化法。</p>
+<ul>
+<li><p><strong>Tsai法</strong></p>
+<p>两步走，先求$R_x$，再求$T_x$。</p>
+<p>由于原始问题为求解$Ax = xB$，所以，我们将其写成矩阵形式为：<br>$$<br>\left[\begin{matrix}R_A &amp; T_A \ 0 &amp; I\end{matrix}\right]<br>\cdot \left[\begin{matrix}R_x &amp; T_x \ 0 &amp; I \end{matrix}\right] =<br>\left[\begin{matrix}R_x &amp; T_x \ 0 &amp; I \end{matrix}\right] \cdot<br>\left[\begin{matrix}R_B &amp; T_B \ 0 &amp; I\end{matrix}\right]<br>$$<br>故，我们可以得到关系式为：</p>
+<p>$R_A \cdot R_x = R_x \cdot R_B$</p>
+<p>$(R_A - I)\cdot T_x = R_x \cdot T_B - T_A$</p>
+<p>故，我们只需要求解这些公式就可以了。</p>
+<p>我们可以使用旋转向量的方法来求解，引入旋转轴和旋转角，使用罗德里格斯公式求解$R_x$，再求解$T_x$。</p>
+<ul>
+<li><p>旋转向量转旋转矩阵</p>
+<p>$r_A = rodrigues(R_A)$</p>
+<p>$r_B = rodrigues(R_B)$</p>
+</li>
+<li><p>旋转向量归一化处理</p>
+<p>$\theta_A = ||r_A||_2 \quad \theta_B = ||r_B||_2$</p>
+<p>$N_{r_A} = r_A / \theta_A \quad N_{r_B} = r_B / \theta_B$</p>
+</li>
+<li><p>修正的罗德里格斯参数表示姿态变换</p>
+<p>$P_A = 2sin(\theta_A/2) N_{r_A}$</p>
+<p>$P_B = 2sin(\theta_B /2 )N_{r_B}$</p>
+</li>
+<li><p>计算初始向量$\vec{P_x}$</p>
+<p>$skew(P_A + P_B)\vec{P_x} = P_b - P_A$</p>
+<p>其中skew的操作就是求反对称运算的：</p>
+<p>$v = [v_x, v_y,v_z]$</p>
+<p>$skew(V) = \left[\begin{matrix}0 &amp; -v_z &amp; v_y \ v_z &amp; 0 &amp; -v_x \ -v_y &amp; v_x &amp; 0 \end{matrix} \right] $</p>
+</li>
+<li><p>计算旋转向量$P_{x}$</p>
+<p>$P_x = 2 \vec{P_x} /  \sqrt{1+|\vec{P_x}|^2}$</p>
+</li>
+<li><p>计算旋转矩阵$R_{x}$</p>
+<p>$R_x = (1- |P_x|^2/2)I + 1/2(P_x \cdot P_x^T + \sqrt{4 - |P_x|^2} \cdot skew(P_x))$</p>
+</li>
+<li><p>计算平移矩阵$T_{x}$</p>
+<p>$(R_A - I)\cdot T_x = R_x \cdot T_B - T_A$</p>
+</li>
+</ul>
+<p>Tsai法主要就是两步走，先求出$R_x$，再根据$R_x$，求解$T_x$.</p>
+<p>详细的求解过程在opencv中已经封装为：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">calibrateHandEyeTsai</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;Mat&gt;&amp; Hg, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;Mat&gt;&amp; Hc,Mat&amp; R_cam2gripper, Mat&amp; t_cam2gripper)</span></span></span><br></pre></td></tr></table></figure>
+<p>其中一些过程都在该函数中有过实现，这里举一个例子说明：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//求解初始向量：</span></span><br><span class="line"><span class="comment">//Left-hand side: skew(Pgij+Pcij)</span></span><br><span class="line">skew(Pgij+Pcij).copyTo(A(Rect(<span class="number">0</span>, idx*<span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>)));</span><br><span class="line"><span class="comment">//Right-hand side: Pcij - Pgij</span></span><br><span class="line">Mat diff = Pcij - Pgij;</span><br><span class="line">diff.copyTo(B(Rect(<span class="number">0</span>, idx*<span class="number">3</span>, <span class="number">1</span>, <span class="number">3</span>)));</span><br><span class="line">······</span><br><span class="line"><span class="comment">//使用svd的方法求解初始旋转向量</span></span><br><span class="line">solve(A, B, Pcg_, DECOMP_SVD);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>对偶四元数法</strong></p>
+<p>使用对偶四元数进行矩阵标定。</p>
+<p>具体实现方法opencv已经有了。</p>
+</li>
+<li><p>矩阵直积法</p>
+<p>扩展阅读，暂时还没打算细究</p>
+</li>
+<li><p>迭代优化法</p>
+<p>暂时还没打算细究，有空再更。</p>
+</li>
+</ul>
 
       
     </div>
@@ -380,7 +456,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/链表/" rel="tag"># 链表</a>
+            <a href="/tags/标定/" rel="tag"># 标定</a>
+          
+            <a href="/tags/ros/" rel="tag"># ros</a>
           
         </div>
       
@@ -393,8 +471,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/03/03/新的开始/" rel="next" title="新的开始">
-                <i class="fa fa-chevron-left"></i> 新的开始
+              <a href="/2020/03/04/3-4-腐烂的橘子/" rel="next" title="3.4-腐烂的橘子">
+                <i class="fa fa-chevron-left"></i> 3.4-腐烂的橘子
               </a>
             
           </div>
@@ -402,10 +480,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/03/03/3-3-合并排序的数组/" rel="prev" title="3.3-合并排序的数组">
-                3.3-合并排序的数组 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -541,7 +615,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、题目"><span class="nav-number">1.</span> <span class="nav-text">1、题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、思路"><span class="nav-number">2.</span> <span class="nav-text">2、思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、代码"><span class="nav-number">3.</span> <span class="nav-text">3、代码</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、原理介绍"><span class="nav-number">1.</span> <span class="nav-text">1、原理介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单传感器数据感知"><span class="nav-number">2.</span> <span class="nav-text">单传感器数据感知</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#多传感器数据感知"><span class="nav-number">2.1.</span> <span class="nav-text">多传感器数据感知</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、求解方法"><span class="nav-number">3.</span> <span class="nav-text">2、求解方法</span></a></li></ol></div>
             
 
           </div>
