@@ -89,7 +89,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/机械臂.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/标定.bmp">
-<meta property="og:updated_time" content="2020-03-04T10:19:27.592Z">
+<meta property="og:updated_time" content="2020-03-04T10:22:38.896Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="手眼标定法">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });     随着现在无人驾驶技术的发展，多个传感器开始被运用到了同一台无人驾驶车辆中。每一种传感器都可以获取对应的信息，并解算出想要的结果。然而，多个传感器坐标的统一，也是不得不解决的一个问题。 现在，我将整理一下多传感器融合比较常用的方法：手眼标定法">
@@ -390,7 +390,9 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <p>上图代表两个时刻激光雷达和GPS的姿态变换，其中TG21和TL21是可以通过传感器自身测量得到的。因此，我们可以得到公式：</p>
 <p>$$G_2 = TG_{21} \cdot G_1 \qquad L_2 = TL_{21} \cdot L_1$$</p>
 <p>$$G_1 = T_{GL} \cdot L_1 \qquad G_2 = T_{GL} \cdot L_2$$</p>
-<p>故，我们可以列出公式：<br>$$<br>\begin{align}<br>G_2 = TG_{21} \cdot G_1 =&amp; T_{GL} \cdot L_2 \<br>TG_{21} \cdot G_1 =&amp; T_{GL} \cdot TL_{21} \cdot L_1 \<br>TG_{21} \cdot T_{GL} \cdot L_1 =&amp; T_{GL} \cdot TL_{21} \cdot L_1 \<br>TG_{21} \cdot T_{GL} =&amp; T_{GL} \cdot TL_{21}<br>\end{align}<br>$$<br>故，我们最终得到了手眼标定的公式：$Ax = xB$</p>
+<p>故，我们可以列出公式：</p>
+<p>$$G_2 = TG_{21} \cdot G_1 = T_{GL} \cdot L_2 $$<br>$$TG_{21} \cdot G_1 = T_{GL} \cdot TL_{21} \cdot L_1 $$<br>$$TG_{21} \cdot T_{GL} \cdot L_1 = T_{GL} \cdot TL_{21} \cdot L_1 $$<br>$$TG_{21} \cdot T_{GL} = T_{GL} \cdot TL_{21}$$</p>
+<p>故，我们最终得到了手眼标定的公式：$Ax = xB$</p>
 <h3 id="2、求解方法"><a href="#2、求解方法" class="headerlink" title="2、求解方法"></a>2、求解方法</h3><p>求解矩阵$Ax = xB$一直都是手眼标定的难题，不过现在很多库都已经封装好了，直接用就可以了。比如说ceres solver 和 opencv.</p>
 <p>下面我将着重推到下求解手眼标定的过程，主要的方法有四种：Tsai法，对偶四元数法，矩阵直积法以及迭代优化法。</p>
 <ul>
