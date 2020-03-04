@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="字符串,位运算," />
+  <meta name="keywords" content="广度优先搜索," />
 
 
 
@@ -79,20 +79,21 @@
 
 
 
-<meta name="description" content="LeetCode 每日一题">
-<meta name="keywords" content="字符串,位运算">
+<meta name="description" content="每日一题，腐烂的橘子，广度优先搜索">
+<meta name="keywords" content="广度优先搜索">
 <meta property="og:type" content="article">
-<meta property="og:title" content="3.1-判定字符是否唯一">
-<meta property="og:url" content="http://yoursite.com/2020/03/01/3.1-判定字符是否唯一/index.html">
+<meta property="og:title" content="3.4-腐烂的橘子">
+<meta property="og:url" content="http://yoursite.com/2020/03/04/3-4-腐烂的橘子/index.html">
 <meta property="og:site_name" content="亚琛的小站">
-<meta property="og:description" content="LeetCode 每日一题">
+<meta property="og:description" content="每日一题，腐烂的橘子，广度优先搜索">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/面试题01.01.png">
-<meta property="og:updated_time" content="2020-03-03T09:32:38.144Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/4-1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/4-2.png">
+<meta property="og:updated_time" content="2020-03-04T04:23:33.506Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="3.1-判定字符是否唯一">
-<meta name="twitter:description" content="LeetCode 每日一题">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/面试题01.01.png">
+<meta name="twitter:title" content="3.4-腐烂的橘子">
+<meta name="twitter:description" content="每日一题，腐烂的橘子，广度优先搜索">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/4-1.png">
 
 
 
@@ -122,13 +123,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/03/01/3.1-判定字符是否唯一/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/03/04/3-4-腐烂的橘子/"/>
 
 
 
 
 
-  <title>3.1-判定字符是否唯一 | 亚琛的小站</title>
+  <title>3.4-腐烂的橘子 | 亚琛的小站</title>
   
 
 
@@ -255,7 +256,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/01/3.1-判定字符是否唯一/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/04/3-4-腐烂的橘子/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sysuzyc">
@@ -272,7 +273,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">3.1-判定字符是否唯一</h1>
+          <h1 class="post-title" itemprop="name headline">3.4-腐烂的橘子</h1>
         
 
         <div class="post-meta">
@@ -284,8 +285,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-01T17:05:34+08:00">
-                2020-03-01
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-04T12:16:03+08:00">
+                2020-03-04
               </time>
             
 
@@ -355,21 +356,27 @@
       
 
       
-        <h2 id="LeetCode-每日一题"><a href="#LeetCode-每日一题" class="headerlink" title="LeetCode 每日一题"></a>LeetCode 每日一题</h2><a id="more"></a>
-<h3 id="1、题目"><a href="#1、题目" class="headerlink" title="1、题目"></a>1、题目</h3><p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/面试题01.01.png" alt="每日一题"></p>
-<h3 id="2、解体思路"><a href="#2、解体思路" class="headerlink" title="2、解体思路"></a>2、解体思路</h3><ul>
-<li><p>使用一个数组，对出现的字符进行标记，如果重复，则输出false</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isUnique</span><span class="params">(<span class="built_in">string</span> astr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> size = astr.size();</span><br><span class="line">    <span class="keyword">int</span> a[<span class="number">26</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;size;i++)&#123;</span><br><span class="line">        <span class="keyword">int</span> temp = astr[i] - <span class="string">'a'</span>;</span><br><span class="line">        a[temp]++;</span><br><span class="line">        <span class="keyword">if</span>(a[temp] &gt; <span class="number">1</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
+        <p>每日一题，腐烂的橘子，广度优先搜索</p>
+<a id="more"></a>
+<h3 id="1、题目"><a href="#1、题目" class="headerlink" title="1、题目"></a>1、题目</h3><p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/4-1.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/4-2.png" alt=""></p>
+<h3 id="2、思路"><a href="#2、思路" class="headerlink" title="2、思路"></a>2、思路</h3><p>本题是<strong>广度优先搜索</strong>题目，虽然难度是Easy，但我觉得应该算是Medium的题目吧。</p>
+<p>我们首先构建队列，存储腐烂的橘子数目。</p>
+<p>然后，再记录新鲜橘子的总数，这一步是为了判别最后新鲜桔子的数目，也可以用一个迭代来判别，不过这样效率会更高一些。</p>
+<p>对于构建好的队列，我们执行以下操作：</p>
 <ul>
-<li><p>使用位运算</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isUnique</span><span class="params">(<span class="built_in">string</span> astr)</span> </span>&#123;</span><br><span class="line">  uint flg = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i= <span class="number">0</span>;i &lt; astr.size();i++)&#123;</span><br><span class="line">        uint v = <span class="number">1</span> &lt;&lt; (astr[i] - <span class="string">'a'</span>);</span><br><span class="line">        <span class="keyword">if</span>(flg &amp; v) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        flg |= v;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使用replace求解</p>
-<p>思路挺好的，就是目前还没看到c++解法</p>
-</li>
+<li>遍历队列，取出当前值</li>
+<li>清除当前值，并判定其周围是否有可以腐烂的橘子</li>
+<li>将新的腐烂的橘子丢入队列中</li>
 </ul>
+<p>直到队列为空，就进行完操作了。</p>
+<p>由于有当前时刻队列的长度作为限制，所以，不用担心再当前时刻会把后面存进来的橘子也进行处理。</p>
+<p>用<strong>样例</strong>说明：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">2,1,1   [0,0]    2，2，1   [0,1],[1,0]    2,2,2  [1,1],[1,2]    2,2,2  [2,1]  2,2,2</span><br><span class="line">1,1,0  -------&gt;  2，1，0  -------------&gt;  2,2,0 -------------&gt;  2,2,0 ------&gt; 2,2,0</span><br><span class="line">0,1,1            0，1，1                  0,1,1                 0,2,1         0,2,2</span><br></pre></td></tr></table></figure>
+<p>从上面可以看到，每一次都是把旧橘子消去，放入新的橘子进来。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">第一步： 丢弃腐烂的橘子[0,0]，      放入新橘子[0,1],[1,0];</span><br><span class="line">第二步： 丢弃腐烂的橘子[0,1],[1,0]，放入新橘子[1,1],[1,2];</span><br><span class="line">第三步： 丢弃腐烂的橘子[1,1],[1,2], 放入新橘子[2,1]；</span><br><span class="line">第四步： 丢弃腐烂的橘子[2,1]，      放入新橘子[2,2]；</span><br></pre></td></tr></table></figure>
+<p>这样，我们就完成了实验。</p>
+<h3 id="3、代码"><a href="#3、代码" class="headerlink" title="3、代码"></a>3、代码</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//BFS</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">orangesRotting</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt;&amp; grid)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">queue</span>&lt;pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt;&gt; q;</span><br><span class="line">        <span class="keyword">int</span> fresh = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> min_count = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">//对所有数据进行遍历，将腐烂的放入到队列之中，记录新鲜桔子的个数</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;grid.size();i++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;grid[<span class="number">0</span>].size();j++)&#123;</span><br><span class="line">                <span class="keyword">if</span>(grid[i][j] == <span class="number">2</span>) q.push(&#123;i,j&#125;);</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span>(grid[i][j] == <span class="number">1</span>) fresh++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> dir_x[<span class="number">4</span>] = &#123;<span class="number">0</span>,<span class="number">0</span>,<span class="number">-1</span>,<span class="number">1</span>&#125;;</span><br><span class="line">        <span class="keyword">int</span> dir_y[<span class="number">4</span>] = &#123;<span class="number">-1</span>,<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>&#125;;</span><br><span class="line">        <span class="keyword">while</span>(!q.empty())&#123;</span><br><span class="line">            <span class="keyword">int</span> size = q.size();</span><br><span class="line">            <span class="keyword">bool</span> is_rotton = <span class="literal">false</span>;</span><br><span class="line">            <span class="comment">//对当前队列的所有数据进行操作</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;size;i++)&#123;</span><br><span class="line">                pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; current = q.front();</span><br><span class="line">                q.pop();</span><br><span class="line">                <span class="comment">//判定四个方位是否有满足条件的橘子</span></span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;<span class="number">4</span>;j++)&#123;</span><br><span class="line">                    <span class="keyword">int</span> now_x = current.first  + dir_x[j];</span><br><span class="line">                    <span class="keyword">int</span> now_y = current.second + dir_y[j];</span><br><span class="line">                    <span class="keyword">if</span>(now_x &gt;= <span class="number">0</span> &amp;&amp; now_x &lt; grid.size() </span><br><span class="line">                    &amp;&amp; now_y &gt;= <span class="number">0</span> &amp;&amp; now_y &lt; grid[<span class="number">0</span>].size() </span><br><span class="line">                    &amp;&amp; grid[now_x][now_y] == <span class="number">1</span>)&#123;</span><br><span class="line">                            fresh--;</span><br><span class="line">                            q.push(&#123;now_x,now_y&#125;);</span><br><span class="line">                            grid[now_x][now_y] = <span class="number">2</span>;</span><br><span class="line">                            is_rotton = <span class="literal">true</span>;</span><br><span class="line">                        &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//队列遍历完后，判定是否能否腐烂橘子</span></span><br><span class="line">            <span class="keyword">if</span>(is_rotton) min_count++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//这里如果还有新鲜的，则说明并没有全部腐烂</span></span><br><span class="line">        <span class="keyword">if</span>(fresh) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">return</span> min_count;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -387,9 +394,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/字符串/" rel="tag"># 字符串</a>
-          
-            <a href="/tags/位运算/" rel="tag"># 位运算</a>
+            <a href="/tags/广度优先搜索/" rel="tag"># 广度优先搜索</a>
           
         </div>
       
@@ -402,8 +407,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/11/01/Latex使用小结/" rel="next" title="Latex使用小结">
-                <i class="fa fa-chevron-left"></i> Latex使用小结
+              <a href="/2020/03/03/基础排序算法大全/" rel="next" title="基础排序算法大全">
+                <i class="fa fa-chevron-left"></i> 基础排序算法大全
               </a>
             
           </div>
@@ -411,10 +416,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/03/03/新的开始/" rel="prev" title="新的开始">
-                新的开始 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -550,7 +551,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#LeetCode-每日一题"><span class="nav-number">1.</span> <span class="nav-text">LeetCode 每日一题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、题目"><span class="nav-number">1.1.</span> <span class="nav-text">1、题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、解体思路"><span class="nav-number">1.2.</span> <span class="nav-text">2、解体思路</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、题目"><span class="nav-number">1.</span> <span class="nav-text">1、题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、思路"><span class="nav-number">2.</span> <span class="nav-text">2、思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、代码"><span class="nav-number">3.</span> <span class="nav-text">3、代码</span></a></li></ol></div>
             
 
           </div>
