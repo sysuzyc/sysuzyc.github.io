@@ -79,19 +79,19 @@
 
 
 
-<meta name="description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });       1、理论说明考虑线性方程组 :    $$Ax = b$$  ,其中，A为n阶对称正定矩阵，b是给定的n维向量。则，可以使用共轭梯度发求解得到x，算法如下所示：">
+<meta name="description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });       1、理论说明考虑线性方程组 :    Ax = b  ,其中，A为n阶对称正定矩阵，b是给定的n维向量。则，可以使用共轭梯度发求解得到x，算法如下所示：">
 <meta name="keywords" content="共轭梯度法,最速下降法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="共轭梯度法">
 <meta property="og:url" content="http://yoursite.com/2018/10/21/共轭梯度法/index.html">
 <meta property="og:site_name" content="亚琛的小站">
-<meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });       1、理论说明考虑线性方程组 :    $$Ax = b$$  ,其中，A为n阶对称正定矩阵，b是给定的n维向量。则，可以使用共轭梯度发求解得到x，算法如下所示：">
+<meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });       1、理论说明考虑线性方程组 :    Ax = b  ,其中，A为n阶对称正定矩阵，b是给定的n维向量。则，可以使用共轭梯度发求解得到x，算法如下所示：">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/1646935428.jpg">
 <meta property="og:updated_time" content="2018-10-21T05:32:18.022Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="共轭梯度法">
-<meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });       1、理论说明考虑线性方程组 :    $$Ax = b$$  ,其中，A为n阶对称正定矩阵，b是给定的n维向量。则，可以使用共轭梯度发求解得到x，算法如下所示：">
+<meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });       1、理论说明考虑线性方程组 :    Ax = b  ,其中，A为n阶对称正定矩阵，b是给定的n维向量。则，可以使用共轭梯度发求解得到x，算法如下所示：">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/1646935428.jpg">
 
 
@@ -354,7 +354,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 
 
 
-<h2 id="1、理论说明"><a href="#1、理论说明" class="headerlink" title="1、理论说明"></a>1、理论说明</h2><p>考虑线性方程组 :    $$Ax = b$$  ,其中，A为n阶对称正定矩阵，b是给定的n维向量。则，可以使用共轭梯度发求解得到x，算法如下所示：</p>
+<h2 id="1、理论说明"><a href="#1、理论说明" class="headerlink" title="1、理论说明"></a>1、理论说明</h2><p>考虑线性方程组 :    <script type="math/tex">Ax = b</script>  ,其中，A为n阶对称正定矩阵，b是给定的n维向量。则，可以使用共轭梯度发求解得到x，算法如下所示：</p>
 <a id="more"></a>
 <p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/1646935428.jpg" width="50%" height="50%"></p>
 <h2 id="2、实验模型"><a href="#2、实验模型" class="headerlink" title="2、实验模型"></a>2、实验模型</h2><h3 id="2-1、-构建-A-b"><a href="#2-1、-构建-A-b" class="headerlink" title="2.1、 构建{A,b}"></a>2.1、 构建{A,b}</h3><p>我们首先需要构建满足共轭梯度法的线性方程组。</p>
@@ -367,7 +367,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <p>接下来，我们使用如下方法构建n维向量：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for i = 1:dimention</span><br><span class="line">    b(i,1) = 10*rand;</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
 <p>我们这里得到的是[0,10]之间的随机数构成的n维向量。</p>
-<p>因此，我们需要做的就是计算 $$Ax = b$$ </p>
+<p>因此，我们需要做的就是计算 <script type="math/tex">Ax = b</script> </p>
 <h3 id="2-2、共轭梯度法"><a href="#2-2、共轭梯度法" class="headerlink" title="2.2、共轭梯度法"></a>2.2、共轭梯度法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">% 初始化数据</span><br><span class="line">x0 = zeros(dimention,1);</span><br><span class="line">x(:,1) = x0;</span><br><span class="line">r(:,1) = b - A*x(:,1);</span><br><span class="line">k = 1;</span><br><span class="line">%共轭梯度法核心算法</span><br><span class="line">model(k) = 100; </span><br><span class="line">while(model(k) &gt; 10^-9)</span><br><span class="line">    k = k + 1</span><br><span class="line">    if k == 2</span><br><span class="line">        p(:,1) = r(:,1);</span><br><span class="line">    else</span><br><span class="line">        belta(:,k-2) = (r(:,k-1)&apos; * r(:,k-1)) / (r(:,k-2)&apos; * r(:,k-2));</span><br><span class="line">        p(:,k-1) = r(:,k-1) + belta(:,k-2) * p(:,k-2);</span><br><span class="line">    end</span><br><span class="line">    alfa(:,k-1) = (r(:,k-1)&apos; * r(:,k-1)) / (p(:,k-1)&apos; * A * p(:,k-1));</span><br><span class="line">    x(:,k) = x(:,k-1) + alfa(:,k-1) * p(:,k-1);</span><br><span class="line">    r(:,k) = r(:,k-1) - alfa(:,k-1) * A * p(:,k-1);</span><br><span class="line">    model(k) = norm(r(:,k));</span><br><span class="line">end</span><br><span class="line">x_final = x(:,k);</span><br></pre></td></tr></table></figure>
 <p>我们使用上面的代码就可以实现共轭梯度法了。</p>
 <h2 id="3、实验结果"><a href="#3、实验结果" class="headerlink" title="3、实验结果"></a>3、实验结果</h2><p>本次实验结果一共分为两个部分说明，首先是针对于共轭梯度法在不同的参数约束下的收敛次数的比较，其次是将共轭梯度法和最速下降法来进行比较。</p>
@@ -377,6 +377,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <li>共轭梯度法的迭代次数</li>
 <li>收敛后的残差矩阵的模长</li>
 </ul>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -392,40 +393,42 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <td style="text-align:center">4.739767487550580e-04</td>
 </tr>
 <tr>
-<td style="text-align:center">$$ e^-4 $$</td>
+<td style="text-align:center"><script type="math/tex">e^-4</script></td>
 <td style="text-align:center">13</td>
 <td style="text-align:center">4.139875743521754e-05</td>
 </tr>
 <tr>
-<td style="text-align:center">$$e^-5$$</td>
+<td style="text-align:center"><script type="math/tex">e^-5</script></td>
 <td style="text-align:center">15</td>
 <td style="text-align:center">5.621490749686395e-06</td>
 </tr>
 <tr>
-<td style="text-align:center">$$e^-6$$</td>
+<td style="text-align:center"><script type="math/tex">e^-6</script></td>
 <td style="text-align:center">18</td>
 <td style="text-align:center">3.760057264014553e-07</td>
 </tr>
 <tr>
-<td style="text-align:center">$$e^-7$$</td>
+<td style="text-align:center"><script type="math/tex">e^-7</script></td>
 <td style="text-align:center">20</td>
 <td style="text-align:center">3.223850333724713e-08</td>
 </tr>
 <tr>
-<td style="text-align:center">$$e^-8$$</td>
+<td style="text-align:center"><script type="math/tex">e^-8</script></td>
 <td style="text-align:center">22</td>
 <td style="text-align:center">2.862697616714050e-09</td>
 </tr>
 <tr>
-<td style="text-align:center">$$e^-9$$</td>
+<td style="text-align:center"><script type="math/tex">e^-9</script></td>
 <td style="text-align:center">23</td>
 <td style="text-align:center">8.426950350018659e-10</td>
 </tr>
 </tbody>
 </table>
-<p>从上面我们可以看出，对于100维的对称正定矩阵进行共轭梯度法求解，迭代次数是随着收敛的精度而增加的，但是在增长到$$e^-8$$ 之后的增长幅度就降下来了，并且这个时候的精度也足够我们使用了。</p>
+</div>
+<p>从上面我们可以看出，对于100维的对称正定矩阵进行共轭梯度法求解，迭代次数是随着收敛的精度而增加的，但是在增长到<script type="math/tex">e^-8</script> 之后的增长幅度就降下来了，并且这个时候的精度也足够我们使用了。</p>
 <p>因此，在使用共轭梯度法的时候，计算时间和计算精度我们需要做一个平衡，才能得到最优的结果。</p>
 <h3 id="3-2、共轭梯度法与最速下降法"><a href="#3-2、共轭梯度法与最速下降法" class="headerlink" title="3.2、共轭梯度法与最速下降法"></a>3.2、共轭梯度法与最速下降法</h3><p>我们这里使用的是同样的数据，实验方法同上，通过变动精确度来进行结果的对比。</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -438,49 +441,49 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center">$$e^-3$$</td>
+<td style="text-align:center"><script type="math/tex">e^-3</script></td>
 <td style="text-align:center">11</td>
 <td style="text-align:center">4.73976e-04</td>
 <td style="text-align:center">54</td>
 <td style="text-align:center">7.74983e-04</td>
 </tr>
 <tr>
-<td style="text-align:center">$$e^-4$$</td>
+<td style="text-align:center"><script type="math/tex">e^-4</script></td>
 <td style="text-align:center">13</td>
 <td style="text-align:center">4.13987e-05</td>
 <td style="text-align:center">66</td>
 <td style="text-align:center">9.52459e-05</td>
 </tr>
 <tr>
-<td style="text-align:center">$$e^-5$$</td>
+<td style="text-align:center"><script type="math/tex">e^-5</script></td>
 <td style="text-align:center">15</td>
 <td style="text-align:center">5.62149e-06</td>
 <td style="text-align:center">80</td>
 <td style="text-align:center">8.31292e-06</td>
 </tr>
 <tr>
-<td style="text-align:center">$$e^-6$$</td>
+<td style="text-align:center"><script type="math/tex">e^-6</script></td>
 <td style="text-align:center">18</td>
 <td style="text-align:center">3.76005e-07</td>
 <td style="text-align:center">94</td>
 <td style="text-align:center">7.29025e-07</td>
 </tr>
 <tr>
-<td style="text-align:center">$$e^-7$$</td>
+<td style="text-align:center"><script type="math/tex">e^-7</script></td>
 <td style="text-align:center">20</td>
 <td style="text-align:center">3.22385e-08</td>
 <td style="text-align:center">106</td>
 <td style="text-align:center">9.07784e-08</td>
 </tr>
 <tr>
-<td style="text-align:center">$$e^-8$$</td>
+<td style="text-align:center"><script type="math/tex">e^-8</script></td>
 <td style="text-align:center">22</td>
 <td style="text-align:center">2.86269e-09</td>
 <td style="text-align:center">120</td>
 <td style="text-align:center">8.01210e-09</td>
 </tr>
 <tr>
-<td style="text-align:center">$$e^-9$$</td>
+<td style="text-align:center"><script type="math/tex">e^-9</script></td>
 <td style="text-align:center">23</td>
 <td style="text-align:center">8.42695e-10</td>
 <td style="text-align:center">134</td>
@@ -488,6 +491,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 </tr>
 </tbody>
 </table>
+</div>
 <p>从上面，我们可以看出在相同精确度的情况下共轭梯度法(CG)会比最速下降法(FG)的迭代次数更少，最终的残差也是更小。从这个角度可以看出，共轭梯度法是优于最速下降法的。</p>
 <h2 id="4、实验数据及代码"><a href="#4、实验数据及代码" class="headerlink" title="4、实验数据及代码"></a>4、实验数据及代码</h2><p>本次实验的代码是在MATLAB下实现的，主要分为三个文件：</p>
 <p>main.m , CG.m , FG.m</p>
@@ -886,6 +890,8 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
   
 
   
+  
+
 
   
 

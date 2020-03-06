@@ -500,7 +500,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 
 
 
-<h2 id="1、理论说明"><a href="#1、理论说明" class="headerlink" title="1、理论说明"></a>1、理论说明</h2><p>考虑线性方程组 :    $$Ax = b$$  ,其中，A为n阶对称正定矩阵，b是给定的n维向量。则，可以使用共轭梯度发求解得到x，算法如下所示：</p>
+<h2 id="1、理论说明"><a href="#1、理论说明" class="headerlink" title="1、理论说明"></a>1、理论说明</h2><p>考虑线性方程组 :    <script type="math/tex">Ax = b</script>  ,其中，A为n阶对称正定矩阵，b是给定的n维向量。则，可以使用共轭梯度发求解得到x，算法如下所示：</p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2018/10/21/共轭梯度法/#more" rel="contents">
@@ -951,7 +951,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 
       
         
-          <p>我们在搭建好自己的小站之后，由于原始的主题并不是很让我满意，因此我找寻了一个比较满意的主题—<a href="http://theme-next.iissnan.com/" target="_blank" rel="noopener">next</a>。</p>
+          <p>我们在搭建好自己的小站之后，由于原始的主题并不是很让我满意，因此我找寻了一个比较满意的主题—-<a href="http://theme-next.iissnan.com/" target="_blank" rel="noopener">next</a>。</p>
 <h2 id="下载next主题"><a href="#下载next主题" class="headerlink" title="下载next主题"></a>下载next主题</h2><p>进入到我们之前设定的hexo文件夹，也就是<strong>sysuzyc.github.io</strong>，右键打开<strong>Git Bash Here</strong>。</p>
 <p>执行下面指令，将主题拷贝到本地仓库中：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd sysuzyc.github.io</span><br><span class="line">git clone https://github.com/iissnan/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
@@ -1588,6 +1588,28 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
 

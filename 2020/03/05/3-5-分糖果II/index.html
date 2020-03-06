@@ -371,10 +371,9 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <h2 id="2、思路"><a href="#2、思路" class="headerlink" title="2、思路"></a>2、思路</h2><p>本题其实很简单，理清思路就可以了。</p>
 <p>结合题目可以知晓，需要按顺序给予对应的糖果。</p>
 <p>那么，按照数学思想可以得到，从1到n的所有数据加起来为：</p>
-<p>$$ 1 + 2 + …… + n = n * (n+1)/2$$</p>
-<p>故，我们只需要最接近糖果总数的n就可以了。</p>
-<p>求解：$$ n(n+1)/2 &lt; candies$$</p>
-<p>我们可以使用$$\sqrt {candies}$$ 来进行判定，找到最接近的整数。</p>
+<script type="math/tex; mode=display">1 + 2 + ...... + n = n * (n+1)/2</script><p>故，我们只需要最接近糖果总数的n就可以了。</p>
+<p>求解：<script type="math/tex">n(n+1)/2 < candies</script></p>
+<p>我们可以使用<script type="math/tex">\sqrt {candies}</script> 来进行判定，找到最接近的整数。</p>
 <p>剩下的就是轮转相加就可以了。</p>
 <h2 id="3、代码"><a href="#3、代码" class="headerlink" title="3、代码"></a>3、代码</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; distributeCandies(<span class="keyword">int</span> candies, <span class="keyword">int</span> num_people) &#123;</span><br><span class="line">     <span class="comment">//n(n+1)/2 &lt; candies;</span></span><br><span class="line">     <span class="keyword">int</span> small_index = <span class="built_in">floor</span>(<span class="built_in">sqrt</span>(<span class="number">2</span>*candies));</span><br><span class="line">     <span class="keyword">if</span>(small_index * (small_index + <span class="number">1</span>) &gt; <span class="number">2</span> * candies) small_index--;</span><br><span class="line">     <span class="keyword">int</span> last_cound = candies - small_index * (small_index+<span class="number">1</span>)/<span class="number">2</span>;</span><br><span class="line">     <span class="comment">//先按照全部的放进去，再分给小朋友</span></span><br><span class="line">     <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; res(small_index+<span class="number">1</span>,<span class="number">0</span>);</span><br><span class="line">     <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;res.size()<span class="number">-1</span>;i++)&#123;</span><br><span class="line">         res[i] = i+<span class="number">1</span>;</span><br><span class="line">     &#125;</span><br><span class="line">     res[res.size()<span class="number">-1</span>] = last_cound;</span><br><span class="line">     <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; result(num_people,<span class="number">0</span>);</span><br><span class="line">     <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;res.size();i++)&#123;</span><br><span class="line">         result[i%num_people] = result[i%num_people] + res[i];</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -762,6 +761,8 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
   
 
   
+  
+
 
   
 

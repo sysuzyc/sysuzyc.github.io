@@ -377,28 +377,26 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <p>由于机械臂是可以需要算出摄像头和底座的姿态变换，所以，我们需要求的就是矩阵B。</p>
 <p>然而，由于一端可以测量，另一端不能测量，所以，使用标定板来方便处理。</p>
 <p>从上面的一侧可知：</p>
-<p>$$T = A_1 \cdot B \cdot C_1^-$$</p>
-<p>从下面的一侧可知：</p>
-<p>$$T = A_2 \cdot B \cdot C_2^-$$</p>
-<p>故，我们可以得到公式：</p>
-<p>$$ A_1 \cdot B \cdot C_1^- = A_2 \cdot B \cdot C_2^-$$</p>
-<p>则，进行推导，可以得到：</p>
-<p>$$(A_2^- \cdot A_1) \cdot B = B \cdot (C_2^- \cdot C_1)$$</p>
-<p>因此，我们就得到了手眼标定的最终公式：$Ax = xB$</p>
+<script type="math/tex; mode=display">T = A_1 \cdot B \cdot C_1^-</script><p>从下面的一侧可知：</p>
+<script type="math/tex; mode=display">T = A_2 \cdot B \cdot C_2^-</script><p>故，我们可以得到公式：</p>
+<script type="math/tex; mode=display">A_1 \cdot B \cdot C_1^- = A_2 \cdot B \cdot C_2^-</script><p>则，进行推导，可以得到：</p>
+<script type="math/tex; mode=display">(A_2^- \cdot A_1) \cdot B = B \cdot (C_2^- \cdot C_1)</script><p>因此，我们就得到了手眼标定的最终公式：$Ax = xB$</p>
 <h4 id="多传感器数据感知"><a href="#多传感器数据感知" class="headerlink" title="多传感器数据感知"></a>多传感器数据感知</h4><p>多传感器数据感知是指两个标定单元都可以自身感知到数据，并解算出当前的变化量，所以，我们通过相邻时刻的变化来获取到对应的矩阵信息。代表样例：激光惯导标定。</p>
 <p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/手眼标定.png" alt="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM%E7%B3%BB/%E6%89%8B%E7%9C%BC%E6%A0%87%E5%AE%9A.png" style="zoom:75%;"></p>
 <p>上图代表两个时刻激光雷达和GPS的姿态变换，其中TG21和TL21是可以通过传感器自身测量得到的。因此，我们可以得到公式：</p>
-<p>$$G_2 = TG_{21} \cdot G_1 \qquad L_2 = TL_{21} \cdot L_1$$</p>
-<p>$$G_1 = T_{GL} \cdot L_1 \qquad G_2 = T_{GL} \cdot L_2$$</p>
-<p>故，我们可以列出公式：</p>
-<p>$$G_2 = TG_{21} \cdot G_1 = T_{GL} \cdot L_2$$<br>$$TG_{21} \cdot G_1 = T_{GL} \cdot TL_{21} \cdot L_1$$<br>$$TG_{21} \cdot T_{GL} \cdot L_1 = T_{GL} \cdot TL_{21} \cdot L_1$$<br>$$TG_{21} \cdot T_{GL} = T_{GL} \cdot TL_{21}$$</p>
-<p>故，我们最终得到了手眼标定的公式：$Ax = xB$</p>
+<script type="math/tex; mode=display">G_2 = TG_{21} \cdot G_1 \qquad L_2 = TL_{21} \cdot L_1</script><script type="math/tex; mode=display">G_1 = T_{GL} \cdot L_1 \qquad G_2 = T_{GL} \cdot L_2</script><p>故，我们可以列出公式：</p>
+<script type="math/tex; mode=display">G_2 = TG_{21} \cdot G_1 = T_{GL} \cdot L_2</script><script type="math/tex; mode=display">TG_{21} \cdot G_1 = T_{GL} \cdot TL_{21} \cdot L_1</script><script type="math/tex; mode=display">TG_{21} \cdot T_{GL} \cdot L_1 = T_{GL} \cdot TL_{21} \cdot L_1</script><script type="math/tex; mode=display">TG_{21} \cdot T_{GL} = T_{GL} \cdot TL_{21}</script><p>故，我们最终得到了手眼标定的公式：$Ax = xB$</p>
 <h3 id="2、求解方法"><a href="#2、求解方法" class="headerlink" title="2、求解方法"></a>2、求解方法</h3><p>求解矩阵$Ax = xB$一直都是手眼标定的难题，不过现在很多库都已经封装好了，直接用就可以了。比如说ceres solver 和 opencv.</p>
 <p>下面我将着重推到下求解手眼标定的过程，主要的方法有四种：Tsai法，对偶四元数法，矩阵直积法以及迭代优化法。</p>
 <ul>
 <li><p><strong>Tsai法</strong></p>
 <p>两步走，先求$R_x$，再求$T_x$。</p>
-<p>由于原始问题为求解$Ax = xB$，所以，我们将其写成矩阵形式为：<br>$$<br>\left[\begin{matrix}R_A &amp; T_A \ 0 &amp; I\end{matrix}\right]<br>\cdot \left[\begin{matrix}R_x &amp; T_x \ 0 &amp; I \end{matrix}\right] =<br>\left[\begin{matrix}R_x &amp; T_x \ 0 &amp; I \end{matrix}\right] \cdot<br>\left[\begin{matrix}R_B &amp; T_B \ 0 &amp; I\end{matrix}\right]<br>$$<br>故，我们可以得到关系式为：</p>
+<p>由于原始问题为求解$Ax = xB$，所以，我们将其写成矩阵形式为：</p>
+<script type="math/tex; mode=display">
+\left[\begin{matrix}R_A & T_A \\ 0 & I\end{matrix}\right] 
+\cdot \left[\begin{matrix}R_x & T_x \\ 0 & I \end{matrix}\right] = 
+\left[\begin{matrix}R_x & T_x \\ 0 & I \end{matrix}\right] \cdot
+\left[\begin{matrix}R_B & T_B \\ 0 & I\end{matrix}\right]</script><p>故，我们可以得到关系式为：</p>
 <p>$R_A \cdot R_x = R_x \cdot R_B$</p>
 <p>$(R_A - I)\cdot T_x = R_x \cdot T_B - T_A$</p>
 <p>故，我们只需要求解这些公式就可以了。</p>
@@ -420,7 +418,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <p>$skew(P_A + P_B)\vec{P_x} = P_b - P_A$</p>
 <p>其中skew的操作就是求反对称运算的：</p>
 <p>$v = [v_x, v_y,v_z]$</p>
-<p>$skew(V) = \left[\begin{matrix}0 &amp; -v_z &amp; v_y \ v_z &amp; 0 &amp; -v_x \ -v_y &amp; v_x &amp; 0 \end{matrix} \right] $</p>
+<p>$skew(V) = \left[\begin{matrix}0 &amp; -v_z &amp; v_y \\ v_z &amp; 0 &amp; -v_x \\ -v_y &amp; v_x &amp; 0 \end{matrix} \right] $</p>
 </li>
 <li><p>计算旋转向量$P_{x}$</p>
 <p>$P_x = 2 \vec{P_x} /  \sqrt{1+|\vec{P_x}|^2}$</p>
@@ -836,6 +834,8 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
   
 
   
+  
+
 
   
 

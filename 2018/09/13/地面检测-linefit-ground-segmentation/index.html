@@ -366,29 +366,24 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <p><strong>segment：</strong></p>
 <p>我们将整个笛卡尔坐标系中的<strong>X-Y</strong>平面转变为一个无穷长半径的圆面。设定一个弧度参数<strong>α</strong>。</p>
 <p>则，我们可以将整个X-Y平面转变为一个被弧度参数α划分为M份扇面的圆面。</p>
-<p>$$ M =\frac{ 2*\pi}{\alpha}  {，圆面划分的个数} $$</p>
-<p>这样的话，我们就可以将整个的X-Y平面进行划分，划分为M个segment。</p>
+<script type="math/tex; mode=display">M =\frac{ 2*\pi}{\alpha}  {，圆面划分的个数}</script><p>这样的话，我们就可以将整个的X-Y平面进行划分，划分为M个segment。</p>
 <p>而，为了能够很好的将点进行segment的定位，我们使用以下的方式：</p>
-<p>$$ segment_ p(i) = \frac{atan2(y_i, x_i)}{\delta\alpha} {   ， segment划分函数} $$ </p>
-<p>这样的话，我们就可以对于每一个点进行X-Y平面的有序化处理。</p>
+<script type="math/tex; mode=display">segment_ p(i) = \frac{atan2(y_i, x_i)}{\delta\alpha} {   ， segment划分函数}</script><p>这样的话，我们就可以对于每一个点进行X-Y平面的有序化处理。</p>
 <p>因此，可以对于所有的点云进行如下的划分：</p>
-<p>$$P_s = \lbrace p_i  \in P \mid segment(p_i) = s  \rbrace  {  , 得到属于segment s的点云集}$$</p>
-<p>其中，s是代表segment s；P代表所有的点云;$ p_i $代表的是点云i。$P_s $代表的是属于segment s的点云集合。这样的话，我们就将整个的无序点云转化为有segment划分的有序点云了。</p>
+<script type="math/tex; mode=display">P_s = \lbrace p_i  \in P \mid segment(p_i) = s  \rbrace  {  , 得到属于segment s的点云集}</script><p>其中，s是代表segment s；P代表所有的点云;$ p_i $代表的是点云i。$P_s $代表的是属于segment s的点云集合。这样的话，我们就将整个的无序点云转化为有segment划分的有序点云了。</p>
 <p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/segment.png" alt="segment.png"></p>
 <p><strong>bins:</strong></p>
 <p>在前面，我们进行了segment的划分，也就是说，将整个点云划分为M个segment，然而，为了能够进一步的进行点云的有序化划分，我们这里使用了bins的划分：</p>
 <p>我们针对于segment s中的点云$ P_s $ 来处理。</p>
 <p>我们可以设定两个距离参数$ r_j^{min} $ 和$r_j ^ {max} $ 来进行$ b_j ^ {s}$(第j个bins)的限制。所以，对于每一个点通过以下的条件进行划分：</p>
-<p>$$ r_j ^ {min} \leq \sqrt{(x_i^2 + y_i^2) } &lt; r_j^{max}  { , 判定点是否属于bins}$$</p>
-<p>因此，我们可以对于该点在X-Y平面上的投影来进行 $ p_i  \in P_s $的判断。</p>
+<script type="math/tex; mode=display">r_j ^ {min} \leq \sqrt{(x_i^2 + y_i^2) } < r_j^{max}  { , 判定点是否属于bins}</script><p>因此，我们可以对于该点在X-Y平面上的投影来进行 $ p_i  \in P_s $的判断。</p>
 <p>这样的话，我们就可以将一个扇面划分为多个扇环。</p>
 <p>这样的话，我们就可以将segment里面的点再进行一次bins上点的划分。</p>
 <p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/bins.png" alt="bins.png"></p>
 <h3 id="选取最小z点"><a href="#选取最小z点" class="headerlink" title="选取最小z点"></a>选取最小z点</h3><p>我们在前面进行了点云的有序化处理，现在需要进行最小z点的选取，来进行地面点的筛选。</p>
 <p>其中，这里的数据处理都是在<strong>一个segment</strong>中进行的。</p>
 <p>因为，我们前面是进行了X-Y平面的投影，但是，却保留了该点的z坐标，也就是将一个三维坐标点，转变为一个二位坐标点，外加一个X-Y平面的角度信息。</p>
-<p>$$  \lbrace x,y,z \rbrace = \lbrace d, z \rbrace + \theta ， 其中 d =  \sqrt{(x_i^2 + y_i^2) }$$</p>
-<p>这样的话，我们就进行了降维的操作，将一个三维数据$\lbrace x,y,z \rbrace$转化为了二维数据$\lbrace d,z \rbrace$.</p>
+<script type="math/tex; mode=display">\lbrace x,y,z \rbrace = \lbrace d, z \rbrace + \theta ， 其中 d =  \sqrt{(x_i^2 + y_i^2) }</script><p>这样的话，我们就进行了降维的操作，将一个三维数据$\lbrace x,y,z \rbrace$转化为了二维数据$\lbrace d,z \rbrace$.</p>
 <p>所以，我们就可以针对与一个segment中的数据进行直线的拟合，得到d-z平面内的直线，从而筛选出地面点。</p>
 <h3 id="直线拟合"><a href="#直线拟合" class="headerlink" title="直线拟合"></a>直线拟合</h3><p>我们在前面一步得到了$\lbrace d,z \rbrace$的数据，可以构建出d-z平面的离散点。</p>
 <p>针对于这些离散点，我们设定了四个条件来进行直线拟合的判断，其中直线表示为$y = mx + b$：</p>
@@ -803,6 +798,8 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
   
 
   
+  
+
 
   
 
