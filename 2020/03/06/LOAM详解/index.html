@@ -104,7 +104,12 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM%E7%B3%BB/lidar_palnar_2.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/公式3.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/公式5.png">
-<meta property="og:updated_time" content="2020-03-06T09:09:23.799Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/lost function.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/solve-planar.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/solve-corner.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/solver.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/odometry_update.png">
+<meta property="og:updated_time" content="2020-03-06T09:58:35.538Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LOAM详解">
 <meta name="twitter:description" content="LOAM作为比较古老的激光匹配slam方法，一直以来都霸占着KITTI的前列，而，再这多年过过去了，我对于LOAM的理解也变得更加深厚。 因此，我决定将重新再看一遍LOAM的论文和代码，将自己的理解记录下来，方便以后浏览。">
@@ -475,7 +480,7 @@
 </ul>
 <p>回归正文，我们获得了得到了公式之后，就需要求解 $R$ 和 $T$ 了。</p>
 <p>然而，我们使用的是6-DoF的表示，就需要想办法进行欧拉角到旋转矩阵的变换，使用罗德里格斯公式进行变换：</p>
-<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/公式5.png" alt="旋转变化公式"></p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/公式5.png" alt="旋转变化公式" style="zoom:80%;"></p>
 <p>这样，就可以将欧拉角转换为旋转矩阵了，其中$\theta = [roll,pitch,yaw]$，$\omega = \frac {T} {||T||}$</p>
 <p>而，平移矩阵就是6-DoF的前三位，也就是说$T = [x,y,z]$。</p>
 <p>这样，就可以实现6-DoF和旋转矩阵的变动了。</p>
@@ -486,7 +491,7 @@
 <p>因此，我们就需要求解优化这个非线性优化问题就可以了。</p>
 <p>那么使用常规的列文伯格-马夸特$(LM)$法来进行求解:</p>
 <p>和高斯牛顿法不一样的是，我们加入了信赖区域，$\mu$为半径，$D$为系数矩阵，最小二乘的函数也不相同：</p>
-<p>$min \frac {1}{2}||f(T^L_{k+1}) + J(T^L_{k+1})^T \Delta T^L_{k+1}||  \quad s.t ||D \Delta T^L_{k+1} &lt; \mu||_2$</p>
+<p>$min \frac {1}{2}||f(T^L_{k+1}) + J(T^L_{k+1})^T \Delta T^L_{k+1}||  \quad s.t \quad ||D \Delta T^L_{k+1} &lt; \mu||_2$</p>
 <p>构建拉格朗日函数：</p>
 <p>$L(\Delta T^L_{k+1},\lambda) = \frac {1}{2}||f(T^L_{k+1}) + J(T^L_{k+1})^T\Delta T^L_{k+1}||^2 + \frac {\lambda}{2}(||D \Delta T^L_{k+1}||^2 - \mu)$ </p>
 <p>这样的话，化简后求导就可以得到：</p>
@@ -503,6 +508,19 @@
 <p>和论文中基本一致，就是表现的方式有一点点的区别。</p>
 <p>审修改的就可以不断求解这个式子，直到收敛即可。</p>
 <p>代码使用的是ceres solver来进行求解。</p>
+<p>首先设定损失函数：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/lost function.png" style="zoom:75%;"></p>
+<p>然后设定代价函数：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/solve-planar.png" style="zoom:75%;"></p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/solve-corner.png" style="zoom:75%;"></p>
+<p>最后是求解：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/solver.png" style="zoom:75%;"></p>
+<p>然后对球出来的数据进行迭代更新：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/odometry_update.png" style="zoom:75%;"></p>
+<p>这样就可以实现优化求解了。</p>
+<p>A-LOAM的代码相比于LOAM-Velodyne是使用了现有的优化求解库，这样可以使代码更加简介和简单，只需要输入边缘点对应关系的{$i,j,l $}和平面点的{$ i,j,l,m $}，这样的话，就可以优化求解了。</p>
+<p>然而，需要注意的是：</p>
+<p>这里求解的还是局部雷达观测坐标系下的结果，是为了求解相邻帧之间的变换，也就是$T^L$，而为了定位和建图，需要求解的是全局坐标系下的变换，也就是$T^W$。因此，需要进入到下一个章节Lidar Mapping中。</p>
 <h3 id="Lidar-Mapping"><a href="#Lidar-Mapping" class="headerlink" title="Lidar Mapping"></a>Lidar Mapping</h3><p>map-to-map</p>
 <h3 id="Transform-Integration"><a href="#Transform-Integration" class="headerlink" title="Transform Integration"></a>Transform Integration</h3>
       
