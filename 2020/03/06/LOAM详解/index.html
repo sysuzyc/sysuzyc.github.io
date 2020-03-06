@@ -88,7 +88,7 @@
 <meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });     LOAM作为比较古老的激光匹配slam方法，一直以来都霸占着KITTI的前列，而，再这多年过过去了，我对于LOAM的理解也变得更加深厚。 因此，我决定将重新再看一遍LOAM的论文和代码，将自己的理解记录下来，方便以后浏览。 论文：https">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/LOAM.png">
-<meta property="og:updated_time" content="2020-03-06T03:37:29.745Z">
+<meta property="og:updated_time" content="2020-03-06T03:38:39.720Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LOAM详解">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });     LOAM作为比较古老的激光匹配slam方法，一直以来都霸占着KITTI的前列，而，再这多年过过去了，我对于LOAM的理解也变得更加深厚。 因此，我决定将重新再看一遍LOAM的论文和代码，将自己的理解记录下来，方便以后浏览。 论文：https">
@@ -378,6 +378,10 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 </ul>
 <p>因此，我们就可以将整个问题转化为：</p>
 <p><strong>已知一段点云序列$P_k，k \in Z^+$，计算在前$k$个时期内的雷达位姿以及构建全局地图。</strong></p>
+<h3 id="Lidar-Registration"><a href="#Lidar-Registration" class="headerlink" title="Lidar Registration"></a>Lidar Registration</h3><p>为了计算雷达的运动位姿，我们需要得到的是相邻帧间的姿态变换关系，这样才能继续往后走下去。为了获取到相邻帧的姿态变换，使用全部点云处理是不可靠的，为了减少计算的时间消耗，一般需要使用特征点来代替完整的数据帧。</p>
+<p>常见的特征点提取方法：特征向量、直方图、旋转图片等。</p>
+<p>这些方法虽然能很精准的涵盖一帧数据的大部分信息，但是由于计算量大，很难在激光slam的相邻帧的匹配中使用。 因此，需要想一些更好的方法。</p>
+<p>本文作者根据点的曲率来计算<strong>平面光滑度</strong>作为提取当前帧的特征信息的指标。</p>
 
       
     </div>
@@ -552,7 +556,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、论文阅读"><span class="nav-number">1.</span> <span class="nav-text">1、论文阅读</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#符号设定"><span class="nav-number">1.1.</span> <span class="nav-text">符号设定</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、论文阅读"><span class="nav-number">1.</span> <span class="nav-text">1、论文阅读</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#符号设定"><span class="nav-number">1.1.</span> <span class="nav-text">符号设定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lidar-Registration"><span class="nav-number">1.2.</span> <span class="nav-text">Lidar Registration</span></a></li></ol></li></ol></div>
             
 
           </div>
