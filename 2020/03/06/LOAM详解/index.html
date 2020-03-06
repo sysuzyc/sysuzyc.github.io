@@ -87,10 +87,12 @@
 <meta property="og:site_name" content="亚琛的小站">
 <meta property="og:description" content="LOAM作为比较古老的激光匹配slam方法，一直以来都霸占着KITTI的前列，而，再这多年过过去了，我对于LOAM的理解也变得更加深厚。 因此，我决定将重新再看一遍LOAM的论文和代码，将自己的理解记录下来，方便以后浏览。 论文：https://www.ri.cmu.edu/pub_files/2014/7/Ji_LidarMapping_RSS2014_v8.pdf 代码：https://git">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-03-06T03:27:36.150Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/LOAM.png">
+<meta property="og:updated_time" content="2020-03-06T03:29:58.055Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LOAM详解">
 <meta name="twitter:description" content="LOAM作为比较古老的激光匹配slam方法，一直以来都霸占着KITTI的前列，而，再这多年过过去了，我对于LOAM的理解也变得更加深厚。 因此，我决定将重新再看一遍LOAM的论文和代码，将自己的理解记录下来，方便以后浏览。 论文：https://www.ri.cmu.edu/pub_files/2014/7/Ji_LidarMapping_RSS2014_v8.pdf 代码：https://git">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/LOAM.png">
 
 
 
@@ -357,6 +359,17 @@
 <p>因此，我决定将重新再看一遍LOAM的论文和代码，将自己的理解记录下来，方便以后浏览。</p>
 <p>论文：<a href="https://www.ri.cmu.edu/pub_files/2014/7/Ji_LidarMapping_RSS2014_v8.pdf" target="_blank" rel="noopener">https://www.ri.cmu.edu/pub_files/2014/7/Ji_LidarMapping_RSS2014_v8.pdf</a></p>
 <p>代码：<a href="https://github.com/HKUST-Aerial-Robotics/A-LOAM" target="_blank" rel="noopener">https://github.com/HKUST-Aerial-Robotics/A-LOAM</a></p>
+<h2 id="1、论文阅读"><a href="#1、论文阅读" class="headerlink" title="1、论文阅读"></a>1、论文阅读</h2><p><a href="https://www.ri.cmu.edu/pub_files/2014/7/Ji_LidarMapping_RSS2014_v8.pdf" target="_blank" rel="noopener">LOAM</a>这篇论文是发表于2014年RSS的文章，全称为：LOAM: Lidar Odometry and Mapping in Real-time .<br>LOAM是基于激光雷达而搭建的在ROS平台下的SLAM系统，一共分为四个部分：<br><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/LOAM.png" alt=""></p>
+<p>本文的核心主要在于两个部分：<strong>特征提取（Lidar Registration）</strong>和<strong>里程计解算（Odometry and Mapping）</strong>。</p>
+<p>当提取出特征后，通过两个高频率的里程计（Odometry）实现<strong>粗定位</strong>和低频率的里程计（Mapping）实现<strong>精定位</strong>。<br>下面，我们将结合论文和代码，进行LOAM框架的详细讲解。</p>
+<h3 id="符号设定"><a href="#符号设定" class="headerlink" title="符号设定"></a>符号设定</h3><ul>
+<li>一个sweep代表了一次扫描周期，记作$k ,\quad k \in Z^+$</li>
+<li>一个扫描周期内获取到的所有点云记作$P$，$P_k$代表了第k个扫描周期的点云</li>
+<li>雷达坐标系设定为$L$，$L_k$代表了第k个周期时的雷达观测坐标系，$i \in P_k$在$L_k$中可以被表示为$X^L_{(k,i)}$</li>
+<li>全局坐标系设定为$W$，$W_k$代表了第k个周期时的全局坐标系，$i \in P_k$在$ W_k$中可以被表示为$X^W_{(k,i)}$</li>
+</ul>
+<p>因此，我们就可以将整个问题转化为：</p>
+<p><strong>已知一段点云序列$P_k，k \in Z^+$，计算在前$k$个时期内的雷达位姿以及构建全局地图。</strong></p>
 
       
     </div>
@@ -447,8 +460,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -512,6 +534,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、论文阅读"><span class="nav-number">1.</span> <span class="nav-text">1、论文阅读</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#符号设定"><span class="nav-number">1.1.</span> <span class="nav-text">符号设定</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
