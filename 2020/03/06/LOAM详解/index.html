@@ -109,7 +109,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/solve-corner.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/solver.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/odometry_update.png">
-<meta property="og:updated_time" content="2020-03-06T09:58:35.538Z">
+<meta property="og:updated_time" content="2020-03-06T10:53:21.077Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LOAM详解">
 <meta name="twitter:description" content="LOAM作为比较古老的激光匹配slam方法，一直以来都霸占着KITTI的前列，而，再这多年过过去了，我对于LOAM的理解也变得更加深厚。 因此，我决定将重新再看一遍LOAM的论文和代码，将自己的理解记录下来，方便以后浏览。">
@@ -492,7 +492,7 @@
 <p>那么使用常规的列文伯格-马夸特$(LM)$法来进行求解:</p>
 <p>和高斯牛顿法不一样的是，我们加入了信赖区域，$\mu$为半径，$D$为系数矩阵，最小二乘的函数也不相同：</p>
 <p>$min \frac {1}{2}||f(T^L_{k+1}) + J(T^L_{k+1})^T \Delta T^L_{k+1}||  \quad s.t \quad ||D \Delta T^L_{k+1} &lt; \mu||_2$</p>
-<p>构建拉格朗日函数：</p>
+<p>构建拉格朗日函数，$\lambda$ 是系数因子：</p>
 <p>$L(\Delta T^L_{k+1},\lambda) = \frac {1}{2}||f(T^L_{k+1}) + J(T^L_{k+1})^T\Delta T^L_{k+1}||^2 + \frac {\lambda}{2}(||D \Delta T^L_{k+1}||^2 - \mu)$ </p>
 <p>这样的话，化简后求导就可以得到：</p>
 <p>$J(T^L_{k+1})f(x) + J(T^L_{k+1})J^T(T^L_{k+1})\Delta T^L_{k+1} + \lambda D^TD \Delta T^L_{k+1} = 0$</p>
@@ -521,7 +521,7 @@
 <p>A-LOAM的代码相比于LOAM-Velodyne是使用了现有的优化求解库，这样可以使代码更加简介和简单，只需要输入边缘点对应关系的{$i,j,l $}和平面点的{$ i,j,l,m $}，这样的话，就可以优化求解了。</p>
 <p>然而，需要注意的是：</p>
 <p>这里求解的还是局部雷达观测坐标系下的结果，是为了求解相邻帧之间的变换，也就是$T^L$，而为了定位和建图，需要求解的是全局坐标系下的变换，也就是$T^W$。因此，需要进入到下一个章节Lidar Mapping中。</p>
-<h3 id="Lidar-Mapping"><a href="#Lidar-Mapping" class="headerlink" title="Lidar Mapping"></a>Lidar Mapping</h3><p>map-to-map</p>
+<h3 id="Lidar-Mapping"><a href="#Lidar-Mapping" class="headerlink" title="Lidar Mapping"></a>Lidar Mapping</h3><p>Lidar Odometry是一个粗定位的10Hz的里程计，Lidar Mapping是一个精细定位的1Hz的里程计。</p>
 <h3 id="Transform-Integration"><a href="#Transform-Integration" class="headerlink" title="Transform Integration"></a>Transform Integration</h3>
       
     </div>
