@@ -103,7 +103,8 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM%E7%B3%BB/lidar_palnar_1.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM%E7%B3%BB/lidar_palnar_2.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/公式3.png">
-<meta property="og:updated_time" content="2020-03-06T04:10:30.379Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/公式5.png">
+<meta property="og:updated_time" content="2020-03-06T09:09:23.799Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LOAM详解">
 <meta name="twitter:description" content="LOAM作为比较古老的激光匹配slam方法，一直以来都霸占着KITTI的前列，而，再这多年过过去了，我对于LOAM的理解也变得更加深厚。 因此，我决定将重新再看一遍LOAM的论文和代码，将自己的理解记录下来，方便以后浏览。">
@@ -426,7 +427,8 @@
 <p>已知第$k$次扫描的点云为$P_k$，          而提取的边缘点集合记为：$E_k$，提取的平面点记为$H_k$。</p>
 <p>已知第$k+1$次扫描的点云为$P_{k+1}$，而提取的边缘点集合记为：$E_{k+1}$，提取的平面点记为$H_{k+1}$。</p>
 <p>我们想要得到的是$P_{k+1}$和$P_k$之间的变换关系，也就是$E_{k+1}$和$E_k$以及$H_{k+1}$和$H_k$之间的关系。</p>
-<p>由于姿态提取是一个迭代优化的过程，所以，我们将每次迭代中得到的姿态矩阵结合平面点和边缘点投影得到的新的点记为:$\hat {E_{k+1}}$ 和$\hat {H_{k+1}}$。</p>
+<p>由于雷达自身在 $k$ 和 $k+1$ 时刻过程中是运动的，所以，我们每个点对应的姿态变换矩阵都应该得到一定的修正。为了方便处理，我们将所有的点重投影到每一帧的初始时刻，这样在这一帧中的所有点都可以得到对应的姿态变换信息。</p>
+<p>我们将重投影到每一帧初始时刻的平面点和边缘点记为:$\hat {E_{k+1}}$ 和$\hat {H_{k+1}}$。</p>
 <p>这样的话就可以进行后续的优化了。</p>
 <p>我们知道平面和边缘线是两种不同的特征，那么在LOAM的计算中，也是分开进行计算的。</p>
 <h4 id="边缘点匹配"><a href="#边缘点匹配" class="headerlink" title="边缘点匹配"></a>边缘点匹配</h4><p>已知信息：$\hat {E_{k+1}}$ 和 $E_k$。</p>
@@ -453,7 +455,54 @@
 <p>因此，就变为了：<img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/公式3.png" alt="公式3"></p>
 <p>故，分子为构成的三维物体的体积，分母为地面构成的平行四边形的面积，则高 $D_h = \frac {体积}{面积}$。</p>
 <p>因此，我们就得到了平面点的优化方程。</p>
-<h4 id="姿态解算"><a href="#姿态解算" class="headerlink" title="姿态解算"></a>姿态解算</h4><p>当获取到了$D_e$和$D_h$之后，我们就可以进行方程的优化了。论文使用的是LM法，代码使用ceres solver来进行求解。</p>
+<h4 id="姿态解算"><a href="#姿态解算" class="headerlink" title="姿态解算"></a>姿态解算</h4><p>当获取到了$D_e$和$D_h$之后，我们需要做的就是求解公式(2)和(3)中的右边的部分，最小化右边部分，就得到了最小化的$D_e$和$D_h$，这样就可以使用非线性优化的方法来进行求解 了。</p>
+<p>我们首先列出已知的信息：</p>
+<p>$X_{k+1} = RX_k + T$</p>
+<p>由于考虑了雷达的自身运动是匀速运动，所以，我们获取了每个点的时间戳信息，并使用线性方程，得到每个时刻对应的姿态变换矩阵，这一步主要是进行了<strong>运动补偿</strong>。</p>
+<p>我们首先求解第 $k$ 帧中第 $i$ 个点的姿态变换信息：</p>
+<p>$T^L_{(k+1,i)} = \frac {t_i - t_{k+1}}{t - t_{k+1}} T^L_{k+1}              \tag4$</p>
+<p>这样的话，就可以使用每个点对应的姿态变换矩阵放入进去进行后续的求解了。</p>
+<p>但是，这里论文使用的是6-DoF的表示，也就是$[x,y,z,roll,pitch,yaw]$。</p>
+<p>所以，我们需要想办法从6-DoF得到对应的姿态变换矩阵，进行迭代优化求解。</p>
+<p>我们设定旋转矩阵 $R$ 和平移矩阵 $T$。</p>
+<p>这样的话，就可以构建公式：</p>
+<p>${X^L_{k+1,i}} = R \hat {X_{k,i+1}} + T$。</p>
+<p>这样，就可以将  $k+1$ 帧上的点投到k帧所在的集合中了。</p>
+<p><strong>这里可能不是很好理解。</strong></p>
+<p>这里就涉及到论文中所涉及到的几个符号的表示，建议可以对照论文当中来看。</p>
+<ul>
+<li><strong>核心思想</strong>就是要找到一个姿态变换使得可以将公式(2)和(3)中的右边部分进行化简计算，而我们知道$i \in P_{k+1}，j,l,m \in P_{k}$，所以，需要将$ \hat {X_{(K+1,i)}}$转化到同样的帧中，统一坐标系，进行后面的解算。</li>
+</ul>
+<p>回归正文，我们获得了得到了公式之后，就需要求解 $R$ 和 $T$ 了。</p>
+<p>然而，我们使用的是6-DoF的表示，就需要想办法进行欧拉角到旋转矩阵的变换，使用罗德里格斯公式进行变换：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/公式5.png" alt="旋转变化公式"></p>
+<p>这样，就可以将欧拉角转换为旋转矩阵了，其中$\theta = [roll,pitch,yaw]$，$\omega = \frac {T} {||T||}$</p>
+<p>而，平移矩阵就是6-DoF的前三位，也就是说$T = [x,y,z]$。</p>
+<p>这样，就可以实现6-DoF和旋转矩阵的变动了。</p>
+<p>那么我们可以知道在公式(2)和公式(3)中，只有 $\theta$ 和 $T$ 是未知的，其他都是已知的。那么就可以得到一个约束公式：</p>
+<p>$f_e(\theta,T) = D_e \quad \&amp; \quad f_h(\theta,T) = D_h$</p>
+<p>因此，可以统一为一个公式：</p>
+<p>$f(T^L_{k+1}) = D$</p>
+<p>因此，我们就需要求解优化这个非线性优化问题就可以了。</p>
+<p>那么使用常规的列文伯格-马夸特$(LM)$法来进行求解:</p>
+<p>和高斯牛顿法不一样的是，我们加入了信赖区域，$\mu$为半径，$D$为系数矩阵，最小二乘的函数也不相同：</p>
+<p>$min \frac {1}{2}||f(T^L_{k+1}) + J(T^L_{k+1})^T \Delta T^L_{k+1}||  \quad s.t ||D \Delta T^L_{k+1} &lt; \mu||_2$</p>
+<p>构建拉格朗日函数：</p>
+<p>$L(\Delta T^L_{k+1},\lambda) = \frac {1}{2}||f(T^L_{k+1}) + J(T^L_{k+1})^T\Delta T^L_{k+1}||^2 + \frac {\lambda}{2}(||D \Delta T^L_{k+1}||^2 - \mu)$ </p>
+<p>这样的话，化简后求导就可以得到：</p>
+<p>$J(T^L_{k+1})f(x) + J(T^L_{k+1})J^T(T^L_{k+1})\Delta T^L_{k+1} + \lambda D^TD \Delta T^L_{k+1} = 0$</p>
+<p>我们化简后得到：</p>
+<p>$(JJ^T + \lambda D^TD) \Delta T = -Jf$</p>
+<p>而$f(T^L_{k+1}) = d$</p>
+<p>故，我们可以得到导数为：</p>
+<p>$\Delta T = -(JJ^T + \lambda D^TD)^-Jd$</p>
+<p>我们可以看到，和论文中略有不同，这个和初始雅可比矩阵$J$以及系数矩阵$D$有关，实际使用中，系数矩阵D，通常是用$J^TJ$来表示的，这样的话，我们就得到了其微分量$\Delta T$。</p>
+<p>代入梯度下降的公式为：</p>
+<p>$T^L_{k+1} \leftarrow T^L_{k+1} + \Delta T^L_{k+1}$</p>
+<p>$T^L_{k+1} \leftarrow T^L_{k+1} -(JJ^T + \lambda D^TD)^-Jd$.</p>
+<p>和论文中基本一致，就是表现的方式有一点点的区别。</p>
+<p>审修改的就可以不断求解这个式子，直到收敛即可。</p>
+<p>代码使用的是ceres solver来进行求解。</p>
 <h3 id="Lidar-Mapping"><a href="#Lidar-Mapping" class="headerlink" title="Lidar Mapping"></a>Lidar Mapping</h3><p>map-to-map</p>
 <h3 id="Transform-Integration"><a href="#Transform-Integration" class="headerlink" title="Transform Integration"></a>Transform Integration</h3>
       
