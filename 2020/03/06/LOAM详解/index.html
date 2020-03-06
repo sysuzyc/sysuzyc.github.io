@@ -89,7 +89,13 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/LOAM.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/公式1.png">
-<meta property="og:updated_time" content="2020-03-06T03:57:33.715Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam-registeration.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam-取点.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam错误选点.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam-corner.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam-surf.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam示意图.png">
+<meta property="og:updated_time" content="2020-03-06T03:59:58.990Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LOAM详解">
 <meta name="twitter:description" content="LOAM作为比较古老的激光匹配slam方法，一直以来都霸占着KITTI的前列，而，再这多年过过去了，我对于LOAM的理解也变得更加深厚。 因此，我决定将重新再看一遍LOAM的论文和代码，将自己的理解记录下来，方便以后浏览。 论文：https://www.ri.cmu.edu/pub_files/2014/7/Ji_LidarMapping_RSS2014_v8.pdf 代码：https://git">
@@ -376,6 +382,37 @@
 <p>这些方法虽然能很精准的涵盖一帧数据的大部分信息，但是由于计算量大，很难在激光slam的相邻帧的匹配中使用。 因此，需要想一些更好的方法。</p>
 <p>本文作者根据点的曲率来计算<strong>平面光滑度</strong>作为提取当前帧的特征信息的指标。</p>
 <p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/公式1.png" alt="公式1"></p>
+<p>这种提取方法就是通过计算一个集合$S$中的所有点之间的关系来判断到底点$X^L_{(k,i)}$是属于平面点还是边缘点。具体到代码的实现就是使用计算当前点和前后五个点，来得到对应的平滑度数据,计算量减少了很多。</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam-registeration.png" style="zoom:75%;"></p>
+<p>再得到平滑度这一指标后，可以将特征点划分为两大类：<strong>平面点</strong>和<strong>边缘点</strong>。</p>
+<ul>
+<li>平面点：在三维空间中处于平滑平面上的点，其和周围点的大小差距不大，曲率较低，平滑度较低。</li>
+<li>边缘点：在三维空间中处于尖锐边缘上的点，其和周围点的大小差距较大，曲率较高，平滑度较高。</li>
+</ul>
+<p>我们对集合内的点进行排序，找到最小的点c作为平面点，最大的点c作为边缘点。</p>
+<p>这样就可以在一帧中得到有效的点数了。而在论文中是对整个扫描进行化段，分四段，每段各取两个边缘点和4个平面点。而在A-LOAM的代码中则是进行了一下的实现：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam-取点.png" style="zoom:75%;"></p>
+<p>同时，对所取的点也有一定的限制：</p>
+<ul>
+<li>该点的周围的点尽量不要被再被取到，这样可以使整体的特征点分布更加的平均</li>
+<li>该点不能与雷达扫描束过于平行，这样也会出现问题</li>
+</ul>
+<p>具体样例如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam错误选点.png" alt="错误选点"></p>
+<p>因此，选点就有了三要素：</p>
+<ul>
+<li>不能超过设定的size，每个集合平面点4个，边缘点2个；</li>
+<li>已选取的点周围不能有点，使得点可以分布的更加均匀；</li>
+<li>选取的平面点不能与激光扫描束平行。</li>
+</ul>
+<p>以上的对应关系，同样再代码中有着体现。</p>
+<p>判断该点是否是之前选取的点的周围的点以及不能超过size：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam-corner.png" style="zoom:75%;"></p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam-surf.png" style="zoom:78%;"></p>
+<p>通过上面的循环，就实现了边缘点（Corner）和平面点（Planar）的获取了。这样就可以得到一帧数据对应的特征信息了。</p>
+<p>提取后的数据如图所示：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam示意图.png" alt=""></p>
+<p>这样就可以在整个三维空间内，将平面点和边缘点作为特征点提取出来来代替整个数据了。</p>
 
       
     </div>
