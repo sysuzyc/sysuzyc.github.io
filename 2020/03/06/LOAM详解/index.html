@@ -109,7 +109,12 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/solve-corner.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/solver.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/odometry_update.png">
-<meta property="og:updated_time" content="2020-03-06T10:53:21.077Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/lidar mapping.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/update.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/cube.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/initial.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/later.png">
+<meta property="og:updated_time" content="2020-03-07T09:06:18.711Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LOAM详解">
 <meta name="twitter:description" content="LOAM作为比较古老的激光匹配slam方法，一直以来都霸占着KITTI的前列，而，再这多年过过去了，我对于LOAM的理解也变得更加深厚。 因此，我决定将重新再看一遍LOAM的论文和代码，将自己的理解记录下来，方便以后浏览。">
@@ -383,7 +388,7 @@
 <p>代码：<a href="https://github.com/HKUST-Aerial-Robotics/A-LOAM" target="_blank" rel="noopener">https://github.com/HKUST-Aerial-Robotics/A-LOAM</a></p>
 <h3 id="论文概览"><a href="#论文概览" class="headerlink" title="论文概览"></a>论文概览</h3><p><a href="https://www.ri.cmu.edu/pub_files/2014/7/Ji_LidarMapping_RSS2014_v8.pdf" target="_blank" rel="noopener">LOAM</a>这篇论文是发表于2014年RSS的文章，全称为：LOAM: Lidar Odometry and Mapping in Real-time .<br>LOAM是基于激光雷达而搭建的在ROS平台下的SLAM系统，一共分为四个部分：<br><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/LOAM.png" alt=""></p>
 <p>本文的核心主要在于两个部分：<strong>特征提取（Lidar Registration）</strong>和<strong>里程计解算（Odometry and Mapping）</strong>。</p>
-<p>当提取出特征后，通过两个高频率的里程计（Odometry）实现<strong>粗定位</strong>和低频率的里程计（Mapping）实现<strong>精定位</strong>。<br>下面，我们将结合论文和代码，进行LOAM框架的详细讲解。</p>
+<p>当提取出特征后，通过高频率<strong>10Hz</strong>的里程计（Odometry）实现<strong>粗定位</strong>和低频率<strong>1Hz</strong>的里程计（Mapping）实现<strong>精定位</strong>。<br>下面，我们将结合论文和代码，进行LOAM框架的详细讲解。</p>
 <h3 id="符号设定"><a href="#符号设定" class="headerlink" title="符号设定"></a>符号设定</h3><ul>
 <li>一个sweep代表了一次扫描周期，记作$k ,\quad k \in Z^+$</li>
 <li>一个扫描周期内获取到的所有点云记作$P$，$P_k$代表了第k个扫描周期的点云</li>
@@ -432,7 +437,7 @@
 <p>已知第$k$次扫描的点云为$P_k$，          而提取的边缘点集合记为：$E_k$，提取的平面点记为$H_k$。</p>
 <p>已知第$k+1$次扫描的点云为$P_{k+1}$，而提取的边缘点集合记为：$E_{k+1}$，提取的平面点记为$H_{k+1}$。</p>
 <p>我们想要得到的是$P_{k+1}$和$P_k$之间的变换关系，也就是$E_{k+1}$和$E_k$以及$H_{k+1}$和$H_k$之间的关系。</p>
-<p>由于雷达自身在 $k$ 和 $k+1$ 时刻过程中是运动的，所以，我们每个点对应的姿态变换矩阵都应该得到一定的修正。为了方便处理，我们将所有的点重投影到每一帧的初始时刻，这样在这一帧中的所有点都可以得到对应的姿态变换信息。</p>
+<p>由于雷达自身在 $k$ 和 $k+1$ 时刻过程中是<strong>运动</strong>的，所以，我们每个点对应的姿态变换矩阵都应该得到一定的修正。为了方便处理，我们将所有的点重投影到每一帧的初始时刻，这样在这一帧中的所有点都可以得到对应的姿态变换信息。</p>
 <p>我们将重投影到每一帧初始时刻的平面点和边缘点记为:$\hat {E_{k+1}}$ 和$\hat {H_{k+1}}$。</p>
 <p>这样的话就可以进行后续的优化了。</p>
 <p>我们知道平面和边缘线是两种不同的特征，那么在LOAM的计算中，也是分开进行计算的。</p>
@@ -506,7 +511,7 @@
 <p>$T^L_{k+1} \leftarrow T^L_{k+1} + \Delta T^L_{k+1}$</p>
 <p>$T^L_{k+1} \leftarrow T^L_{k+1} -(JJ^T + \lambda D^TD)^-Jd$.</p>
 <p>和论文中基本一致，就是表现的方式有一点点的区别。</p>
-<p>审修改的就可以不断求解这个式子，直到收敛即可。</p>
+<p>通过不断求解这个式子，直到收敛即可。</p>
 <p>代码使用的是ceres solver来进行求解。</p>
 <p>首先设定损失函数：</p>
 <p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/lost function.png" style="zoom:75%;"></p>
@@ -521,8 +526,51 @@
 <p>A-LOAM的代码相比于LOAM-Velodyne是使用了现有的优化求解库，这样可以使代码更加简介和简单，只需要输入边缘点对应关系的{$i,j,l $}和平面点的{$ i,j,l,m $}，这样的话，就可以优化求解了。</p>
 <p>然而，需要注意的是：</p>
 <p>这里求解的还是局部雷达观测坐标系下的结果，是为了求解相邻帧之间的变换，也就是$T^L$，而为了定位和建图，需要求解的是全局坐标系下的变换，也就是$T^W$。因此，需要进入到下一个章节Lidar Mapping中。</p>
-<h3 id="Lidar-Mapping"><a href="#Lidar-Mapping" class="headerlink" title="Lidar Mapping"></a>Lidar Mapping</h3><p>Lidar Odometry是一个粗定位的10Hz的里程计，Lidar Mapping是一个精细定位的1Hz的里程计。</p>
-<h3 id="Transform-Integration"><a href="#Transform-Integration" class="headerlink" title="Transform Integration"></a>Transform Integration</h3>
+<h3 id="Lidar-Mapping"><a href="#Lidar-Mapping" class="headerlink" title="Lidar Mapping"></a>Lidar Mapping</h3><p>当我们获取了若干相邻帧的姿态变换信息后，我们需要做的就是将其和全局地图进行匹配，并将其加入到全局地图之中。</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/lidar mapping.png" alt="加入全局地图"></p>
+<p>这里设定：</p>
+<ul>
+<li><p>第$k+1$帧之前的扫描点云在全局坐标系下的投影为$Q_k$；</p>
+</li>
+<li><p>第$k$次扫描的末位，也就是$k+1$帧的起始时的姿态变换信息$T^W_k$。</p>
+</li>
+<li><p>利用Odometry的输出$T^L_{k+1}$ ，将$T^W_k$ 从 $k+1$时刻的起始推演到$k+2$时刻的起始，得到姿态矩阵$T^W_{k+1}$。</p>
+</li>
+<li>通过$T^W_{k+1}$，将之前第$k+1$帧的点云投影到全局坐标系下，记为$\hat Q_{k+1}$。</li>
+</ul>
+<p>这样，其实就很明晰了，我们需要做的就是优化求解$T^W_{k+1}$。</p>
+<p>这里的已知信息为：{$Q_k$ ，$\hat Q_{k+1}$}，不精准的$T^W_{k+1}$。想要优化得到精准的$T^W_{k+1}$。</p>
+<p>同样是两个点云，求精准的姿态变换，这里和之前的Lidar Odometry部分很接近，所以，使用的算法基本相同。</p>
+<p>不过，我们这里是<strong>map-to-map</strong>的算法，所以，使用的$\hat Q_{k+1}$是10帧Odometry输出的数据，$Q_k$是之前的地图数=数据。</p>
+<p>如果使用全部的地图数据，在计算效率上会大打折扣，所以，这里使用的是一个<strong>边长为10m的立方体</strong>，用以代替全局地图，优化得到最终的姿态变换矩阵$T^W_{k+1}$。</p>
+<p>选取特征点的方法是一样的，不过具体实现的方式不尽相同。</p>
+<p>将$Q_k$和$\hat Q_{k+1}$中相交的存入到KD-tree中，这里的相交部分，也就是判定是否处于这个cube中。相交的部分属于了两个map之间的重合部分，可以用来作为点云匹配的依据。</p>
+<p>在这里，首先选取相邻点集合$S$，针对平面点和边缘点又有两种处理方法：</p>
+<ul>
+<li>平面点：$S$只保留平面特征点；</li>
+<li>边缘点：$S$只保留边缘特征点。</li>
+</ul>
+<p>计算$S$的协方差矩阵，记为$M$，$M$的特征值记为$V$，特征向量记为$E$。</p>
+<p>如果 $S$ 分布在一条线段上，那么 $V$ 中一个特征值就会明显比其他两个大，$E$ 中与较大特征值相对应的特征向量代表边缘线的方向。<strong>（一大两小，大方向）</strong><br>如果 $S$ 分布在一块平面上，那么 $V$ 中一个特征值就会明显比其他两个小，$E$ 中与较小特征值相对应的特征向量代表平面片的方向。<strong>（一小两大，小方向）</strong><br>边缘线或平面块的位置通过穿过 $S$ 的几何中心来确定。</p>
+<p>这样就可以快速的找到$\hat Q_{k+1}$中的一个点$i$，和$Q_k$中的边缘点{$j,l$}以及平面点{$j,l,m$}。</p>
+<p>这样就可以使用公式(2)和(3)，利用$LM$法来求解$T^W_{k+1}$了。</p>
+<p><em>这里需要注意的是，Lidar Odometry中使用过运动补偿了，这里的点云就都被设置为对应帧的时间戳，就不用再考虑运动补偿的事情了。</em></p>
+<p>后续可以通过VoxelFilter来进行降噪，减少点云的数量。</p>
+<p>整个的计算流程可以表示如下：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/update.png" alt="更新" style="zoom:75%;"></p>
+<p>通过不断的处理，就可以得到对应的$T^W_{k+1}$了。</p>
+<p>对应的代码解析如下：</p>
+<p>对cube里的数据进行处理：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/cube.png" alt="cube" style="zoom:75%;"></p>
+<p>接受Lidar Odometry的数据，并得到初始的姿态变换矩阵：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/initial.png" alt="初始信息"></p>
+<p>经过计算后，得到的新的姿态信息：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/later.png" alt="latter"></p>
+<h3 id="Transform-Integration"><a href="#Transform-Integration" class="headerlink" title="Transform Integration"></a>Transform Integration</h3><p>这一部主要是将Lidar Odometry中得到的姿态信息和Lidar Mapping中得到的信息全部都放入到rviz中，方便观看和处理。如果是为了使用LOAM作为前端的话，到Lidar Mapping就完全够用了。</p>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><p>LOAM作为常见霸占KITTI榜的激光SLAM算法，是有着自己的独特优势的。其新颖的特征点选取方法，可以在很多复杂场景下使用，稳定性也比较强。美中不足的是，没有后端优化。</p>
+<p>不过，他的后继者：LeGO-LOAM很好的解决了这个问题。</p>
+<p>LOAM的整理到这里就结束了，后续我将继续整理LOAM系的另一个框架：LeGO-LOAM，并着重说明下两者的不同之处，方便大家在不同的场景下使用对应的，合适的方案。</p>
+
       
     </div>
     
@@ -700,7 +748,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#论文概览"><span class="nav-number">1.</span> <span class="nav-text">论文概览</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#符号设定"><span class="nav-number">2.</span> <span class="nav-text">符号设定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lidar-Registration"><span class="nav-number">3.</span> <span class="nav-text">Lidar Registration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lidar-Odometry"><span class="nav-number">4.</span> <span class="nav-text">Lidar Odometry</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#边缘点匹配"><span class="nav-number">4.1.</span> <span class="nav-text">边缘点匹配</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#平面点匹配"><span class="nav-number">4.2.</span> <span class="nav-text">平面点匹配</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#姿态解算"><span class="nav-number">4.3.</span> <span class="nav-text">姿态解算</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lidar-Mapping"><span class="nav-number">5.</span> <span class="nav-text">Lidar Mapping</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Transform-Integration"><span class="nav-number">6.</span> <span class="nav-text">Transform Integration</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#论文概览"><span class="nav-number">1.</span> <span class="nav-text">论文概览</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#符号设定"><span class="nav-number">2.</span> <span class="nav-text">符号设定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lidar-Registration"><span class="nav-number">3.</span> <span class="nav-text">Lidar Registration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lidar-Odometry"><span class="nav-number">4.</span> <span class="nav-text">Lidar Odometry</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#边缘点匹配"><span class="nav-number">4.1.</span> <span class="nav-text">边缘点匹配</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#平面点匹配"><span class="nav-number">4.2.</span> <span class="nav-text">平面点匹配</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#姿态解算"><span class="nav-number">4.3.</span> <span class="nav-text">姿态解算</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lidar-Mapping"><span class="nav-number">5.</span> <span class="nav-text">Lidar Mapping</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Transform-Integration"><span class="nav-number">6.</span> <span class="nav-text">Transform Integration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结："><span class="nav-number">7.</span> <span class="nav-text">总结：</span></a></li></ol></div>
             
 
           </div>
