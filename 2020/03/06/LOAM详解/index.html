@@ -114,7 +114,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/cube.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/initial.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/later.png">
-<meta property="og:updated_time" content="2020-03-07T09:06:18.711Z">
+<meta property="og:updated_time" content="2020-03-07T09:54:42.538Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LOAM详解">
 <meta name="twitter:description" content="LOAM作为比较古老的激光匹配slam方法，一直以来都霸占着KITTI的前列，而，再这多年过过去了，我对于LOAM的理解也变得更加深厚。 因此，我决定将重新再看一遍LOAM的论文和代码，将自己的理解记录下来，方便以后浏览。">
@@ -541,7 +541,7 @@
 <p>这样，其实就很明晰了，我们需要做的就是优化求解$T^W_{k+1}$。</p>
 <p>这里的已知信息为：{$Q_k$ ，$\hat Q_{k+1}$}，不精准的$T^W_{k+1}$。想要优化得到精准的$T^W_{k+1}$。</p>
 <p>同样是两个点云，求精准的姿态变换，这里和之前的Lidar Odometry部分很接近，所以，使用的算法基本相同。</p>
-<p>不过，我们这里是<strong>map-to-map</strong>的算法，所以，使用的$\hat Q_{k+1}$是10帧Odometry输出的数据，$Q_k$是之前的地图数=数据。</p>
+<p>不过，我们这里是<strong>map-to-map</strong>的算法，所以，使用的$\hat Q_{k+1}$是10帧Odometry输出的数据，$Q_k$是之前的地图数据。</p>
 <p>如果使用全部的地图数据，在计算效率上会大打折扣，所以，这里使用的是一个<strong>边长为10m的立方体</strong>，用以代替全局地图，优化得到最终的姿态变换矩阵$T^W_{k+1}$。</p>
 <p>选取特征点的方法是一样的，不过具体实现的方式不尽相同。</p>
 <p>将$Q_k$和$\hat Q_{k+1}$中相交的存入到KD-tree中，这里的相交部分，也就是判定是否处于这个cube中。相交的部分属于了两个map之间的重合部分，可以用来作为点云匹配的依据。</p>
