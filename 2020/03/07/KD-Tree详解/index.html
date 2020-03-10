@@ -89,7 +89,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Kdtree_2d.svg/800px-Kdtree_2d.svg.png">
 <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Tree_0001.svg/1024px-Tree_0001.svg.png">
-<meta property="og:updated_time" content="2020-03-10T09:34:11.632Z">
+<meta property="og:updated_time" content="2020-03-10T09:36:37.492Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kd-Tree详解">
 <meta name="twitter:description" content="kd-tree是在进行激光点云编程中经常使用的一个工具，我们平时使用的时候可能就是使用其中的一小部分的内容，并未对其进行很深的思考。那么kd-tree的原理到底是什么呢？我们又经常使用哪些常用函数呢？ 本片文章将对kd-tree进行细致的整理，方便以后的使用和阅读。">
@@ -363,10 +363,10 @@
 <p>在激光雷达SLAM中，一般使用的是三位点云。所以，kd-tree的维度是3。</p>
 <p>由于三维点云的数目一般都比较大，所以，使用kd-tree来进行检索，可以减少很多的时间消耗，可以确保点云的关联点寻找和配准处于实时的状态。</p>
 <p>本篇文章将从原理层面讲解kd-tree，以便大家在使用中，可以有着更深刻的理解。</p>
-<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><h4 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h4><p>kd-tree，是k维的二叉树。其中的每一个节点都是k维的数据，数据结构如下所示$^{<a href="https://www.cnblogs.com/maxlpy/p/4297254.html" target="_blank" rel="noopener">2</a>}$：</p>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>kd-tree，是k维的二叉树。其中的每一个节点都是k维的数据，数据结构如下所示$^{<a href="https://www.cnblogs.com/maxlpy/p/4297254.html" target="_blank" rel="noopener">2</a>}$：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">kdtree</span>&#123;</span></span><br><span class="line">	Node-data - 数据矢量   数据集中某个数据点，是n维矢量（这里也就是k维）</span><br><span class="line">    Range  	  - 空间矢量   该节点所代表的空间范围</span><br><span class="line">    split     - 整数      垂直于分割超平面的方向轴序号</span><br><span class="line">    Left      - kd树      由位于该节点分割超平面左子空间内所有数据点所构成的k-d树</span><br><span class="line">    Right     - kd树      由位于该节点分割超平面右子空间内所有数据点所构成的k-d树</span><br><span class="line">    parent    - kd树      父节点  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>上面的数据在进行算法解析中，并不是全部都会用到。一般情况下，会用到的数据是{数据矢量，切割轴号，左支节点，右支节点}。这些数据就已经满足kd-tree的构建和检索了。</p>
-<h4 id="构建kd-tree"><a href="#构建kd-tree" class="headerlink" title="构建kd-tree"></a>构建kd-tree</h4><p>kd-tree的构建就是按照某种顺序将无序化的点云进行有序化排列，方便进行快捷搞笑的检索。</p>
+<h3 id="构建kd-tree"><a href="#构建kd-tree" class="headerlink" title="构建kd-tree"></a>构建kd-tree</h3><p>kd-tree的构建就是按照某种顺序将无序化的点云进行有序化排列，方便进行快捷搞笑的检索。</p>
 <p>构建算法：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Input:  无序化的点云，维度k</span><br><span class="line">Output：点云对应的kd-tree</span><br><span class="line">Algorithm：</span><br><span class="line"><span class="number">1</span>、初始化分割轴：对每个维度的数据进行方差的计算，取最大方差的维度作为分割轴，标记为r；</span><br><span class="line"><span class="number">2</span>、确定节点：对当前数据按分割轴维度进行检索，找到中位数数据，并将其放入到当前节点上；</span><br><span class="line"><span class="number">3</span>、划分双支：</span><br><span class="line">	划分左支：在当前分割轴维度，所有小于中位数的值划分到左支中；</span><br><span class="line">	划分右支：在当前分割轴维度，所有大于等于中位数的值划分到右支中。</span><br><span class="line"><span class="number">4</span>、更新分割轴：r = (r + <span class="number">1</span>) % k;</span><br><span class="line"><span class="number">5</span>、确定子节点：</span><br><span class="line">	确定左节点：在左支的数据中进行步骤<span class="number">2</span>；</span><br><span class="line">	确定右节点：在右支的数据中进行步骤<span class="number">2</span>；</span><br></pre></td></tr></table></figure>
 <p>这样的化，就可以构建出一颗完整的kd-tree了。</p>
@@ -400,7 +400,7 @@
 <p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Kdtree_2d.svg/800px-Kdtree_2d.svg.png" style="zoom:50%;"></p>
 <p>kd-tree表示：</p>
 <p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Tree_0001.svg/1024px-Tree_0001.svg.png" alt="wiki" style="zoom:50%;"></p>
-<h4 id="最近邻检索"><a href="#最近邻检索" class="headerlink" title="最近邻检索"></a>最近邻检索</h4><p>在构建了完整的kd-tree之后，我们想要使用他来进行高维空间的检索。所以，这里讲解一下比较常用的最近邻检索，其中范围检索也是同样的道理。</p>
+<h3 id="最近邻检索"><a href="#最近邻检索" class="headerlink" title="最近邻检索"></a>最近邻检索</h3><p>在构建了完整的kd-tree之后，我们想要使用他来进行高维空间的检索。所以，这里讲解一下比较常用的最近邻检索，其中范围检索也是同样的道理。</p>
 <p>最近邻搜索，其实和之前我们曾经学习过的$KNN$很像。不过，在激光点云章，如果使用常规的$KNN$算法的话，时间复杂度会空前高涨。因此，为了减少时间消耗，在工程上，一般使用kd-tree进行最近邻检索。</p>
 <p>由于kd-tree已经按照维度进行划分了，所以，我们在进行比较的时候，也可以通过维度进行比较，来快速定位到与其最接近的点。由于可能会进行多个最近邻点的检索，所以，算法也可能会发生变化。因此，我将从最简单的一个最近邻开始说起。</p>
 <ul>
@@ -609,7 +609,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原理"><span class="nav-number">2.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据结构"><span class="nav-number">2.0.1.</span> <span class="nav-text">数据结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#构建kd-tree"><span class="nav-number">2.0.2.</span> <span class="nav-text">构建kd-tree</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#最近邻检索"><span class="nav-number">2.0.3.</span> <span class="nav-text">最近邻检索</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用函数"><span class="nav-number">3.</span> <span class="nav-text">常用函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献："><span class="nav-number">4.</span> <span class="nav-text">参考文献：</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原理"><span class="nav-number">2.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据结构"><span class="nav-number">2.1.</span> <span class="nav-text">数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构建kd-tree"><span class="nav-number">2.2.</span> <span class="nav-text">构建kd-tree</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最近邻检索"><span class="nav-number">2.3.</span> <span class="nav-text">最近邻检索</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用函数"><span class="nav-number">3.</span> <span class="nav-text">常用函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献："><span class="nav-number">4.</span> <span class="nav-text">参考文献：</span></a></li></ol></div>
             
 
           </div>
