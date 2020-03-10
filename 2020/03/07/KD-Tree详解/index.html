@@ -89,7 +89,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Kdtree_2d.svg/800px-Kdtree_2d.svg.png">
 <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Tree_0001.svg/1024px-Tree_0001.svg.png">
-<meta property="og:updated_time" content="2020-03-10T09:39:14.882Z">
+<meta property="og:updated_time" content="2020-03-10T09:39:44.651Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kd-Tree详解">
 <meta name="twitter:description" content="kd-tree是在进行激光点云编程中经常使用的一个工具，我们平时使用的时候可能就是使用其中的一小部分的内容，并未对其进行很深的思考。那么kd-tree的原理到底是什么呢？我们又经常使用哪些常用函数呢？ 本片文章将对kd-tree进行细致的整理，方便以后的使用和阅读。">
@@ -819,6 +819,26 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 
