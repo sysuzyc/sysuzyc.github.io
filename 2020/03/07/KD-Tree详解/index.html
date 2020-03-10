@@ -89,7 +89,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Kdtree_2d.svg/800px-Kdtree_2d.svg.png">
 <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Tree_0001.svg/1024px-Tree_0001.svg.png">
-<meta property="og:updated_time" content="2020-03-10T09:38:13.039Z">
+<meta property="og:updated_time" content="2020-03-10T09:39:14.882Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kd-Tree详解">
 <meta name="twitter:description" content="kd-tree是在进行激光点云编程中经常使用的一个工具，我们平时使用的时候可能就是使用其中的一小部分的内容，并未对其进行很深的思考。那么kd-tree的原理到底是什么呢？我们又经常使用哪些常用函数呢？ 本片文章将对kd-tree进行细致的整理，方便以后的使用和阅读。">
@@ -364,7 +364,7 @@
 <p>由于三维点云的数目一般都比较大，所以，使用kd-tree来进行检索，可以减少很多的时间消耗，可以确保点云的关联点寻找和配准处于实时的状态。</p>
 <p>本篇文章将从原理层面讲解kd-tree，以便大家在使用中，可以有着更深刻的理解。</p>
 <h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>kd-tree，是k维的二叉树。其中的每一个节点都是k维的数据，数据结构如下所示$^{[2]}$：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">kdtree</span>&#123;</span></span><br><span class="line">	Node-data - 数据矢量   数据集中某个数据点，是n维矢量（这里也就是k维）</span><br><span class="line">    Range  	  - 空间矢量   该节点所代表的空间范围</span><br><span class="line">    split     - 整数      垂直于分割超平面的方向轴序号</span><br><span class="line">    Left      - kd树      由位于该节点分割超平面左子空间内所有数据点所构成的k-d树</span><br><span class="line">    Right     - kd树      由位于该节点分割超平面右子空间内所有数据点所构成的k-d树</span><br><span class="line">    parent    - kd树      父节点  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">kdtree</span>&#123;</span></span><br><span class="line">    Node-data - 数据矢量   数据集中某个数据点，是n维矢量（这里也就是k维）</span><br><span class="line">    Range  	  - 空间矢量   该节点所代表的空间范围</span><br><span class="line">    split     - 整数      垂直于分割超平面的方向轴序号</span><br><span class="line">    Left      - kd树      由位于该节点分割超平面左子空间内所有数据点所构成的k-d树</span><br><span class="line">    Right     - kd树      由位于该节点分割超平面右子空间内所有数据点所构成的k-d树</span><br><span class="line">    parent    - kd树      父节点  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>上面的数据在进行算法解析中，并不是全部都会用到。一般情况下，会用到的数据是{数据矢量，切割轴号，左支节点，右支节点}。这些数据就已经满足kd-tree的构建和检索了。</p>
 <h3 id="构建kd-tree"><a href="#构建kd-tree" class="headerlink" title="构建kd-tree"></a>构建kd-tree</h3><p>kd-tree的构建就是按照某种顺序将无序化的点云进行有序化排列，方便进行快捷搞笑的检索。</p>
 <p>构建算法：</p>
