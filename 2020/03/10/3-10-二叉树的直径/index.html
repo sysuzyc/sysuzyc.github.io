@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="数组,双指针," />
+  <meta name="keywords" content="二叉树,递归," />
 
 
 
@@ -79,20 +79,20 @@
 
 
 
-<meta name="description" content="每日一题 合并排序的数组">
-<meta name="keywords" content="数组,双指针">
+<meta name="description" content="每日一题 二叉树的直径 递归">
+<meta name="keywords" content="二叉树,递归">
 <meta property="og:type" content="article">
-<meta property="og:title" content="3.3-合并排序的数组">
-<meta property="og:url" content="http://yoursite.com/2020/03/03/3-3-合并排序的数组/index.html">
+<meta property="og:title" content="3.10-二叉树的直径">
+<meta property="og:url" content="http://yoursite.com/2020/03/10/3-10-二叉树的直径/index.html">
 <meta property="og:site_name" content="亚琛的小站">
-<meta property="og:description" content="每日一题 合并排序的数组">
+<meta property="og:description" content="每日一题 二叉树的直径 递归">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/3.3-合并排序的数组.png">
-<meta property="og:updated_time" content="2020-03-03T09:45:00.789Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/每日一题3.10.png">
+<meta property="og:updated_time" content="2020-03-10T06:39:03.113Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="3.3-合并排序的数组">
-<meta name="twitter:description" content="每日一题 合并排序的数组">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/3.3-合并排序的数组.png">
+<meta name="twitter:title" content="3.10-二叉树的直径">
+<meta name="twitter:description" content="每日一题 二叉树的直径 递归">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/每日一题3.10.png">
 
 
 
@@ -122,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/03/03/3-3-合并排序的数组/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/03/10/3-10-二叉树的直径/"/>
 
 
 
 
 
-  <title>3.3-合并排序的数组 | 亚琛的小站</title>
+  <title>3.10-二叉树的直径 | 亚琛的小站</title>
   
 
 
@@ -255,7 +255,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/03/3-3-合并排序的数组/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/10/3-10-二叉树的直径/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sysuzyc">
@@ -272,7 +272,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">3.3-合并排序的数组</h1>
+          <h1 class="post-title" itemprop="name headline">3.10-二叉树的直径</h1>
         
 
         <div class="post-meta">
@@ -284,8 +284,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-03T17:35:24+08:00">
-                2020-03-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-10T14:15:17+08:00">
+                2020-03-10
               </time>
             
 
@@ -355,22 +355,56 @@
       
 
       
-        <p>每日一题 合并排序的数组</p>
+        <p>每日一题 二叉树的直径 递归</p>
 <a id="more"></a>
-<h3 id="1、题目"><a href="#1、题目" class="headerlink" title="1、题目"></a>1、题目</h3><p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/3.3-合并排序的数组.png" alt="每日一题"></p>
-<h3 id="2、思路"><a href="#2、思路" class="headerlink" title="2、思路"></a>2、思路</h3><p>由于A的size正好是A和B的size之和，且尾部为0 ，则不会影响到A数组本身的数据，因此，我们可以使用双指针，从A的尾部开始合并数据</p>
+<h4 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h4><p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/每日一题3.10.png" alt="每日一题3.10"></p>
+<h4 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h4><p>本题需要进行的是判定当前节点的左右节点的距离之和。那么将左节点和右节点的数目加起来，应该就可以了。</p>
+<p>比如说，[1,2,3]。构建的二叉树的路径和为：</p>
+<p>节点1左边的数目：2，路径长度为1.</p>
+<p>节点1右边的数目：3，路径长度为1.</p>
+<p>所以，总长度为2.</p>
+<p>同样的道理：我们对上面的例子进行处理后发现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">节点为1：左边长度为2，右边长度为1，总长度为3；</span><br><span class="line">节点为2：左边长度为1，右边长度为1，总长度为2；</span><br><span class="line">节点为3：左边为空，  右边为空，   总长度为0；</span><br><span class="line">节点为4：左边为空，  右边为空，   总长度为0；</span><br><span class="line">节点为5：左边为空，  右边为空，   总长度为0。</span><br></pre></td></tr></table></figure>
+<p>所以，最大的长度为3.</p>
+<p>从上面的例子可以得到两个结论：</p>
 <ul>
-<li>设定指向A下标的变量 a_index = m - 1;</li>
-<li>设定指向B下标的变量 b_index = n - 1;</li>
-<li>设定总的下标变量为all_index = m + n - 1;</li>
+<li>总长度为左边加右边</li>
+<li>对每个节点都要比较，得到最小的长度。</li>
 </ul>
-<p>以样例举例：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">A = [1,2,3,0,0,0], m = 3</span><br><span class="line">B = [2,5,6]        n = 3</span><br></pre></td></tr></table></figure>
-<p>过程：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">all_index = 5： 判定A[2] 和 B[2]的大小，输入6进去, 此时a_index = 2， b_index = 1；</span><br><span class="line">all_index = 4： 判定A[2] 和 B[1]的大小，输入5进去，此时a_index = 2， b_index = 0；</span><br><span class="line">all_index = 3： 判定A[2] 和 B[0]的大小，输入3进去，此时a_index = 1， b_index = 0；</span><br><span class="line">all_index = 2： 判定A[1] 和 B[0]的大小，输入2进去，此时a_index = 1， b_index = -1；</span><br><span class="line">all_index = 1： 此时B向量已经为空，输入A剩余的数值进去就可以了。</span><br><span class="line">all_index = 1： 输入A[1]，输入2进去，此时a_index = 0；</span><br><span class="line">all_index = 0： 输入A[0]，输入1进去，此时a_index = -1；</span><br></pre></td></tr></table></figure>
-<p>最终的结果为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A = [1,2,2,3,5,6]</span><br></pre></td></tr></table></figure>
-<h3 id="3、代码"><a href="#3、代码" class="headerlink" title="3、代码"></a>3、代码</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; A, <span class="keyword">int</span> m, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; B, <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> a_index = m - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> b_index = n - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> all_index = m + n - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span>(b_index &gt;= <span class="number">0</span> )&#123;</span><br><span class="line">            <span class="keyword">if</span>(a_index &lt; <span class="number">0</span> || B[b_index] &gt;= A[a_index])&#123;</span><br><span class="line">                A[all_index] = B[b_index];</span><br><span class="line">                all_index--;</span><br><span class="line">                b_index--;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>&#123;</span><br><span class="line">                A[all_index] = A[a_index];</span><br><span class="line">                all_index--;</span><br><span class="line">                a_index--;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h4><p>代码的书写其实很简单。只需要获取左边的长度，再获取右边的长度，就可以了。</p>
+<p>但是作为总长度的度量，需要设定一个变量。这里有两种方法：</p>
+<ul>
+<li>全局变量</li>
+<li>局部变量</li>
+</ul>
+<p>使用全局变量，就是再全局设定一个变量来记载最大值。这里直接在private类型里面设定全局类的全局变量。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">diameterOfBinaryTree</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">        distance(root);</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">distance</span><span class="params">(TreeNode* root)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(root == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">int</span> left_count = distance(root-&gt;left);</span><br><span class="line">            <span class="keyword">int</span> right_count = distance(root-&gt;right);</span><br><span class="line">            ans = max(ans,left_count + right_count);</span><br><span class="line">            <span class="keyword">return</span> max(left_count,right_count) + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>使用局部变量，就在构建的函数中使用，而不在全局设定该变量：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">diameterOfBinaryTree</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">        distance(root,ans);</span><br><span class="line">        <span class="keyword">return</span> ans+<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">distance</span><span class="params">(TreeNode* root,<span class="keyword">int</span>&amp; max_count)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(root == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">int</span> left_count = distance(root-&gt;left, max_count);</span><br><span class="line">            <span class="keyword">int</span> right_count = distance(root-&gt;right,max_count);</span><br><span class="line">            max_count = max(max_count,left_count + right_count);</span><br><span class="line">            <span class="keyword">return</span> max(left_count,right_count) + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>局部变量，需要在里面进行传递。</p>
+<p>这里一定注意要使用<strong>&amp;</strong>来引用传入的值，这样的话，就可以顺利的对值进行改变了。</p>
+<h4 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h4><p>指针，变量和引用的关系：</p>
+<p>指针 —— 指向某一块内存的变量，其本身存储的信息就是内存地址的首地址，其类型决定指向内存的大小。</p>
+<ul>
+<li>比喻，超市的储物柜。我记住我放包的柜子在第一排右起第三个，这里的1-3就是一个地址，通过地址，我可以找到柜子。这里的地址就是一个指针。</li>
+</ul>
+<p>变量 —— 某一块内存地址数据值的名字</p>
+<ul>
+<li>比喻，超市的储物柜。我记住我放包的柜子上有一张贴纸，上面写着18，通过18，我可以找到柜子。这里的18，就是变量名了。</li>
+</ul>
+<p>引用 —— 变量的别名</p>
+<ul>
+<li>比喻，超市的储物柜。柜子的贴纸上面写着18，但是18不好记，我用谐音记忆法，把18想成“要发”，通过“要发”，也可以找到柜子。这里“要发”就是一个引用。</li>
+</ul>
+<p>要找到对应的柜子有三种方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. 第一排右起第三个                      地址（指针）</span><br><span class="line">2. 柜子贴纸上号为18的                    变量名</span><br><span class="line">3. “要发”                              引用</span><br></pre></td></tr></table></figure>
+<p>这样就分别对应上面的指针，变量和引用了。</p>
+<p>表示形式分别为:</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">指针：<span class="keyword">int</span> *;</span><br><span class="line">变量: <span class="keyword">int</span> ;</span><br><span class="line">引用：<span class="keyword">int</span> &amp;;</span><br></pre></td></tr></table></figure>
+<p>如果我们上面直接写的是</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">distance</span><span class="params">(TreeNode* root,<span class="keyword">int</span> max_count)</span></span></span><br></pre></td></tr></table></figure>
+<p>那么这个值就不会成功的传递给我们想要的ans中。</p>
+<p>而如果是使用引用的话，就可以成功的改变ans中的值，得到最终的结果了。</p>
 
       
     </div>
@@ -388,9 +422,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/数组/" rel="tag"># 数组</a>
+            <a href="/tags/二叉树/" rel="tag"># 二叉树</a>
           
-            <a href="/tags/双指针/" rel="tag"># 双指针</a>
+            <a href="/tags/递归/" rel="tag"># 递归</a>
           
         </div>
       
@@ -403,8 +437,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/03/03/3.2-反转链表/" rel="next" title="3.2-反转链表">
-                <i class="fa fa-chevron-left"></i> 3.2-反转链表
+              <a href="/2020/03/07/KD-Tree详解/" rel="next" title="KD-Tree详解">
+                <i class="fa fa-chevron-left"></i> KD-Tree详解
               </a>
             
           </div>
@@ -412,10 +446,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/03/03/基础排序算法大全/" rel="prev" title="基础排序算法大全">
-                基础排序算法大全 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -551,7 +581,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、题目"><span class="nav-number">1.</span> <span class="nav-text">1、题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、思路"><span class="nav-number">2.</span> <span class="nav-text">2、思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、代码"><span class="nav-number">3.</span> <span class="nav-text">3、代码</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#题目"><span class="nav-number">1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#思路"><span class="nav-number">2.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码"><span class="nav-number">3.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#拓展"><span class="nav-number">4.</span> <span class="nav-text">拓展</span></a></li></ol></div>
             
 
           </div>
