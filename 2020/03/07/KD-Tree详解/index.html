@@ -89,7 +89,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Kdtree_2d.svg/800px-Kdtree_2d.svg.png">
 <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Tree_0001.svg/1024px-Tree_0001.svg.png">
-<meta property="og:updated_time" content="2020-03-10T09:39:44.651Z">
+<meta property="og:updated_time" content="2020-03-10T11:30:21.963Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kd-Tree详解">
 <meta name="twitter:description" content="kd-tree是在进行激光点云编程中经常使用的一个工具，我们平时使用的时候可能就是使用其中的一小部分的内容，并未对其进行很深的思考。那么kd-tree的原理到底是什么呢？我们又经常使用哪些常用函数呢？ 本片文章将对kd-tree进行细致的整理，方便以后的使用和阅读。">
@@ -360,7 +360,7 @@
 <p>本片文章将对kd-tree进行细致的整理，方便以后的使用和阅读。</p>
 <a id="more"></a>
 <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>kd-tree简称k维树，是一种空间划分的数据结构。常被用于高维空间中的搜索，比如范围搜索和最近邻搜索。kd-tree是二进制空间划分树的一种特殊情况$^{[1]}$。</p>
-<p>在激光雷达SLAM中，一般使用的是三位点云。所以，kd-tree的维度是3。</p>
+<p>在激光雷达SLAM中，一般使用的是三维点云。所以，kd-tree的维度是3。</p>
 <p>由于三维点云的数目一般都比较大，所以，使用kd-tree来进行检索，可以减少很多的时间消耗，可以确保点云的关联点寻找和配准处于实时的状态。</p>
 <p>本篇文章将从原理层面讲解kd-tree，以便大家在使用中，可以有着更深刻的理解。</p>
 <h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><h3 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h3><p>kd-tree，是k维的二叉树。其中的每一个节点都是k维的数据，数据结构如下所示$^{[2]}$：</p>
@@ -568,7 +568,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
