@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="链表," />
+  <meta name="keywords" content="投票算法," />
 
 
 
@@ -79,20 +79,20 @@
 
 
 
-<meta name="description" content="每日一题，反转链表">
-<meta name="keywords" content="链表">
+<meta name="description" content="多数元素 投票算法">
+<meta name="keywords" content="投票算法">
 <meta property="og:type" content="article">
-<meta property="og:title" content="3.2-反转链表">
-<meta property="og:url" content="http://yoursite.com/2020/03/03/3.2-反转链表/index.html">
+<meta property="og:title" content="3.13-多数元素">
+<meta property="og:url" content="http://yoursite.com/2020/03/13/3-13-多数元素/index.html">
 <meta property="og:site_name" content="亚琛的小站">
-<meta property="og:description" content="每日一题，反转链表">
+<meta property="og:description" content="多数元素 投票算法">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/每日一题3.2.png">
-<meta property="og:updated_time" content="2020-03-03T09:32:44.279Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/3.13-每日一题.png">
+<meta property="og:updated_time" content="2020-03-14T11:29:40.806Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="3.2-反转链表">
-<meta name="twitter:description" content="每日一题，反转链表">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/每日一题3.2.png">
+<meta name="twitter:title" content="3.13-多数元素">
+<meta name="twitter:description" content="多数元素 投票算法">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/3.13-每日一题.png">
 
 
 
@@ -122,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/03/03/3.2-反转链表/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/03/13/3-13-多数元素/"/>
 
 
 
 
 
-  <title>3.2-反转链表 | 亚琛的小站</title>
+  <title>3.13-多数元素 | 亚琛的小站</title>
   
 
 
@@ -255,7 +255,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/03/3.2-反转链表/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/13/3-13-多数元素/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="sysuzyc">
@@ -272,7 +272,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">3.2-反转链表</h1>
+          <h1 class="post-title" itemprop="name headline">3.13-多数元素</h1>
         
 
         <div class="post-meta">
@@ -284,8 +284,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-03T17:23:42+08:00">
-                2020-03-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-13T18:33:51+08:00">
+                2020-03-13
               </time>
             
 
@@ -355,15 +355,30 @@
       
 
       
-        <p>每日一题，反转链表</p>
+        <p>多数元素</p>
+<p>投票算法</p>
 <a id="more"></a>
-<h3 id="1、题目"><a href="#1、题目" class="headerlink" title="1、题目"></a>1、题目</h3><p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/每日一题3.2.png" alt="每日一题3.2"></p>
-<h3 id="2、思路"><a href="#2、思路" class="headerlink" title="2、思路"></a>2、思路</h3><p>设定当前节点 head，目标节点res。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">head -&gt; next = res;</span><br><span class="line"></span><br><span class="line">res = head;</span><br></pre></td></tr></table></figure>
-<p>这样就可以将head的值往res的左边插入了，就可以实现反转链表了。</p>
-<h3 id="3、代码"><a href="#3、代码" class="headerlink" title="3、代码"></a>3、代码</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ListNode* <span class="title">reverseList</span><span class="params">(ListNode* head)</span> </span>&#123;</span><br><span class="line">    ListNode* res = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">while</span>(head)&#123;</span><br><span class="line">        ListNode* temp = head-&gt;next;</span><br><span class="line">        head-&gt;next = res;</span><br><span class="line">        res = head;</span><br><span class="line">        head = temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>注意链表的<strong>初始化</strong>。</p>
-
+<h3 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h3><p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LeetCode/3.13-每日一题.png" alt=""></p>
+<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>这道题目一共有两种方法：</p>
+<ul>
+<li>暴力法</li>
+<li>投票算法</li>
+</ul>
+<p>暴力法：</p>
+<p>设定一个map，标记每个元素出现的次数，当次数大于[n/2]的时候，说明找到该数据。</p>
+<p>投票算法：</p>
+<p>我们可以设定候选人candidate和票数count。</p>
+<p>每次都进行判定，判定规则如下：</p>
+<ul>
+<li>如果count为0，则当前数据为候选人candidate</li>
+<li>如果count不等于0 且当前数据就是候选人candidate，则count+1</li>
+<li>如果count不等于0且当前数据不是候选人candidate，则count-1</li>
+</ul>
+<p>最终得到的候选人就是多余[n/2]的候选人，此方法即为<strong>Boyer-Moore 投票算法</strong></p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p>暴力法：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">majorityElement</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">map</span>&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; mm;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.size();i++)&#123;</span><br><span class="line">            mm[nums[i]]++;</span><br><span class="line">            <span class="keyword">if</span>(mm[nums[i]] &gt; nums.size()/<span class="number">2</span>) <span class="keyword">return</span> nums[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>Boyer-Moore投票算法：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">majorityElement</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//投票算法</span></span><br><span class="line">        <span class="keyword">int</span> canidate = <span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;nums.size();i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(count == <span class="number">0</span>) canidate = nums[i];</span><br><span class="line">            <span class="keyword">if</span>(canidate == nums[i]) count++;</span><br><span class="line">            <span class="keyword">else</span> count--;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> canidate;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
       
     </div>
     
@@ -380,7 +395,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/链表/" rel="tag"># 链表</a>
+            <a href="/tags/投票算法/" rel="tag"># 投票算法</a>
           
         </div>
       
@@ -393,8 +408,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/03/03/新的开始/" rel="next" title="新的开始">
-                <i class="fa fa-chevron-left"></i> 新的开始
+              <a href="/2020/03/12/3-12-字符串的最大公因子/" rel="next" title="3.12-字符串的最大公因子">
+                <i class="fa fa-chevron-left"></i> 3.12-字符串的最大公因子
               </a>
             
           </div>
@@ -403,8 +418,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2020/03/03/3-3-合并排序的数组/" rel="prev" title="3.3-合并排序的数组">
-                3.3-合并排序的数组 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/03/14/3-14-最长上升子序列/" rel="prev" title="3.14-最长上升子序列">
+                3.14-最长上升子序列 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -541,7 +556,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、题目"><span class="nav-number">1.</span> <span class="nav-text">1、题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、思路"><span class="nav-number">2.</span> <span class="nav-text">2、思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、代码"><span class="nav-number">3.</span> <span class="nav-text">3、代码</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目"><span class="nav-number">1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#思路"><span class="nav-number">2.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码"><span class="nav-number">3.</span> <span class="nav-text">代码</span></a></li></ol></div>
             
 
           </div>
