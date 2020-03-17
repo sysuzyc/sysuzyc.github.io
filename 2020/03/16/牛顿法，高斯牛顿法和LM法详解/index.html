@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="优化算法," />
 
 
 
@@ -79,17 +79,20 @@
 
 
 
-<meta name="description" content="开开心心每一天">
+<meta name="description" content="在整个SLAM的过程中，我们可以构建机器人状态过程，其中，最后的问题就转换为了求解最小二乘的问题。那么如何求解最小二乘呢？本文将详细的介绍SLAM过程中求解最小二乘的优化方法：">
+<meta name="keywords" content="优化算法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="牛顿法，高斯牛顿法和LM法详解">
 <meta property="og:url" content="http://yoursite.com/2020/03/16/牛顿法，高斯牛顿法和LM法详解/index.html">
 <meta property="og:site_name" content="亚琛的小站">
-<meta property="og:description" content="开开心心每一天">
+<meta property="og:description" content="在整个SLAM的过程中，我们可以构建机器人状态过程，其中，最后的问题就转换为了求解最小二乘的问题。那么如何求解最小二乘呢？本文将详细的介绍SLAM过程中求解最小二乘的优化方法：">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-03-16T10:59:12.593Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/NewtonIteration_Ani.gif">
+<meta property="og:updated_time" content="2020-03-17T08:05:27.848Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="牛顿法，高斯牛顿法和LM法详解">
-<meta name="twitter:description" content="开开心心每一天">
+<meta name="twitter:description" content="在整个SLAM的过程中，我们可以构建机器人状态过程，其中，最后的问题就转换为了求解最小二乘的问题。那么如何求解最小二乘呢？本文将详细的介绍SLAM过程中求解最小二乘的优化方法：">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/NewtonIteration_Ani.gif">
 
 
 
@@ -292,6 +295,39 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SLAM/" itemprop="url" rel="index">
+                    <span itemprop="name">SLAM</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SLAM/优化算法/" itemprop="url" rel="index">
+                    <span itemprop="name">优化算法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -319,7 +355,186 @@
       
 
       
-        
+        <p>在整个SLAM的过程中，我们可以构建机器人状态过程，其中，最后的问题就转换为了求解最小二乘的问题。那么如何求解最小二乘呢？本文将详细的介绍SLAM过程中求解最小二乘的优化方法：</p>
+<a id="more"></a>
+<h3 id="牛顿法"><a href="#牛顿法" class="headerlink" title="牛顿法"></a>牛顿法</h3><p>说到优化方法，那自然不能少了最基本的牛顿法。牛顿法在本科的时候大家应该都学过，这里进行一下回顾：</p>
+<p>首先定义一个实变量$x$，和其单变量函数$f(x)$，函数的一阶导数记为$f^`(x)$，二阶导数记为$f^{``}(x)$。</p>
+<p>那么首先看一个最简单的问题—-求根：</p>
+<h4 id="一元函数求根："><a href="#一元函数求根：" class="headerlink" title="一元函数求根："></a>一元函数求根：</h4><p>假设有根的近似解$x_0$，则满足假设且更接近根的值为：</p>
+<p>$x_1 = x_0 - \frac{f(x_0)} {f^`{x_0}}$</p>
+<p>以此类推，可以得到：</p>
+<p>$x_{n+1} = x_n -  \frac {f{(x_n)}}{f^`_{(x_n)}}$</p>
+<p>细节流程刻意参考下图$^{[1]}$：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/NewtonIteration_Ani.gif" style="zoom:75%;"></p>
+<p>因此，根据上面的流程，可以逐步求得$f(x) = 0$的根。</p>
+<p>我们假设当前的近似解为$x_n$，那么迭代之后的下一个解，列出当前的切线方程为：</p>
+<p>$y = f^`(x_n)(x-x_n) + f(x_n)$</p>
+<p>设定其在$x$轴的截距为$x_{n+1}$，则将$(x_{n+1},0)$代入方程，可以得到：</p>
+<p>$0 = f^`(x_n)(x_{n+1}-x_n) + f(x_n)$</p>
+<p>即：$x_{n+1} = x_n - \frac{f(x_n)}{f^`(x_n)}$</p>
+<p>因此，我们得到了在函数$f(x)$上求解$f(x) = 0$的方法。</p>
+<h4 id="求函数的极值："><a href="#求函数的极值：" class="headerlink" title="求函数的极值："></a>求函数的极值：</h4><p>我们在前面知道了求解函数的根的方法，那么和函数的极值有什么关系呢？我们知道函数的极值就是其微分等于0的点。那么求解微分方程为0时候的值，就可以得到函数的极值了。</p>
+<p>为了能够方便理解整个流程，我们还是拿一元函数$f (x) $来举例。</p>
+<p>我们首先对其在$x = x_0$处进行二阶泰勒展开：</p>
+<p>$f(x) = f(x_0) + f^`(x_0)(x-x_0) + \frac{f^{``}(x_0)}{2}(x-x_0)^2 + o(x-x_0)^2$</p>
+<p>其中，由于泰勒展开的特性，后面$o(x-x_0)$部分不予考虑，我们只考虑前面展开部分的极值问题：</p>
+<p>$g(x) = f(x_0) + f^`(x_0)(x-x_0) + \frac{f^{``}(x_0)}{2}(x-x_0)^2$</p>
+<p>上面的式子是一个一元二次函数，那么其极值部分就是导数为0的时候，我们可以先微分：</p>
+<p>$g^<code>(x) = f^</code>(x_0) + f^{``}(x_0)(x-x_0)$</p>
+<p>令$g^`(x_1) = 0$，则此时的$x_1$就是极值（虽然在数学上不是特别严谨）。</p>
+<p>故$f^`(x_0) + f^{``}(x_0)(x_1-x_0) = 0$</p>
+<p>$x_1 = x_0 - \frac{f^`(x_0)}{f^{``}(x_0)}$</p>
+<p>以此类推，可以得到迭代公式：</p>
+<p>$x_{n+1} = x_n - \frac{f^`(x_n)}{f^{``}(x_n)} \tag 1$</p>
+<p>根据这个方法就可以不断的迭代下去直到收敛，最终找到极值了。</p>
+<p>如果是多元的情况，则$f^`(x)$被叫做梯度，也称之为<strong>雅可比矩阵</strong> $J$，$f^{``}(x)$是二阶导数矩阵，也被叫做<strong>海塞矩阵</strong>$H$。如果是收敛的话，$\Delta x = x_{n+1} - x_n = 0$ ，则式子可以转化为：</p>
+<p>$\Delta x = -  \frac{f^`(x_n)}{f^{``}(x_n)} = - \frac{J}{H}$</p>
+<p>也就是说：</p>
+<p>$H\Delta x + J = 0 \rightarrow H\Delta x = -J \tag2$</p>
+<p>这样，就可以求出能够取得极值的$f(x)$的值了，继而算出$f(x)$的极值。</p>
+<h3 id="梯度下降法"><a href="#梯度下降法" class="headerlink" title="梯度下降法"></a>梯度下降法</h3><p>由于牛顿法需要算二阶导数，如果高阶的话，需要算海塞矩阵，这里是有三个缺陷的：</p>
+<ul>
+<li>要求给定的方程需要二阶可导</li>
+<li>非凸函数的海森矩阵不一定有逆</li>
+<li>数据较大的时候，海塞矩阵的计算量偏大</li>
+</ul>
+<p>所以，为了能够更好的进行最值问题的优化求解，我们可以使用<strong>高斯牛顿法</strong>和<strong>列文伯格-马夸特法</strong>。</p>
+<p>再介绍上面两个方法之前，我们首先介绍一下<strong>梯度下降法</strong>。</p>
+<p><strong>梯度下降</strong>是用于找到可微函数的<a href="https://en.wikipedia.org/wiki/Local_minimum" target="_blank" rel="noopener">局部最小值</a>的一<a href="https://en.wikipedia.org/wiki/Category:First_order_methods" target="_blank" rel="noopener">阶</a> <a href="https://en.wikipedia.org/wiki/Iterative_algorithm" target="_blank" rel="noopener">迭代</a> <a href="https://en.wikipedia.org/wiki/Mathematical_optimization" target="_blank" rel="noopener">优化</a> <a href="https://en.wikipedia.org/wiki/Algorithm" target="_blank" rel="noopener">算法</a>。为了使用梯度下降找到函数的局部最小值，我们采取与该函数在当前点的<a href="https://en.wikipedia.org/wiki/Gradient" target="_blank" rel="noopener">梯度</a>（或近似梯度）的<em>负值</em>成比例的步骤$^{[2]}$。</p>
+<p>梯度下降法是基于以下的观测原理而来的：</p>
+<p>如果实值函数$f(x)$在点$x =a$处可微且有定义，那么函数$f(x)$在点$a$处，沿着梯度的反方向$-\Delta f(a)$下降的最快。</p>
+<p>因此，假设有个点$b$，满足：</p>
+<p>$b = a - \gamma \Delta f(a) \quad \gamma &gt; 0 \quad \&amp; \quad \gamma \to 0$</p>
+<p>那么我们就可以得到：</p>
+<p>$f(a) \geq f(b) $</p>
+<p>通过这种方法，就可以找到极小值。</p>
+<p>因此，得到迭代公式：</p>
+<p>$x_{n+1} = x_n - \gamma \Delta f(x_n) \tag3$</p>
+<p>其中，$\gamma$是我们人为设定的参数，通过迭代，就可以得到极值了。</p>
+<p>梯度下降法每次都以梯度的反方向下降，所以，有可能会<strong>容易走出锯齿路线，从而增加迭代次数</strong>。</p>
+<h3 id="最小二乘的求解"><a href="#最小二乘的求解" class="headerlink" title="最小二乘的求解"></a>最小二乘的求解</h3><p>在理解了前面两个算法之后，我们回到本文的主线内容上来。</p>
+<p>我们想要求解的问题是SLAM过程中的最大似然估计问题。由于最大似然估计问题可以转换为最小二乘问题，所以也就是最小二乘的求解问题。</p>
+<p>我们假设目标函数为$F(x)$，误差函数为$f(x)$，则其最小二乘可以表示为：</p>
+<p>$\min F(x) = \frac{1}{2}||f(x)||_2^2$</p>
+<p>那么如何求解这个问题呢？</p>
+<p>常规的思路就是对目标函数$F(x)$进行求导，当其导数为0的时候，求$x$的最优解，就是极值。</p>
+<p>然而，有些时候，若目标函数$F(x)$的求导不是很容易，那么需要使用一些迭代的方法，来使得目标函数$F(x)$下降，这样就可以逐步迭代，求得最小值了。整个的迭代流程如下所示：</p>
+<hr>
+<p>1、给定某个初始值$x_0$；</p>
+<p>2、对于第$k$次迭代，寻找一个增量$\Delta x_k$，使得误差$||f(x_k + \Delta x_k)||_2^2$达到极小值；</p>
+<p>3、若$\Delta x_k$足够小，则停止迭代；</p>
+<p>4、否则，令$x_{k+1} = x_k + \Delta x_k$，返回第2步。</p>
+<hr>
+<p>因此，上诉问题，就变成了不断寻找下降增量$\Delta x_k$的问题。</p>
+<p>这样，就可以将最小二乘问题，转化为了误差函数$f(x)$在迭代值处的局部性质，而不是$F(x)$在迭代值处的全局性质了。</p>
+<p>那么如何求解这个增量呢？</p>
+<p>对于目标函数$F (x) $进行一阶泰勒展开：</p>
+<p>$F(x_k + \Delta x_k) \approx F(x_k) + J(x_k)^T \Delta x_k$</p>
+<p>此时，此时变成求最小值的问题，则：</p>
+<p>$\Delta x_k ^* = \arg \min (F(x_k) + J(x_k)^T \Delta x_k)$</p>
+<p>故，对其求最小值，可以进行求根处理：</p>
+<p>$\Delta x_k = - J(x_k)^T$</p>
+<p>可以看到，如果增加一个步长，就和前面的公式（3）类似， 此时的方法就是梯度下降法。</p>
+<p>如果对目标函数$F (x) $其进行二阶泰勒展开：</p>
+<p>$F(x_k + \Delta x_k) \approx F(x_k) + J(x_k)^T \Delta x_k + \frac{1}{2}\Delta x_k^T H(x_k)\Delta x_k$</p>
+<p>则，此时的增量方程为最小二乘问题：</p>
+<p>$\Delta x_k^* = \arg \min(F(x_k) + J(x_k)^T \Delta x_k + \frac{1}{2}\Delta x_k^T H(x_k)\Delta x_k)$</p>
+<p>则，为了求其最小值，对$\Delta x_k^*$进行求导：</p>
+<p>$J(x_k) + H(x_k) \Delta x_k = 0 \rightarrow H*\Delta x = -J$ </p>
+<p>此时的公式与公式（1）相同，则此时的方法为牛顿法。</p>
+<p>牛顿法的方法前面已经介绍过了。相比其优缺点，大家也都知晓。那么这个时候，就需要进行相应的改进，来避免求解海塞矩阵$H$。</p>
+<h3 id="高斯牛顿法"><a href="#高斯牛顿法" class="headerlink" title="高斯牛顿法"></a>高斯牛顿法</h3><p>牛顿法和梯度下降法都是针对目标函数$F(x_k)$来进行求解的，这样，就不可避免的需要求得海塞矩阵$H$，所以，为了避免这个问题，我们选取了误差函数$f(x)$来进行优化求解：</p>
+<p>$\min F(x) = \frac{1}{2}||f(x)||_2^2$</p>
+<p>那么，我们从上面的迭代步骤2中可以看到：</p>
+<hr>
+<p>2、对于第$k$次迭代，寻找一个增量$\Delta x_k$，使得误差$||f(x_k + \Delta x_k)||_2^2$达到极小值</p>
+<hr>
+<p>那么，我们对$f(x + \Delta x)$进行泰勒展开。</p>
+<p>$f(x+\Delta x) \approx f(x) + J(x)^T \Delta x$</p>
+<p>我们需要秋娥的$\Delta x$使得上面的式子$||f(x + \Delta x)||_2^2$有最小值，所以，我们可以得到最小二乘问题为：</p>
+<p>$\Delta x^* = \arg \min \frac{1}{2} ||f(x + \Delta x)||_2^2 \approx \arg \min \frac{1}{2} ||f(x) + J(x)^T \Delta x||_2^2$</p>
+<p>为了求得其最值，对其求导：</p>
+<p>$\frac{1}{2} ||f(x) + J(x)^T \Delta x||^2 = \frac{1}{2}(f(x) + J(x)^T \Delta x)^T(f(x) + J(x)^T \Delta x) $</p>
+<p>$= \frac{1}{2} (||f(x)||^2 + 2f(x)J(x)^T\Delta x + \Delta x^TJ(x)J(x)^T\Delta x$</p>
+<p>故，对其求导可以得到：</p>
+<p>$J(x)f(x) + J(x)J(x)^T\Delta x = 0$</p>
+<p>则，此时可以转化为线性求解问题：</p>
+<p>$J(x)J(x)^T\Delta x = - J(x)f(x)$</p>
+<p>令$J(x)J(x)^T$定义为$H(x)$，令$- J(x)f(x)$定义为$g(x)$，则此时变为了：</p>
+<p>$H\Delta x = g \quad s.t \quad  H = JJ^T, g = -Jf( x ) \tag 4$</p>
+<p>这样，就可以优化求解了。上面的最小二乘的优化步骤就可以变为：</p>
+<hr>
+<p>1、给定某个初始值$x_0$；</p>
+<p>2、对于第$k$次迭代，<strong>求出当前的雅可比矩阵$J(x_k)$和误差$f (x_k )$</strong>；</p>
+<p>3、<strong>求解增量方程： $H\Delta x_k = g$；</strong></p>
+<p>4、若$\Delta x_k$足够小，则停止迭代；</p>
+<p>5、否则，令$x_{k+1} = x_k + \Delta x_k$，返回第2步。</p>
+<hr>
+<p>相比较于传统的方法，该方法只更改了两个步骤。并且巧妙的避免了求海塞矩阵，可以说很好了。但是仍然有一些缺点：</p>
+<ul>
+<li>为了求解$H^-$，需要$H$矩阵可逆，但是实际上$JJ^T$只有半正定性，所以，当为奇异矩阵的时候，稳定性较差，算法不收敛。</li>
+<li>如果求出来的步长$\Delta x_k$太大，会导致其局部近似不精确，严重的时候，可能无法保证迭代收敛。</li>
+<li>容易和梯度下降法一样，陷入锯齿装，导致迭代次数较长。</li>
+</ul>
+<p>优点：</p>
+<ul>
+<li>避免了求海塞矩阵，大大减少了计算量。</li>
+<li>迭代步骤更清晰。</li>
+</ul>
+<p>不过，为了更好的进行最小二乘问题的求解，我们可以使用列文伯格-马夸特法(LM)来进行求解。</p>
+<h3 id="列文伯格-马夸特法"><a href="#列文伯格-马夸特法" class="headerlink" title="列文伯格-马夸特法"></a>列文伯格-马夸特法</h3><p>该方法是再高斯牛顿法上进行的改进，所以，基本的思路和原理和高斯牛顿法一样。为了避免其步长过大导致的问题，该方法提出了<strong>信赖区域</strong>，设定一个区域。使得步长能够受到控制。</p>
+<p>为了判定近似值的好坏，我们设定了一个评判指标：</p>
+<p>$\rho = \frac{f(x+\Delta x) - f(x)}{J(x)^T\Delta x}$</p>
+<p>这个指标就是我们的近似指标，可以看到其分为以下几种情况：</p>
+<ul>
+<li>$\rho$接近1，近似是好的；</li>
+<li>$\rho$太小，则实际减少的值小于近似减少的值，近似较大，需要缩小近似的范围；</li>
+<li>$\rho$太大，则实际减少的值大于近似减少的值，近似较小，需要扩大近似的范围。</li>
+</ul>
+<p>这样的话，就可以动态调整步长了。</p>
+<p>因此，使用该信赖区域后，可以得到：</p>
+<hr>
+<p>1、给定某个初始值$x_0$；</p>
+<p>2、对于第$k$次迭代，在高斯牛顿法的基础上加入信赖区域：</p>
+<p>$\min \frac{1}{2}||f(x_k) + J(x_k)^T\Delta x_k||^2 , \quad s.t \quad ||D\Delta x_k||^2 \leq \mu$</p>
+<p>其中，$\mu$是信赖半径，$D$为系数矩阵。</p>
+<p>3、计算近似指标$\rho$：</p>
+<p>$\rho = \frac{f(x+\Delta x) - f(x)}{J(x)^T\Delta x}$</p>
+<p>4、根据经验值，设定：</p>
+<ul>
+<li>若$\rho &gt; \frac{3}{4}$，则设置$\mu = 2 \mu$，跳转第6步；</li>
+<li>若$\rho &lt; \frac{1}{4}$，则设置$\mu = 0.5 \mu$，跳转第6步；</li>
+<li>若$\rho$大于设定的阈值，则跳转至第5步，求解$\Delta x_k$，令$x_{k+1} = x_k + \Delta x_k$。</li>
+</ul>
+<p>5、求解增量方程： $(H + \lambda I) \Delta x_k = g$；</p>
+<p>6、若$\Delta x_k$足够小，则停止迭代，否则，返回第2步。</p>
+<hr>
+<p>这样的话，就可以得到整个的算法流程了。</p>
+<p>至于增量方程的获取，可以通过拉格朗日函数来求解：</p>
+<p>$min \frac {1}{2}||f(x) + J(x)^T \Delta x||  \quad s.t \quad ||D \Delta x &lt; \mu||_2$ </p>
+<p>构建拉格朗日函数，$\lambda$ 是系数因子：</p>
+<p>$L(\Delta x,\lambda) = \frac {1}{2}||f(x) + J(x)^T\Delta x||^2 + \frac {\lambda}{2}(||D \Delta x||^2 - \mu)$  </p>
+<p>这样的话，化简后求导就可以得到：</p>
+<p>$J(x)f(x) + J(x)J^T(x)\Delta x + \lambda D^TD \Delta x = 0$ </p>
+<p>我们化简后得到：</p>
+<p>$(JJ^T + \lambda D^TD) \Delta x = -Jf$</p>
+<p>在本文中，我们令$H = JJ^T$，$g = -Jf$。在实际使用中，通常用$I$来代替$D^TD$。所以，公式就变为：</p>
+<p>$(H + \lambda I) \Delta x_k = g \tag 5$</p>
+<p>所以，就可以得到对应的增量方程了。</p>
+<p>参数$\lambda$的选择很重要：</p>
+<ul>
+<li>$\lambda$较大的时候，公式变为：$\lambda I \Delta x_k = g$，此时为梯度下降法</li>
+<li>$\lambda$较小的时候，公式变为：$H\Delta x_k = g$，此时为高斯牛顿法。</li>
+</ul>
+<p>所以，LM法可以在一定程度上避免线性方程组的系数矩阵的非奇异和病态的问题，从而得到更精准，更稳定的增量$\Delta x_k$。</p>
+<p>这样，我们就将几种方法都讲述完毕了。</p>
+<p>大家可以在实际的使用中，选择适合自己的方法。</p>
+<h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h3><p>【1】：牛顿法wiki</p>
+<p>【2】：梯度下降法wiki</p>
+<p>【3】：高斯牛顿法</p>
+<p>【4】：LM法</p>
+<p>【5】：十四讲</p>
+
       
     </div>
     
@@ -333,6 +548,12 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/优化算法/" rel="tag"># 优化算法</a>
+          
+        </div>
       
 
       
@@ -407,8 +628,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -438,7 +668,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -449,7 +679,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-count">38</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -472,6 +702,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#牛顿法"><span class="nav-number">1.</span> <span class="nav-text">牛顿法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一元函数求根："><span class="nav-number">1.1.</span> <span class="nav-text">一元函数求根：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#求函数的极值："><span class="nav-number">1.2.</span> <span class="nav-text">求函数的极值：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#梯度下降法"><span class="nav-number">2.</span> <span class="nav-text">梯度下降法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最小二乘的求解"><span class="nav-number">3.</span> <span class="nav-text">最小二乘的求解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#高斯牛顿法"><span class="nav-number">4.</span> <span class="nav-text">高斯牛顿法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列文伯格-马夸特法"><span class="nav-number">5.</span> <span class="nav-text">列文伯格-马夸特法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引用"><span class="nav-number">6.</span> <span class="nav-text">引用</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -673,6 +919,26 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 
