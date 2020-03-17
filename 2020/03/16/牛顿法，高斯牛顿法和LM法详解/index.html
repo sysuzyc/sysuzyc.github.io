@@ -88,7 +88,7 @@
 <meta property="og:description" content="在整个SLAM的过程中，我们可以构建机器人状态过程，其中，最后的问题就转换为了求解最小二乘的问题。那么如何求解最小二乘呢？本文将详细的介绍SLAM过程中求解最小二乘的优化方法：">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/NewtonIteration_Ani.gif">
-<meta property="og:updated_time" content="2020-03-17T08:05:27.848Z">
+<meta property="og:updated_time" content="2020-03-17T11:07:11.625Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="牛顿法，高斯牛顿法和LM法详解">
 <meta name="twitter:description" content="在整个SLAM的过程中，我们可以构建机器人状态过程，其中，最后的问题就转换为了求解最小二乘的问题。那么如何求解最小二乘呢？本文将详细的介绍SLAM过程中求解最小二乘的优化方法：">
@@ -364,7 +364,7 @@
 <p>$x_1 = x_0 - \frac{f(x_0)} {f^`{x_0}}$</p>
 <p>以此类推，可以得到：</p>
 <p>$x_{n+1} = x_n -  \frac {f{(x_n)}}{f^`_{(x_n)}}$</p>
-<p>细节流程刻意参考下图$^{[1]}$：</p>
+<p>细节流程刻意参考下图$^{<a href="https://en.wikipedia.org/wiki/Newton%27s_method(https://en.wikipedia.org/wiki/Newton&#39;s_method)" target="_blank" rel="noopener">1</a>}$：</p>
 <p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/NewtonIteration_Ani.gif" style="zoom:75%;"></p>
 <p>因此，根据上面的流程，可以逐步求得$f(x) = 0$的根。</p>
 <p>我们假设当前的近似解为$x_n$，那么迭代之后的下一个解，列出当前的切线方程为：</p>
@@ -380,7 +380,7 @@
 <p>其中，由于泰勒展开的特性，后面$o(x-x_0)$部分不予考虑，我们只考虑前面展开部分的极值问题：</p>
 <p>$g(x) = f(x_0) + f^`(x_0)(x-x_0) + \frac{f^{``}(x_0)}{2}(x-x_0)^2$</p>
 <p>上面的式子是一个一元二次函数，那么其极值部分就是导数为0的时候，我们可以先微分：</p>
-<p>$g^<code>(x) = f^</code>(x_0) + f^{``}(x_0)(x-x_0)$</p>
+<p>$ g^<code>(x) = f^</code>( x_0 ) + f^{``}( x_0 )(x - x_0) $</p>
 <p>令$g^`(x_1) = 0$，则此时的$x_1$就是极值（虽然在数学上不是特别严谨）。</p>
 <p>故$f^`(x_0) + f^{``}(x_0)(x_1-x_0) = 0$</p>
 <p>$x_1 = x_0 - \frac{f^`(x_0)}{f^{``}(x_0)}$</p>
@@ -400,7 +400,7 @@
 </ul>
 <p>所以，为了能够更好的进行最值问题的优化求解，我们可以使用<strong>高斯牛顿法</strong>和<strong>列文伯格-马夸特法</strong>。</p>
 <p>再介绍上面两个方法之前，我们首先介绍一下<strong>梯度下降法</strong>。</p>
-<p><strong>梯度下降</strong>是用于找到可微函数的<a href="https://en.wikipedia.org/wiki/Local_minimum" target="_blank" rel="noopener">局部最小值</a>的一<a href="https://en.wikipedia.org/wiki/Category:First_order_methods" target="_blank" rel="noopener">阶</a> <a href="https://en.wikipedia.org/wiki/Iterative_algorithm" target="_blank" rel="noopener">迭代</a> <a href="https://en.wikipedia.org/wiki/Mathematical_optimization" target="_blank" rel="noopener">优化</a> <a href="https://en.wikipedia.org/wiki/Algorithm" target="_blank" rel="noopener">算法</a>。为了使用梯度下降找到函数的局部最小值，我们采取与该函数在当前点的<a href="https://en.wikipedia.org/wiki/Gradient" target="_blank" rel="noopener">梯度</a>（或近似梯度）的<em>负值</em>成比例的步骤$^{[2]}$。</p>
+<p><strong>梯度下降</strong>是用于找到可微函数的<a href="https://en.wikipedia.org/wiki/Local_minimum" target="_blank" rel="noopener">局部最小值</a>的一<a href="https://en.wikipedia.org/wiki/Category:First_order_methods" target="_blank" rel="noopener">阶</a> <a href="https://en.wikipedia.org/wiki/Iterative_algorithm" target="_blank" rel="noopener">迭代</a> <a href="https://en.wikipedia.org/wiki/Mathematical_optimization" target="_blank" rel="noopener">优化</a> <a href="https://en.wikipedia.org/wiki/Algorithm" target="_blank" rel="noopener">算法</a>。为了使用梯度下降找到函数的局部最小值，我们采取与该函数在当前点的<a href="https://en.wikipedia.org/wiki/Gradient" target="_blank" rel="noopener">梯度</a>（或近似梯度）的<em>负值</em>成比例的步骤$^{<a href="https://en.wikipedia.org/wiki/Gradient_descent" target="_blank" rel="noopener">2</a>}$。</p>
 <p>梯度下降法是基于以下的观测原理而来的：</p>
 <p>如果实值函数$f(x)$在点$x =a$处可微且有定义，那么函数$f(x)$在点$a$处，沿着梯度的反方向$-\Delta f(a)$下降的最快。</p>
 <p>因此，假设有个点$b$，满足：</p>
@@ -529,12 +529,7 @@
 <p>所以，LM法可以在一定程度上避免线性方程组的系数矩阵的非奇异和病态的问题，从而得到更精准，更稳定的增量$\Delta x_k$。</p>
 <p>这样，我们就将几种方法都讲述完毕了。</p>
 <p>大家可以在实际的使用中，选择适合自己的方法。</p>
-<h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h3><p>【1】：牛顿法wiki</p>
-<p>【2】：梯度下降法wiki</p>
-<p>【3】：高斯牛顿法</p>
-<p>【4】：LM法</p>
-<p>【5】：十四讲</p>
-
+<h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h3>
       
     </div>
     
@@ -657,7 +652,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
