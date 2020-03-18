@@ -88,7 +88,7 @@
 <meta property="og:description" content="在整个SLAM的过程中，我们可以构建机器人状态过程，其中，最后的问题就转换为了求解最小二乘的问题。那么如何求解最小二乘呢？本文将详细的介绍SLAM过程中求解最小二乘的优化方法：">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/NewtonIteration_Ani.gif">
-<meta property="og:updated_time" content="2020-03-17T11:07:11.625Z">
+<meta property="og:updated_time" content="2020-03-18T10:07:44.574Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="牛顿法，高斯牛顿法和LM法详解">
 <meta name="twitter:description" content="在整个SLAM的过程中，我们可以构建机器人状态过程，其中，最后的问题就转换为了求解最小二乘的问题。那么如何求解最小二乘呢？本文将详细的介绍SLAM过程中求解最小二乘的优化方法：">
@@ -451,7 +451,7 @@
 <hr>
 <p>那么，我们对$f(x + \Delta x)$进行泰勒展开。</p>
 <p>$f(x+\Delta x) \approx f(x) + J(x)^T \Delta x$</p>
-<p>我们需要秋娥的$\Delta x$使得上面的式子$||f(x + \Delta x)||_2^2$有最小值，所以，我们可以得到最小二乘问题为：</p>
+<p>我们需要求的$\Delta x$使得上面的式子$||f(x + \Delta x)||_2^2$有最小值，所以，我们可以得到最小二乘问题为：</p>
 <p>$\Delta x^* = \arg \min \frac{1}{2} ||f(x + \Delta x)||_2^2 \approx \arg \min \frac{1}{2} ||f(x) + J(x)^T \Delta x||_2^2$</p>
 <p>为了求得其最值，对其求导：</p>
 <p>$\frac{1}{2} ||f(x) + J(x)^T \Delta x||^2 = \frac{1}{2}(f(x) + J(x)^T \Delta x)^T(f(x) + J(x)^T \Delta x) $</p>
