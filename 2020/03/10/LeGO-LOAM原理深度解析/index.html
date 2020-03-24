@@ -97,10 +97,9 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/cluster_2.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/cluster_3.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/feature.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/lego-公式.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/公式1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/对比.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/平滑度计算.png">
-<meta property="og:updated_time" content="2020-03-24T11:15:07.040Z">
+<meta property="og:updated_time" content="2020-03-24T12:10:19.390Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LeGO-LOAM原理深度解析">
 <meta name="twitter:description" content="LeGO-LOAM是以LOAM为框架而衍生出来的新的框架。其与LOAM相比，更改了特征点的提取形式，添加了后端优化，因此，构建出来的地图就更加的完善。 本文将针对LeGO-LOAM进行原理的深度解析，如果有同学对LOAM框架不是很熟悉的话，希望可以先阅读这篇文章：https://zhuanlan.zhihu.com/p/111388877。 论文：https://ieeexplore.ieee.o">
@@ -384,21 +383,21 @@
 <p>下面将针对这四个部分进行详细的阐述。</p>
 <h3 id="2、Segmentation"><a href="#2、Segmentation" class="headerlink" title="2、Segmentation"></a>2、Segmentation</h3><p>首先设定在$t$时刻获取的点云$P_t = \{p_1,p_2,p_3,…,p_n  \}$。$p_i$是$t$时刻的点云$P_t$中的一个点。将该点云投影到一个距离图像中，其分辨率为$1800\times16$。</p>
 <ul>
-<li>$1800$：由于VLP-16的水平方向的角度分辨率为$0.2^o$，所以，投影图像的水平方向分辨率为$\frac{360}{0.2} = 1800$。</li>
+<li>$1800$：由于VLP-16的水平方向的角度分辨率为$0.2^\circ$，所以，投影图像的水平方向分辨率为$\frac{360}{0.2} = 1800$。</li>
 <li>$16$：由于VLP-16的竖直方向是16根扫描线，所以，投影图像的竖直方向的分辨率就变成了$16$。</li>
 </ul>
 <p>再将点云投影到图像上后，每个三维空间的点就变为二维空间的像素点了，我们获取点 $p_i$对应的像素点到传感器的欧几里得距离 $r_i$。</p>
-<p>再进行分割之前，可以对距离图像进行列式评估。进行地面点的提取。</p>
+<p>在进行分割之前，可以对距离图像进行列式评估。进行地面点的提取。</p>
 <ul>
 <li>由于距离的竖直方向为$16$，这个也代表了原始三维空间中的竖直维度的特性。所以，通过判断其竖直维度的特性，可以很好的标记出地面点和非地面点。</li>
-<li>通过VLP-16的激光扫描束的范围为[$-15^0,15^0$]，地面点必然出现在$[-15^0,-1^0]$扫描线上。</li>
+<li>通过VLP-16的激光扫描束的范围为[$-15^\circ,15^\circ$]，地面点必然出现在$[-15^\circ,-1^\circ]$扫描线上。</li>
 </ul>
 <p>在这一个过程中，被标记的地面点可以不用进行后续的分割。</p>
 <p>然后，使用基于图像的分割方法将距离图像分割为很多个聚类。同一个聚类的点被标记上唯一的标识。</p>
 <p>这一步，可以将一些微小物体点当作噪音点去除，减少相邻帧之间微小物体不重复出现的造成的干扰：</p>
 <ul>
 <li>随风飘动的树叶，草等，在实际的实验中会经常遇，可能会造成出现在前一帧而不出现在后一帧的情况。</li>
-<li>去除不能聚成类的点云，可以再保留当前帧特征信息的基础上，减少噪音点的干扰，提升特征提取精度。</li>
+<li>去除不能聚成类的点云，可以在保留当前帧特征信息的基础上，减少噪音点的干扰，提升特征提取精度。</li>
 </ul>
 <p>为了提高处理效率，本文将低于30个数据点的类别都当作噪点处理，这样保存下来的就是一些相对来说比较静态的物体了（例如，树干，楼房等）。这样的话，整个距离图像就可以被分成若干个比较大的类别。加上前面设定的一个类别——地面点，这样就可以进行后续的处理了。</p>
 <p>基于这一步的处理，一帧点云中的点可以被小区很多噪音点，结果如下所示：</p>
@@ -427,7 +426,7 @@
 <p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/cluster_3.png" alt="类的去留" style="zoom:75%;"></p>
 <h3 id="3、Feature-Extraction"><a href="#3、Feature-Extraction" class="headerlink" title="3、Feature Extraction"></a>3、Feature Extraction</h3><p>在获取了地面点和分割点后，需要进行后续的特征提取操作，这里的操作基本和LOAM的操作一致，如果有同学对LOAM的特征提取不太了解，可以前往这里查看：</p>
 <p><a href="https://zhuanlan.zhihu.com/p/111388877" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/111388877</a></p>
-<p>在本文中，为了能够从所有方向($360^0$)提取特征点，将距离图像水平均分为若干个子图像（sub-image）。对于每一个子图像，都进行下面的处理。</p>
+<p>在本文中，为了能够从所有方向($360^\circ$)提取特征点，将距离图像水平均分为若干个子图像（sub-image）。对于每一个子图像，都进行下面的处理。</p>
 <p>选取$t$时刻的点云$P_t$中的一个点$p_i$，在点$p_i$同一竖直方向上，左右各找5个点，构建一个集合$S$。</p>
 <p>算每个点的平滑度：</p>
 <p>$c = \frac{1}{|S|\cdot||r_i||}\mid\mid\sum_{j \in S, j \neq i} (r_j - r_i) \mid\mid$</p>
@@ -465,34 +464,7 @@
 </ul>
 <p>这里虽然特征点集合看上去比LOAM多，但是其实和LOAM的是一样的，不过LOAM在论文中没有点明的。</p>
 <p>下面依次进行对比：</p>
-<div class="table-container">
-<table>
-<thead>
-<tr>
-<th style="text-align:left"></th>
-<th>LeGO-LOAM</th>
-<th>LOAM</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">点云类型</td>
-<td>投影在距离图像的地面点和分割点</td>
-<td>原始点云</td>
-</tr>
-<tr>
-<td style="text-align:left">计算公式</td>
-<td><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/lego-公式.png" alt="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM%E7%B3%BB/lego-%E5%85%AC%E5%BC%8F.png" style="zoom:50%;"></td>
-<td><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/公式1.png" alt="公式1" style="zoom:30%;"></td>
-</tr>
-<tr>
-<td style="text-align:left">特征点选取标准</td>
-<td>按照平滑度两次选取</td>
-<td>按照平滑度一次选取</td>
-</tr>
-</tbody>
-</table>
-</div>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/对比.png" alt="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM%E7%B3%BB/%E5%AF%B9%E6%AF%94.png"></p>
 <p>具体实现：</p>
 <p>平滑度计算：</p>
 <p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/平滑度计算.png" alt="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM%E7%B3%BB/%E5%B9%B3%E6%BB%91%E5%BA%A6%E8%AE%A1%E7%AE%97.png"></p>
