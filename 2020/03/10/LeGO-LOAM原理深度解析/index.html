@@ -87,10 +87,12 @@
 <meta property="og:site_name" content="亚琛的小站">
 <meta property="og:description" content="LeGO-LOAM是以LOAM为框架而衍生出来的新的框架。其与LOAM相比，更改了特征点的提取形式，添加了后端优化，因此，构建出来的地图就更加的完善。 本文将针对LeGO-LOAM进行原理的深度解析，如果有同学对LOAM框架不是很熟悉的话，希望可以先阅读这篇文章：https://zhuanlan.zhihu.com/p/111388877。 论文：https://ieeexplore.ieee.o">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-03-10T11:14:21.576Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/framework.png">
+<meta property="og:updated_time" content="2020-03-23T12:06:31.603Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LeGO-LOAM原理深度解析">
 <meta name="twitter:description" content="LeGO-LOAM是以LOAM为框架而衍生出来的新的框架。其与LOAM相比，更改了特征点的提取形式，添加了后端优化，因此，构建出来的地图就更加的完善。 本文将针对LeGO-LOAM进行原理的深度解析，如果有同学对LOAM框架不是很熟悉的话，希望可以先阅读这篇文章：https://zhuanlan.zhihu.com/p/111388877。 论文：https://ieeexplore.ieee.o">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/framework.png">
 
 
 
@@ -358,7 +360,22 @@
 <p>论文：<a href="https://ieeexplore.ieee.org/abstract/document/8594299" target="_blank" rel="noopener">https://ieeexplore.ieee.org/abstract/document/8594299</a></p>
 <p>代码：<a href="https://github.com/facontidavide/LeGO-LOAM-BOR/tree/speed_optimization" target="_blank" rel="noopener">https://github.com/facontidavide/LeGO-LOAM-BOR/tree/speed_optimization</a></p>
 <a id="more"></a>
-<h3 id="1、论文概括"><a href="#1、论文概括" class="headerlink" title="1、论文概括"></a>1、论文概括</h3>
+<h3 id="1、论文概括"><a href="#1、论文概括" class="headerlink" title="1、论文概括"></a>1、论文概括</h3><p>LeGO-LOAM是发表于IROS 2018的文章，全称为：LeGO-LOAM: Lightweight and Ground-Optimized<br>Lidar Odometry and Mapping on Variable Terrain .从文章名称，可以看出，LeGO-LOAM相对于LOAM的提升主要在于<strong>轻量级</strong>和<strong>地面优化</strong>。接下来，我将从论文的整体框架入手，详解介绍LeGO-LOAM和LOAM的区别和联系。</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/framework.png" style="zoom:75%;"></p>
+<p>本文的核心在于四个部分：<strong>分割</strong>，<strong>特征提取</strong>，<strong>雷达里程计</strong>，<strong>雷达建图</strong>。</p>
+<p>下面将针对这四个部分进行详细的阐述。</p>
+<h3 id="2、Segmentation"><a href="#2、Segmentation" class="headerlink" title="2、Segmentation"></a>2、Segmentation</h3><h3 id="3、Feature-Extraction"><a href="#3、Feature-Extraction" class="headerlink" title="3、Feature Extraction"></a>3、Feature Extraction</h3><h3 id="4、Lidar-Odometry"><a href="#4、Lidar-Odometry" class="headerlink" title="4、Lidar Odometry"></a>4、Lidar Odometry</h3><h3 id="5、Lidar-Mapping"><a href="#5、Lidar-Mapping" class="headerlink" title="5、Lidar Mapping"></a>5、Lidar Mapping</h3><ul>
+<li>轻量级—-嵌入式系统</li>
+<li>地面优化—-分割和优化</li>
+<li>点云分割—-去噪</li>
+<li>两步LM法—-先求[roll，pitch，z]，再求[x,y,yaw]</li>
+<li>优化库gtsam—-pose graph进行优化</li>
+</ul>
+<p>LeGO主要是从变动的物体容易对LOAM造成干扰而出来的。尤其是随风飘动的树叶，草丛等等。这些是会不断发生变化的。</p>
+<p>使用点云分割，来去除一些噪点，提升两帧之间的图像数据的稳定性。</p>
+<p>两步LM法：平面特征点用于计算获得[roll,pitch,z]，边缘特征点用于计算获得[x,y,yaw]。</p>
+<p>使用闭环来纠正运动漂移的现象。</p>
+
       
     </div>
     
@@ -481,7 +498,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-count">41</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -503,7 +520,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-count">42</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -536,7 +553,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、论文概括"><span class="nav-number">1.</span> <span class="nav-text">1、论文概括</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、论文概括"><span class="nav-number">1.</span> <span class="nav-text">1、论文概括</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、Segmentation"><span class="nav-number">2.</span> <span class="nav-text">2、Segmentation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、Feature-Extraction"><span class="nav-number">3.</span> <span class="nav-text">3、Feature Extraction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、Lidar-Odometry"><span class="nav-number">4.</span> <span class="nav-text">4、Lidar Odometry</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、Lidar-Mapping"><span class="nav-number">5.</span> <span class="nav-text">5、Lidar Mapping</span></a></li></ol></div>
             
 
           </div>
