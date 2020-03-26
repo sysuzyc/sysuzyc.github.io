@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="LOAM系," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="LOAM作为比较古老的激光匹配slam方法，一直以来都霸占着KITTI的前列，而，再这多年过过去了，我对于LOAM的理解也变得更加深厚。 因此，我决定将重新再看一遍LOAM的论文和代码，将自己的理解记录下来，方便以后浏览。">
+<meta name="keywords" content="LOAM系">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LOAM详解">
+<meta property="og:url" content="http://yoursite.com/2020/03/06/SLAM/LOAM详解/index.html">
+<meta property="og:site_name" content="亚琛的小站">
+<meta property="og:description" content="LOAM作为比较古老的激光匹配slam方法，一直以来都霸占着KITTI的前列，而，再这多年过过去了，我对于LOAM的理解也变得更加深厚。 因此，我决定将重新再看一遍LOAM的论文和代码，将自己的理解记录下来，方便以后浏览。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/LOAM.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/公式1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam-registeration.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam-取点.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam错误选点.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam-corner.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam-surf.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam示意图.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/lidar_edge.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/lidar_edge_1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM%E7%B3%BB/lidar_edge_2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/公式2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/lidar_planar.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM%E7%B3%BB/lidar_palnar_1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM%E7%B3%BB/lidar_palnar_2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/公式3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/公式5.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/lost function.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/solve-planar.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/solve-corner.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/solver.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/odometry_update.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/lidar mapping.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/update.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/cube.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/initial.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/later.png">
+<meta property="og:updated_time" content="2020-03-07T09:54:42.538Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LOAM详解">
+<meta name="twitter:description" content="LOAM作为比较古老的激光匹配slam方法，一直以来都霸占着KITTI的前列，而，再这多年过过去了，我对于LOAM的理解也变得更加深厚。 因此，我决定将重新再看一遍LOAM的论文和代码，将自己的理解记录下来，方便以后浏览。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/LOAM.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/03/06/SLAM/LOAM详解/"/>
+
+
+
+
+
+  <title>LOAM详解 | 亚琛的小站</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">亚琛的小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">我的征程即将开始</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-主页"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-标签"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-分类"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-归档"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/06/SLAM/LOAM详解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sysuzyc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/shuimen.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="亚琛的小站">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">LOAM详解</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-06T11:25:15+08:00">
+                2020-03-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/激光雷达/" itemprop="url" rel="index">
+                    <span itemprop="name">激光雷达</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/激光雷达/LOAM/" itemprop="url" rel="index">
+                    <span itemprop="name">LOAM</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>LOAM作为比较古老的激光匹配slam方法，一直以来都霸占着KITTI的前列，而，再这多年过过去了，我对于LOAM的理解也变得更加深厚。</p>
+<p>因此，我决定将重新再看一遍LOAM的论文和代码，将自己的理解记录下来，方便以后浏览。</p>
+<a id="more"></a>
+<p>论文：<a href="https://www.ri.cmu.edu/pub_files/2014/7/Ji_LidarMapping_RSS2014_v8.pdf" target="_blank" rel="noopener">https://www.ri.cmu.edu/pub_files/2014/7/Ji_LidarMapping_RSS2014_v8.pdf</a></p>
+<p>代码：<a href="https://github.com/HKUST-Aerial-Robotics/A-LOAM" target="_blank" rel="noopener">https://github.com/HKUST-Aerial-Robotics/A-LOAM</a></p>
+<h3 id="论文概览"><a href="#论文概览" class="headerlink" title="论文概览"></a>论文概览</h3><p><a href="https://www.ri.cmu.edu/pub_files/2014/7/Ji_LidarMapping_RSS2014_v8.pdf" target="_blank" rel="noopener">LOAM</a>这篇论文是发表于2014年RSS的文章，全称为：LOAM: Lidar Odometry and Mapping in Real-time .<br>LOAM是基于激光雷达而搭建的在ROS平台下的SLAM系统，一共分为四个部分：<br><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/LOAM.png" alt=""></p>
+<p>本文的核心主要在于两个部分：<strong>特征提取（Lidar Registration）</strong>和<strong>里程计解算（Odometry and Mapping）</strong>。</p>
+<p>当提取出特征后，通过高频率<strong>10Hz</strong>的里程计（Odometry）实现<strong>粗定位</strong>和低频率<strong>1Hz</strong>的里程计（Mapping）实现<strong>精定位</strong>。<br>下面，我们将结合论文和代码，进行LOAM框架的详细讲解。</p>
+<h3 id="符号设定"><a href="#符号设定" class="headerlink" title="符号设定"></a>符号设定</h3><ul>
+<li>一个sweep代表了一次扫描周期，记作$k ,\quad k \in Z^+$</li>
+<li>一个扫描周期内获取到的所有点云记作$P$，$P_k$代表了第k个扫描周期的点云</li>
+<li>雷达坐标系设定为$L$，$L_k$代表了第k个周期时的雷达观测坐标系，$i \in P_k$在$L_k$中可以被表示为$X^L_{(k,i)}$</li>
+<li>全局坐标系设定为$W$，$W_k$代表了第k个周期时的全局坐标系，$i \in P_k$在$ W_k$中可以被表示为$X^W_{(k,i)}$</li>
+</ul>
+<p>因此，我们就可以将整个问题转化为：</p>
+<p><strong>已知一段点云序列$P_k，k \in Z^+$，计算在前$k$个时期内的雷达位姿以及构建全局地图。</strong></p>
+<h3 id="Lidar-Registration"><a href="#Lidar-Registration" class="headerlink" title="Lidar Registration"></a>Lidar Registration</h3><p>为了计算雷达的运动位姿，我们需要得到的是相邻帧间的姿态变换关系，这样才能继续往后走下去。为了获取到相邻帧的姿态变换，使用全部点云处理是不可靠的，为了减少计算的时间消耗，一般需要使用特征点来代替完整的数据帧。</p>
+<p>常见的特征点提取方法：特征向量、直方图、旋转图片等。</p>
+<p>这些方法虽然能很精准的涵盖一帧数据的大部分信息，但是由于计算量大，很难在激光slam的相邻帧的匹配中使用。 因此，需要想一些更好的方法。</p>
+<p>本文作者根据点的曲率来计算<strong>平面光滑度</strong>作为提取当前帧的特征信息的指标。</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/公式1.png" alt="公式1"></p>
+<p>这种提取方法就是通过计算一个集合$S$中的所有点之间的关系来判断到底点$X^L_{(k,i)}$是属于平面点还是边缘点。具体到代码的实现就是使用计算当前点和前后五个点，来得到对应的平滑度数据,计算量减少了很多。</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam-registeration.png" style="zoom:75%;"></p>
+<p>再得到平滑度这一指标后，可以将特征点划分为两大类：<strong>平面点</strong>和<strong>边缘点</strong>。</p>
+<ul>
+<li>平面点：在三维空间中处于平滑平面上的点，其和周围点的大小差距不大，曲率较低，平滑度较低。</li>
+<li>边缘点：在三维空间中处于尖锐边缘上的点，其和周围点的大小差距较大，曲率较高，平滑度较高。</li>
+</ul>
+<p>我们对集合内的点进行排序，找到最小的点c作为平面点，最大的点c作为边缘点。</p>
+<p>这样就可以在一帧中得到有效的点数了。而在论文中是对整个扫描进行化段，分四段，每段各取两个边缘点和4个平面点。而在A-LOAM的代码中则是进行了一下的实现：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam-取点.png" style="zoom:75%;"></p>
+<p>同时，对所取的点也有一定的限制：</p>
+<ul>
+<li>该点的周围的点尽量不要被再被取到，这样可以使整体的特征点分布更加的平均</li>
+<li>该点不能与雷达扫描束过于平行，这样也会出现问题</li>
+</ul>
+<p>具体样例如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam错误选点.png" alt="错误选点"></p>
+<p>因此，选点就有了三要素：</p>
+<ul>
+<li>不能超过设定的size，每个集合平面点4个，边缘点2个；</li>
+<li>已选取的点周围不能有点，使得点可以分布的更加均匀；</li>
+<li>选取的平面点不能与激光扫描束平行。</li>
+</ul>
+<p>以上的对应关系，同样再代码中有着体现。</p>
+<p>判断该点是否是之前选取的点的周围的点以及不能超过size：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam-corner.png" style="zoom:75%;"></p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam-surf.png" style="zoom:78%;"></p>
+<p>通过上面的循环，就实现了边缘点（Corner）和平面点（Planar）的获取了。这样就可以得到一帧数据对应的特征信息了。</p>
+<p>提取后的数据如图所示：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/loam示意图.png" alt=""></p>
+<p>这样就可以在整个三维空间内，将平面点和边缘点作为特征点提取出来来代替整个数据了。</p>
+<h3 id="Lidar-Odometry"><a href="#Lidar-Odometry" class="headerlink" title="Lidar Odometry"></a>Lidar Odometry</h3><p>再提取了特征点之后，我们需要做的就是特征匹配了。这里使用的使<strong>scan-to-scan</strong>的方法来实现帧与帧之间的特征匹配。</p>
+<p>已知第$k$次扫描的点云为$P_k$，          而提取的边缘点集合记为：$E_k$，提取的平面点记为$H_k$。</p>
+<p>已知第$k+1$次扫描的点云为$P_{k+1}$，而提取的边缘点集合记为：$E_{k+1}$，提取的平面点记为$H_{k+1}$。</p>
+<p>我们想要得到的是$P_{k+1}$和$P_k$之间的变换关系，也就是$E_{k+1}$和$E_k$以及$H_{k+1}$和$H_k$之间的关系。</p>
+<p>由于雷达自身在 $k$ 和 $k+1$ 时刻过程中是<strong>运动</strong>的，所以，我们每个点对应的姿态变换矩阵都应该得到一定的修正。为了方便处理，我们将所有的点重投影到每一帧的初始时刻，这样在这一帧中的所有点都可以得到对应的姿态变换信息。</p>
+<p>我们将重投影到每一帧初始时刻的平面点和边缘点记为:$\hat {E_{k+1}}$ 和$\hat {H_{k+1}}$。</p>
+<p>这样的话就可以进行后续的优化了。</p>
+<p>我们知道平面和边缘线是两种不同的特征，那么在LOAM的计算中，也是分开进行计算的。</p>
+<h4 id="边缘点匹配"><a href="#边缘点匹配" class="headerlink" title="边缘点匹配"></a>边缘点匹配</h4><p>已知信息：$\hat {E_{k+1}}$ 和 $E_k$。</p>
+<p>我们知道，边缘点就是三维结构中线所构成的点，这样的话，就是求点到线的最近距离。需要在$E_k$中找到一条线来求解最近距离：</p>
+<center class="half">
+<img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/lidar_edge.png" width="200"><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/lidar_edge_1.png" width="200"><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM%E7%B3%BB/lidar_edge_2.png" width="150">
+</center>
+
+<p>从$\hat {E_{k+1}}$中选取一个点$i$，在$E_k$中选取与 $i$ 最近的点 $j$，以及在$E_k$中选取和点 $j$ 相邻扫描线中最近的点$l$，这样的目的是防止$i,j,l$三点共线而无法构成三角形。</p>
+<p>因此，选取了三个点: {$i \in \hat {E_{k+1}}$ , $j,l \in E_k$}，坐标分别记为：$\hat X_{(k+1,i)}$，$X_{(k,j)}$和$X_{(k,l)}$。</p>
+<p>这样，就将姿态变换转换为了，点 $i$ 到线 $jl$ 的最短距离了。</p>
+<p>因此，就变为了：<img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/公式2.png" alt="公式2"></p>
+<p>我们知道，分子叉乘球出来的是$\vec{ij}$ 和 $\vec {il}$ 构成的平行四边形的面积，而分母则是 $\vec {jl}$ 构成的底，这样的话，就可以通过基础的数学知识，得到高 $D_e = \frac {面积} {底}$ 。</p>
+<p>因此，我们就构建了边缘点的优化方程。</p>
+<h4 id="平面点匹配"><a href="#平面点匹配" class="headerlink" title="平面点匹配"></a>平面点匹配</h4><p>已知信息：$\hat { H_{k+1}}$ 和 $ H_k$。</p>
+<p>平面点的匹配起始和边缘点的匹配类似，同样的是寻找两帧之间的对应关系，我们知道平面点的话，就是要求点到平面的距离，这样的话，就需要在$H_k$中找到一个对应的平面。</p>
+<center class="half">
+<img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/lidar_planar.png" width="200"><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM%E7%B3%BB/lidar_palnar_1.png" width="200"><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM%E7%B3%BB/lidar_palnar_2.png" width="200">
+</center>
+
+<p>从$\hat { H_{k+1}}$中寻找一个点$i$，从$H_k$中找寻与点 $i$ 最近的点 $l$，并找到与点 $l$ 相同激光扫描束的最近点 $l$，然后，找寻相邻帧中与点 $j$ 最相近的点 $m$，这样的话，就可以找到一个不共线的，能构成一个平面的三个点。</p>
+<p>因此，选取了四个点：{$i \in \hat{H_{k+1}}$，$j,l,m \in H_k$}，坐标分别记为：$\hat X_{(k+1,i)}$，$X_{(k,j)}$，$X_{(k,l)}$和$X_{(k,m)}$。</p>
+<p>这样的话，就变成了点 $i$ 到平面 $jlm$ 之间的最近距离了。</p>
+<p>因此，就变为了：<img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/公式3.png" alt="公式3"></p>
+<p>故，分子为构成的三维物体的体积，分母为地面构成的平行四边形的面积，则高 $D_h = \frac {体积}{面积}$。</p>
+<p>因此，我们就得到了平面点的优化方程。</p>
+<h4 id="姿态解算"><a href="#姿态解算" class="headerlink" title="姿态解算"></a>姿态解算</h4><p>当获取到了$D_e$和$D_h$之后，我们需要做的就是求解公式(2)和(3)中的右边的部分，最小化右边部分，就得到了最小化的$D_e$和$D_h$，这样就可以使用非线性优化的方法来进行求解 了。</p>
+<p>我们首先列出已知的信息：</p>
+<p>$X_{k+1} = RX_k + T$</p>
+<p>由于考虑了雷达的自身运动是匀速运动，所以，我们获取了每个点的时间戳信息，并使用线性方程，得到每个时刻对应的姿态变换矩阵，这一步主要是进行了<strong>运动补偿</strong>。</p>
+<p>我们首先求解第 $k$ 帧中第 $i$ 个点的姿态变换信息：</p>
+<p>$T^L_{(k+1,i)} = \frac {t_i - t_{k+1}}{t - t_{k+1}} T^L_{k+1}              \tag4$</p>
+<p>这样的话，就可以使用每个点对应的姿态变换矩阵放入进去进行后续的求解了。</p>
+<p>但是，这里论文使用的是6-DoF的表示，也就是$[x,y,z,roll,pitch,yaw]$。</p>
+<p>所以，我们需要想办法从6-DoF得到对应的姿态变换矩阵，进行迭代优化求解。</p>
+<p>我们设定旋转矩阵 $R$ 和平移矩阵 $T$。</p>
+<p>这样的话，就可以构建公式：</p>
+<p>${X^L_{k+1,i}} = R \hat {X_{k,i+1}} + T$。</p>
+<p>这样，就可以将  $k+1$ 帧上的点投到k帧所在的集合中了。</p>
+<p><strong>这里可能不是很好理解。</strong></p>
+<p>这里就涉及到论文中所涉及到的几个符号的表示，建议可以对照论文当中来看。</p>
+<ul>
+<li><strong>核心思想</strong>就是要找到一个姿态变换使得可以将公式(2)和(3)中的右边部分进行化简计算，而我们知道$i \in P_{k+1}，j,l,m \in P_{k}$，所以，需要将$ \hat {X_{(K+1,i)}}$转化到同样的帧中，统一坐标系，进行后面的解算。</li>
+</ul>
+<p>回归正文，我们获得了得到了公式之后，就需要求解 $R$ 和 $T$ 了。</p>
+<p>然而，我们使用的是6-DoF的表示，就需要想办法进行欧拉角到旋转矩阵的变换，使用罗德里格斯公式进行变换：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/公式5.png" alt="旋转变化公式" style="zoom:80%;"></p>
+<p>这样，就可以将欧拉角转换为旋转矩阵了，其中$\theta = [roll,pitch,yaw]$，$\omega = \frac {T} {||T||}$</p>
+<p>而，平移矩阵就是6-DoF的前三位，也就是说$T = [x,y,z]$。</p>
+<p>这样，就可以实现6-DoF和旋转矩阵的变动了。</p>
+<p>那么我们可以知道在公式(2)和公式(3)中，只有 $\theta$ 和 $T$ 是未知的，其他都是已知的。那么就可以得到一个约束公式：</p>
+<p>$f_e(\theta,T) = D_e \quad \&amp; \quad f_h(\theta,T) = D_h$</p>
+<p>因此，可以统一为一个公式：</p>
+<p>$f(T^L_{k+1}) = D$</p>
+<p>因此，我们就需要求解优化这个非线性优化问题就可以了。</p>
+<p>那么使用常规的列文伯格-马夸特$(LM)$法来进行求解:</p>
+<p>和高斯牛顿法不一样的是，我们加入了信赖区域，$\mu$为半径，$D$为系数矩阵，最小二乘的函数也不相同：</p>
+<p>$min \frac {1}{2}||f(T^L_{k+1}) + J(T^L_{k+1})^T \Delta T^L_{k+1}||  \quad s.t \quad ||D \Delta T^L_{k+1} &lt; \mu||_2$</p>
+<p>构建拉格朗日函数，$\lambda$ 是系数因子：</p>
+<p>$L(\Delta T^L_{k+1},\lambda) = \frac {1}{2}||f(T^L_{k+1}) + J(T^L_{k+1})^T\Delta T^L_{k+1}||^2 + \frac {\lambda}{2}(||D \Delta T^L_{k+1}||^2 - \mu)$ </p>
+<p>这样的话，化简后求导就可以得到：</p>
+<p>$J(T^L_{k+1})f(x) + J(T^L_{k+1})J^T(T^L_{k+1})\Delta T^L_{k+1} + \lambda D^TD \Delta T^L_{k+1} = 0$</p>
+<p>我们化简后得到：</p>
+<p>$(JJ^T + \lambda D^TD) \Delta T = -Jf$</p>
+<p>而$f(T^L_{k+1}) = d$</p>
+<p>故，我们可以得到导数为：</p>
+<p>$\Delta T = -(JJ^T + \lambda D^TD)^-Jd$</p>
+<p>我们可以看到，和论文中略有不同，这个和初始雅可比矩阵$J$以及系数矩阵$D$有关，实际使用中，系数矩阵D，通常是用$J^TJ$来表示的，这样的话，我们就得到了其微分量$\Delta T$。</p>
+<p>代入梯度下降的公式为：</p>
+<p>$T^L_{k+1} \leftarrow T^L_{k+1} + \Delta T^L_{k+1}$</p>
+<p>$T^L_{k+1} \leftarrow T^L_{k+1} -(JJ^T + \lambda D^TD)^-Jd$.</p>
+<p>和论文中基本一致，就是表现的方式有一点点的区别。</p>
+<p>通过不断求解这个式子，直到收敛即可。</p>
+<p>代码使用的是ceres solver来进行求解。</p>
+<p>首先设定损失函数：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/lost function.png" style="zoom:75%;"></p>
+<p>然后设定代价函数：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/solve-planar.png" style="zoom:75%;"></p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/solve-corner.png" style="zoom:75%;"></p>
+<p>最后是求解：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/solver.png" style="zoom:75%;"></p>
+<p>然后对球出来的数据进行迭代更新：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/odometry_update.png" style="zoom:75%;"></p>
+<p>这样就可以实现优化求解了。</p>
+<p>A-LOAM的代码相比于LOAM-Velodyne是使用了现有的优化求解库，这样可以使代码更加简介和简单，只需要输入边缘点对应关系的{$i,j,l $}和平面点的{$ i,j,l,m $}，这样的话，就可以优化求解了。</p>
+<p>然而，需要注意的是：</p>
+<p>这里求解的还是局部雷达观测坐标系下的结果，是为了求解相邻帧之间的变换，也就是$T^L$，而为了定位和建图，需要求解的是全局坐标系下的变换，也就是$T^W$。因此，需要进入到下一个章节Lidar Mapping中。</p>
+<h3 id="Lidar-Mapping"><a href="#Lidar-Mapping" class="headerlink" title="Lidar Mapping"></a>Lidar Mapping</h3><p>当我们获取了若干相邻帧的姿态变换信息后，我们需要做的就是将其和全局地图进行匹配，并将其加入到全局地图之中。</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/lidar mapping.png" alt="加入全局地图"></p>
+<p>这里设定：</p>
+<ul>
+<li><p>第$k+1$帧之前的扫描点云在全局坐标系下的投影为$Q_k$；</p>
+</li>
+<li><p>第$k$次扫描的末位，也就是$k+1$帧的起始时的姿态变换信息$T^W_k$。</p>
+</li>
+<li><p>利用Odometry的输出$T^L_{k+1}$ ，将$T^W_k$ 从 $k+1$时刻的起始推演到$k+2$时刻的起始，得到姿态矩阵$T^W_{k+1}$。</p>
+</li>
+<li>通过$T^W_{k+1}$，将之前第$k+1$帧的点云投影到全局坐标系下，记为$\hat Q_{k+1}$。</li>
+</ul>
+<p>这样，其实就很明晰了，我们需要做的就是优化求解$T^W_{k+1}$。</p>
+<p>这里的已知信息为：{$Q_k$ ，$\hat Q_{k+1}$}，不精准的$T^W_{k+1}$。想要优化得到精准的$T^W_{k+1}$。</p>
+<p>同样是两个点云，求精准的姿态变换，这里和之前的Lidar Odometry部分很接近，所以，使用的算法基本相同。</p>
+<p>不过，我们这里是<strong>map-to-map</strong>的算法，所以，使用的$\hat Q_{k+1}$是10帧Odometry输出的数据，$Q_k$是之前的地图数据。</p>
+<p>如果使用全部的地图数据，在计算效率上会大打折扣，所以，这里使用的是一个<strong>边长为10m的立方体</strong>，用以代替全局地图，优化得到最终的姿态变换矩阵$T^W_{k+1}$。</p>
+<p>选取特征点的方法是一样的，不过具体实现的方式不尽相同。</p>
+<p>将$Q_k$和$\hat Q_{k+1}$中相交的存入到KD-tree中，这里的相交部分，也就是判定是否处于这个cube中。相交的部分属于了两个map之间的重合部分，可以用来作为点云匹配的依据。</p>
+<p>在这里，首先选取相邻点集合$S$，针对平面点和边缘点又有两种处理方法：</p>
+<ul>
+<li>平面点：$S$只保留平面特征点；</li>
+<li>边缘点：$S$只保留边缘特征点。</li>
+</ul>
+<p>计算$S$的协方差矩阵，记为$M$，$M$的特征值记为$V$，特征向量记为$E$。</p>
+<p>如果 $S$ 分布在一条线段上，那么 $V$ 中一个特征值就会明显比其他两个大，$E$ 中与较大特征值相对应的特征向量代表边缘线的方向。<strong>（一大两小，大方向）</strong><br>如果 $S$ 分布在一块平面上，那么 $V$ 中一个特征值就会明显比其他两个小，$E$ 中与较小特征值相对应的特征向量代表平面片的方向。<strong>（一小两大，小方向）</strong><br>边缘线或平面块的位置通过穿过 $S$ 的几何中心来确定。</p>
+<p>这样就可以快速的找到$\hat Q_{k+1}$中的一个点$i$，和$Q_k$中的边缘点{$j,l$}以及平面点{$j,l,m$}。</p>
+<p>这样就可以使用公式(2)和(3)，利用$LM$法来求解$T^W_{k+1}$了。</p>
+<p><em>这里需要注意的是，Lidar Odometry中使用过运动补偿了，这里的点云就都被设置为对应帧的时间戳，就不用再考虑运动补偿的事情了。</em></p>
+<p>后续可以通过VoxelFilter来进行降噪，减少点云的数量。</p>
+<p>整个的计算流程可以表示如下：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/update.png" alt="更新" style="zoom:75%;"></p>
+<p>通过不断的处理，就可以得到对应的$T^W_{k+1}$了。</p>
+<p>对应的代码解析如下：</p>
+<p>对cube里的数据进行处理：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/cube.png" alt="cube" style="zoom:75%;"></p>
+<p>接受Lidar Odometry的数据，并得到初始的姿态变换矩阵：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/initial.png" alt="初始信息"></p>
+<p>经过计算后，得到的新的姿态信息：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/LOAM系/later.png" alt="latter"></p>
+<h3 id="Transform-Integration"><a href="#Transform-Integration" class="headerlink" title="Transform Integration"></a>Transform Integration</h3><p>这一部主要是将Lidar Odometry中得到的姿态信息和Lidar Mapping中得到的信息全部都放入到rviz中，方便观看和处理。如果是为了使用LOAM作为前端的话，到Lidar Mapping就完全够用了。</p>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><p>LOAM作为常见霸占KITTI榜的激光SLAM算法，是有着自己的独特优势的。其新颖的特征点选取方法，可以在很多复杂场景下使用，稳定性也比较强。美中不足的是，没有后端优化。</p>
+<p>不过，他的后继者：LeGO-LOAM很好的解决了这个问题。</p>
+<p>LOAM的整理到这里就结束了，后续我将继续整理LOAM系的另一个框架：LeGO-LOAM，并着重说明下两者的不同之处，方便大家在不同的场景下使用对应的，合适的方案。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/LOAM系/" rel="tag"># LOAM系</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/05/LeetCode/LeetCode-x出现的次数/" rel="next" title="LeetCode-x出现的次数">
+                <i class="fa fa-chevron-left"></i> LeetCode-x出现的次数
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/06/LeetCode/3-6-和为s的连续正数序列/" rel="prev" title="3.6-和为s的连续正数l序列">
+                3.6-和为s的连续正数l序列 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/shuimen.png"
+                alt="sysuzyc" />
+            
+              <p class="site-author-name" itemprop="name">sysuzyc</p>
+              <p class="site-description motion-element" itemprop="description">开开心心每一天</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#论文概览"><span class="nav-number">1.</span> <span class="nav-text">论文概览</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#符号设定"><span class="nav-number">2.</span> <span class="nav-text">符号设定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lidar-Registration"><span class="nav-number">3.</span> <span class="nav-text">Lidar Registration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lidar-Odometry"><span class="nav-number">4.</span> <span class="nav-text">Lidar Odometry</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#边缘点匹配"><span class="nav-number">4.1.</span> <span class="nav-text">边缘点匹配</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#平面点匹配"><span class="nav-number">4.2.</span> <span class="nav-text">平面点匹配</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#姿态解算"><span class="nav-number">4.3.</span> <span class="nav-text">姿态解算</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lidar-Mapping"><span class="nav-number">5.</span> <span class="nav-text">Lidar Mapping</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Transform-Integration"><span class="nav-number">6.</span> <span class="nav-text">Transform Integration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结："><span class="nav-number">7.</span> <span class="nav-text">总结：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sysuzyc</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

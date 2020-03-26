@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="地面检测,lidar,segmentation," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });     关联资料我们为了能够很好的检测出激光雷达数据中的地面信息，使用了一种地面检测的方法。 论文：Fast segmentation of 3d point clouds for ground vehicles 源代码：linefit_groun">
+<meta name="keywords" content="地面检测,lidar,segmentation">
+<meta property="og:type" content="article">
+<meta property="og:title" content="地面检测---linefit_ground_segmentation">
+<meta property="og:url" content="http://yoursite.com/2018/09/13/SLAM/地面检测-linefit-ground-segmentation/index.html">
+<meta property="og:site_name" content="亚琛的小站">
+<meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });     关联资料我们为了能够很好的检测出激光雷达数据中的地面信息，使用了一种地面检测的方法。 论文：Fast segmentation of 3d point clouds for ground vehicles 源代码：linefit_groun">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/segment.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/bins.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/result.png">
+<meta property="og:updated_time" content="2020-03-07T10:23:20.361Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="地面检测---linefit_ground_segmentation">
+<meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });     关联资料我们为了能够很好的检测出激光雷达数据中的地面信息，使用了一种地面检测的方法。 论文：Fast segmentation of 3d point clouds for ground vehicles 源代码：linefit_groun">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/segment.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/09/13/SLAM/地面检测-linefit-ground-segmentation/"/>
+
+
+
+
+
+  <title>地面检测---linefit_ground_segmentation | 亚琛的小站</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">亚琛的小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">我的征程即将开始</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-主页"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-标签"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-分类"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-归档"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/13/SLAM/地面检测-linefit-ground-segmentation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sysuzyc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/shuimen.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="亚琛的小站">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">地面检测---linefit_ground_segmentation</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-13T13:13:49+08:00">
+                2018-09-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/激光雷达/" itemprop="url" rel="index">
+                    <span itemprop="name">激光雷达</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/激光雷达/segmentation/" itemprop="url" rel="index">
+                    <span itemprop="name">segmentation</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<h2 id="关联资料"><a href="#关联资料" class="headerlink" title="关联资料"></a>关联资料</h2><p>我们为了能够很好的检测出激光雷达数据中的地面信息，使用了一种地面检测的方法。</p>
+<p>论文：<a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=5548059" target="_blank" rel="noopener">Fast segmentation of 3d point clouds for ground vehicles</a></p>
+<p>源代码：<a href="https://github.com/sysuzyc/road_detecting.git" target="_blank" rel="noopener">linefit_ground_segmentation</a></p>
+<p>当然，为了方便起见，我把已经调试过的代码和论文放在了<a href="https://github.com/sysuzyc/road_detecting.git" target="_blank" rel="noopener">road_detecting</a>中。</p>
+<a id="more"></a>
+<h2 id="论文研读"><a href="#论文研读" class="headerlink" title="论文研读"></a>论文研读</h2><p>我们在进行代码的阅读之前，需要先对于论文进行研读，理清整个文章的脉络。</p>
+<p>针对于本篇文章，我们可以将其划分为以下几个方面：</p>
+<h3 id="点云获取"><a href="#点云获取" class="headerlink" title="点云获取"></a>点云获取</h3><p>我们首先获取激光雷达传感器传来的数据，将其转变为欧式距离表示的3D点云数据集。这个是将激光雷达数据进行处理，获转化为自己需要的数据的方法。</p>
+<h3 id="点云划分"><a href="#点云划分" class="headerlink" title="点云划分"></a>点云划分</h3><p>首先，将整个的三维笛卡尔坐标系进行另一种形式的表示，我们进行点云的划分，将其从无序的点云划分为有序的点云。划分的标准有以下两个：<strong>segment</strong>，<strong>bins</strong>。</p>
+<p><strong>segment：</strong></p>
+<p>我们将整个笛卡尔坐标系中的<strong>X-Y</strong>平面转变为一个无穷长半径的圆面。设定一个弧度参数<strong>α</strong>。</p>
+<p>则，我们可以将整个X-Y平面转变为一个被弧度参数α划分为M份扇面的圆面。</p>
+<script type="math/tex; mode=display">M =\frac{ 2*\pi}{\alpha}  {，圆面划分的个数}</script><p>这样的话，我们就可以将整个的X-Y平面进行划分，划分为M个segment。</p>
+<p>而，为了能够很好的将点进行segment的定位，我们使用以下的方式：</p>
+<script type="math/tex; mode=display">segment_ p(i) = \frac{atan2(y_i, x_i)}{\delta\alpha} {   ， segment划分函数}</script><p>这样的话，我们就可以对于每一个点进行X-Y平面的有序化处理。</p>
+<p>因此，可以对于所有的点云进行如下的划分：</p>
+<script type="math/tex; mode=display">P_s = \lbrace p_i  \in P \mid segment(p_i) = s  \rbrace  {  , 得到属于segment s的点云集}</script><p>其中，s是代表segment s；P代表所有的点云;$ p_i $代表的是点云i。$P_s $代表的是属于segment s的点云集合。这样的话，我们就将整个的无序点云转化为有segment划分的有序点云了。</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/segment.png" alt="segment.png"></p>
+<p><strong>bins:</strong></p>
+<p>在前面，我们进行了segment的划分，也就是说，将整个点云划分为M个segment，然而，为了能够进一步的进行点云的有序化划分，我们这里使用了bins的划分：</p>
+<p>我们针对于segment s中的点云$ P_s $ 来处理。</p>
+<p>我们可以设定两个距离参数$ r_j^{min} $ 和$r_j ^ {max} $ 来进行$ b_j ^ {s}$(第j个bins)的限制。所以，对于每一个点通过以下的条件进行划分：</p>
+<script type="math/tex; mode=display">r_j ^ {min} \leq \sqrt{(x_i^2 + y_i^2) } < r_j^{max}  { , 判定点是否属于bins}</script><p>因此，我们可以对于该点在X-Y平面上的投影来进行 $ p_i  \in P_s $的判断。</p>
+<p>这样的话，我们就可以将一个扇面划分为多个扇环。</p>
+<p>这样的话，我们就可以将segment里面的点再进行一次bins上点的划分。</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/bins.png" alt="bins.png"></p>
+<h3 id="选取最小z点"><a href="#选取最小z点" class="headerlink" title="选取最小z点"></a>选取最小z点</h3><p>我们在前面进行了点云的有序化处理，现在需要进行最小z点的选取，来进行地面点的筛选。</p>
+<p>其中，这里的数据处理都是在<strong>一个segment</strong>中进行的。</p>
+<p>因为，我们前面是进行了X-Y平面的投影，但是，却保留了该点的z坐标，也就是将一个三维坐标点，转变为一个二位坐标点，外加一个X-Y平面的角度信息。</p>
+<script type="math/tex; mode=display">\lbrace x,y,z \rbrace = \lbrace d, z \rbrace + \theta ， 其中 d =  \sqrt{(x_i^2 + y_i^2) }</script><p>这样的话，我们就进行了降维的操作，将一个三维数据$\lbrace x,y,z \rbrace$转化为了二维数据$\lbrace d,z \rbrace$.</p>
+<p>所以，我们就可以针对与一个segment中的数据进行直线的拟合，得到d-z平面内的直线，从而筛选出地面点。</p>
+<h3 id="直线拟合"><a href="#直线拟合" class="headerlink" title="直线拟合"></a>直线拟合</h3><p>我们在前面一步得到了$\lbrace d,z \rbrace$的数据，可以构建出d-z平面的离散点。</p>
+<p>针对于这些离散点，我们设定了四个条件来进行直线拟合的判断，其中直线表示为$y = mx + b$：</p>
+<h4 id="直线的斜率"><a href="#直线的斜率" class="headerlink" title="直线的斜率"></a>直线的斜率</h4><p>直线的斜率的绝对值不应该超过一个设定的阈值$T_m$,$|m| &lt; T_m$。因为，这个是一个d-z的平面，所以，直线的斜率代表的是z轴到x-y平面的值。斜率不能过大。因为过大的斜率会呈现出垂直结构。而我们进行的是地面点的拟合，所以，不会存在这种情况。</p>
+<h4 id="直线在z轴的截距"><a href="#直线在z轴的截距" class="headerlink" title="直线在z轴的截距"></a>直线在z轴的截距</h4><p>当斜率m小于最小斜率的时候，$y-b$不应该超过一个一个特定的阈值$T_b$。</p>
+<p>既$if \quad m &lt;  T_m^{small}, \quad then \quad \lbrace y-b\rbrace \leq T_b $</p>
+<p>因为，当斜率很小的时候，说明基本上地面时平整的，不是上下坡这种情况，而设定$\lbrace y-b \rbrace$则表明了其距离地面的值，而前面也说明了时一个平整的路面，所以，我们应该设定其不大于一个设定的阈值$T_b$。这样的话，我们就不会把高低认为时地面了。</p>
+<h4 id="直线拟合的误差"><a href="#直线拟合的误差" class="headerlink" title="直线拟合的误差"></a>直线拟合的误差</h4><p>我们拟合直线的均方根误差不应该超过设定的误差阈值$T_{RMSE}$。</p>
+<p>这个时直线拟合，也就是最小二乘法的必要过程，我们需要对于拟合的直线进行拟合程度的判断来确保是否对于离散点拟合成功。</p>
+<h4 id="第一个点到直线的距离"><a href="#第一个点到直线的距离" class="headerlink" title="第一个点到直线的距离"></a>第一个点到直线的距离</h4><p>我们找到segment中bins的第一个点，然后，判断该点到已经存在的直线的距离，这个距离不能超过$T_dprev$,如果不超过这个距离，则我们就认为这个点时可以被拟合到直线上的，如果超过这个距离，则就以该点为基准，重新开始一条直线。这样的话，就可以进行不同直线的划分。</p>
+<h3 id="地面点的筛选"><a href="#地面点的筛选" class="headerlink" title="地面点的筛选"></a>地面点的筛选</h3><p>在前面，我们拟合了许多条直线，其中这些直线，是在一个segment中按照bins的顺序进行处理的。我们可以看到的是一条直线可能不止一条bins，但是直线之间是不会出现重叠的。因此，我们就可以通过拟合到的直线来进行地面点的筛选。</p>
+<p>我们根据筛选出来的直线和自己设定的参数，来进行点到直线的z轴的距离。这样的话，算出来的就是同d情况下的z的差距。这样的话，是可以进行地面点的筛选的。在阈值范围内的点就是我们挑选出来的地面点。</p>
+<h3 id="得到最终的地面点"><a href="#得到最终的地面点" class="headerlink" title="得到最终的地面点"></a>得到最终的地面点</h3><p>我们在前面进行地面点的筛选，得到的是d-z平面的数据。因此，我们需要转化到三维笛卡尔坐标系下的距离。通过前面的点的筛选，然后再通过最开始的点云的index，我们可以从这里逆推回去点，得到属于地面点的三维数据点。</p>
+<p>这样的话，我们就得到了最终的三维地面数据点。</p>
+<h2 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h2><p>我们在上面已经对地面检测的论文进行了详细的解读。这里就我们采集的数据，进行地面分割处理。如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/result.png" alt="地面分割"></p>
+<p>我们看到，这幅图里面一共有四个信息：</p>
+<p><strong>绿色的点</strong>，<strong>蓝色的点</strong>，<strong>红色的点</strong>，<strong>白色的线段</strong>。</p>
+<p>从图中，我们可以进行上面四种颜色的划分。这四种颜色的划分，也正好与前面论文中的内容对应。</p>
+<h3 id="原型点："><a href="#原型点：" class="headerlink" title="原型点："></a>原型点：</h3><p>绿色的点为我们提取出来的原型点：prototype points</p>
+<p>这个原型点是我们通过在d-z平面内选择最小z点所构成的。所以，我们可以看到，基本上这个点相当于一次去重的操作。如果，某个x和y所对应的z不止一个，则，选出最小z点，来作为原型点。这样的话，就可以初步的筛选出地面点。</p>
+<h3 id="障碍物点"><a href="#障碍物点" class="headerlink" title="障碍物点"></a>障碍物点</h3><p>蓝色的点为障碍物点，这一点很好理解。从图中可以看出，障碍物点，基本上都处于最小z点的上方。不会是地面点的。</p>
+<h3 id="白色的线段"><a href="#白色的线段" class="headerlink" title="白色的线段"></a>白色的线段</h3><p>我们在选出原型点之后，对于其在d-z平面进行直线的拟合，会得到多条拟合后的d-z平面的线。而我们看到的白色的直线，就是所得到的对应segment中满足设定条件的直线拟合线。</p>
+<h3 id="地面点"><a href="#地面点" class="headerlink" title="地面点"></a>地面点</h3><p>在得到了d-z平面的拟合直线之后，对于所有的原型点进行点到直线的距离的判断。我们选取在z轴领域内的最小距离点作为我们认为的地面点。最终体现出来的就是红色的点。</p>
+<p>于是，我们就可以通过这个方法对于数据点进行处理，得到最终的结果。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/地面检测/" rel="tag"># 地面检测</a>
+          
+            <a href="/tags/lidar/" rel="tag"># lidar</a>
+          
+            <a href="/tags/segmentation/" rel="tag"># segmentation</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/12/工具/Hexo使用next主题/" rel="next" title="Hexo使用next主题">
+                <i class="fa fa-chevron-left"></i> Hexo使用next主题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/03/工具/Ubuntu下配置ShadowSocks/" rel="prev" title="Ubuntu下配置ShadowSocks">
+                Ubuntu下配置ShadowSocks <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/shuimen.png"
+                alt="sysuzyc" />
+            
+              <p class="site-author-name" itemprop="name">sysuzyc</p>
+              <p class="site-description motion-element" itemprop="description">开开心心每一天</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">42</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#关联资料"><span class="nav-number">1.</span> <span class="nav-text">关联资料</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#论文研读"><span class="nav-number">2.</span> <span class="nav-text">论文研读</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#点云获取"><span class="nav-number">2.1.</span> <span class="nav-text">点云获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#点云划分"><span class="nav-number">2.2.</span> <span class="nav-text">点云划分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选取最小z点"><span class="nav-number">2.3.</span> <span class="nav-text">选取最小z点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#直线拟合"><span class="nav-number">2.4.</span> <span class="nav-text">直线拟合</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#直线的斜率"><span class="nav-number">2.4.1.</span> <span class="nav-text">直线的斜率</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#直线在z轴的截距"><span class="nav-number">2.4.2.</span> <span class="nav-text">直线在z轴的截距</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#直线拟合的误差"><span class="nav-number">2.4.3.</span> <span class="nav-text">直线拟合的误差</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#第一个点到直线的距离"><span class="nav-number">2.4.4.</span> <span class="nav-text">第一个点到直线的距离</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#地面点的筛选"><span class="nav-number">2.5.</span> <span class="nav-text">地面点的筛选</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#得到最终的地面点"><span class="nav-number">2.6.</span> <span class="nav-text">得到最终的地面点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实验结果"><span class="nav-number">3.</span> <span class="nav-text">实验结果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#原型点："><span class="nav-number">3.1.</span> <span class="nav-text">原型点：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#障碍物点"><span class="nav-number">3.2.</span> <span class="nav-text">障碍物点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#白色的线段"><span class="nav-number">3.3.</span> <span class="nav-text">白色的线段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#地面点"><span class="nav-number">3.4.</span> <span class="nav-text">地面点</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sysuzyc</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
