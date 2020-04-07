@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="DELIGHT," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在激光雷达点云配准中，一般分为两个方向：扫描匹配和描述子。 在前面讲过的LOAM和LeGO-LOAM都是基于点云特征的扫描匹配方法来实现帧间位姿估计的。 而本篇文章要讲述的则是ethz在ICRA2018上发表的使用全局描述子进行全局定位的算法。 论文：DELIGHT: An Efficient Descriptor for Global Localisation using LiDAR Inten">
+<meta name="keywords" content="DELIGHT">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DELIGHT描述子详解">
+<meta property="og:url" content="http://yoursite.com/2020/04/07/SLAM/DELIGHT描述子详解/index.html">
+<meta property="og:site_name" content="亚琛的小站">
+<meta property="og:description" content="在激光雷达点云配准中，一般分为两个方向：扫描匹配和描述子。 在前面讲过的LOAM和LeGO-LOAM都是基于点云特征的扫描匹配方法来实现帧间位姿估计的。 而本篇文章要讲述的则是ethz在ICRA2018上发表的使用全局描述子进行全局定位的算法。 论文：DELIGHT: An Efficient Descriptor for Global Localisation using LiDAR Inten">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/DELIGHT-framework.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/velodyne.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/viewfile.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/sphere.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/example.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/coordinate.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/全局定位.png">
+<meta property="og:updated_time" content="2020-04-07T11:31:17.251Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DELIGHT描述子详解">
+<meta name="twitter:description" content="在激光雷达点云配准中，一般分为两个方向：扫描匹配和描述子。 在前面讲过的LOAM和LeGO-LOAM都是基于点云特征的扫描匹配方法来实现帧间位姿估计的。 而本篇文章要讲述的则是ethz在ICRA2018上发表的使用全局描述子进行全局定位的算法。 论文：DELIGHT: An Efficient Descriptor for Global Localisation using LiDAR Inten">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/DELIGHT-framework.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/04/07/SLAM/DELIGHT描述子详解/"/>
+
+
+
+
+
+  <title>DELIGHT描述子详解 | 亚琛的小站</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">亚琛的小站</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">我的征程即将开始</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-主页"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-标签"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-分类"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-归档"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/07/SLAM/DELIGHT描述子详解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sysuzyc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/shuimen.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="亚琛的小站">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">DELIGHT描述子详解</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-07T16:32:24+08:00">
+                2020-04-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/激光雷达/" itemprop="url" rel="index">
+                    <span itemprop="name">激光雷达</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/激光雷达/描述子/" itemprop="url" rel="index">
+                    <span itemprop="name">描述子</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在激光雷达点云配准中，一般分为两个方向：<strong>扫描匹配</strong>和<strong>描述子</strong>。</p>
+<p>在前面讲过的LOAM和LeGO-LOAM都是基于点云特征的扫描匹配方法来实现帧间位姿估计的。</p>
+<p>而本篇文章要讲述的则是ethz在ICRA2018上发表的使用全局描述子进行全局定位的算法。</p>
+<p>论文：<a href="https://ieeexplore.ieee.org/document/8460940" target="_blank" rel="noopener">DELIGHT: An Efficient Descriptor for Global Localisation using LiDAR Intensities</a></p>
+<a id="more"></a>
+<h3 id="1、论文框架"><a href="#1、论文框架" class="headerlink" title="1、论文框架"></a>1、论文框架</h3><p>位置识别是移动机器人技术的关键要素。在实际的使用场景中需要在没有任何先验信息的情况下估计当前机器人的位置信息。这种操作也被称之为全局定位。为了能够很好的识别出机器人的当前位姿信息。本文提出了一种使用激光雷达强度进行全局定位的描述子：DELIGHT。本文的系统框架如下所示：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/DELIGHT-framework.png" alt=""></p>
+<p>上面的流程展示了在未知场景下如何实现全局定位的流程。</p>
+<p>一般来说全局定位的输入信息为：</p>
+<ul>
+<li>当前时刻的观测帧：$P_i^L$</li>
+<li>现有全局地图数据：$M_i= \{P_1^W,P_2^W,…,P_i^W\}$</li>
+</ul>
+<p>分为两步：</p>
+<ul>
+<li>获取候选帧：使用DELIGHT描述子进行全局定位，获取候选帧；</li>
+<li>姿态解算：    使用基于PCL的方法实现位姿解算，实现全局定位。</li>
+</ul>
+<p>本文将从上面两个步骤来进行详细的讲解。</p>
+<h3 id="2、DELIGHT描述子"><a href="#2、DELIGHT描述子" class="headerlink" title="2、DELIGHT描述子"></a>2、DELIGHT描述子</h3><p>为了能够快速高效的获取候选帧，本文提出了一种全局描述子：DELIGHT(DEscriptor of LiDAR Intensities as a Group of HisTograms)。该描述子使用雷达强度来构建直方图，从而实现地点识别。</p>
+<p>在这一章节中，我将从以下几个方面介绍DELIGHT描述子：</p>
+<ul>
+<li>强度的原理</li>
+<li>描述子结构</li>
+<li>描述子对齐</li>
+<li>候选帧匹配</li>
+</ul>
+<p>从上面几个方面，我们将更容易的理解本文所提出的描述子的算法原理。</p>
+<h4 id="2-1、强度的原理"><a href="#2-1、强度的原理" class="headerlink" title="2.1、强度的原理"></a>2.1、强度的原理</h4><p>激光雷达在进行数据采集的时候，会发射出一个激光束，当遇到障碍物后，会原路返回，这样传感器可以获取到对应的极长和旋转角。通过设定的线束，极长和旋转角，就可以解算出三维笛卡尔坐标系下的坐标$[x,y,z]$。</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/velodyne.png" alt="velodyne"></p>
+<p>不过，由于障碍物的表面分布可能不太一样，所以，会有这反射强度的差异，也就是$[intensity]$。</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/viewfile.png" style="zoom:50%;"></p>
+<p>激光雷达的反射强度由于具有一定的鉴别能力，所以，也经常被广泛使用，如回环检测和语义分割等。</p>
+<p>因此，在本文中，对于每一个激光雷达点，会使用这些信息：$[x,y,z,intensity]$。</p>
+<h4 id="2-2、描述子结构"><a href="#2-2、描述子结构" class="headerlink" title="2.2、描述子结构"></a>2.2、描述子结构</h4><p>我们知道，全局描述子是为了能够获取一帧数据的特征信息而设立的。那么描述子的结构决定了描述子的计算效率。在本文中，首先将一个三维空间坐标系中的数据划分为了两个球体：外球和内球。其中，外球的半径为$r_1$，内球的半径为$r_2$。基于三维空间坐标系的象限分布的原理，可以划分为8个子空间。最终就可以得到16个子空间。</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/sphere.png" style="zoom:75%;"></p>
+<p>其中，基于传感器的类型可以设定$r_1,r_2$的值。本文使用的是VLP-16的激光雷达，所以，可以基于激光雷达的扫描距离来进行设定，分别设定为:$\{r_1 = 100,r_2 = 15\}$。这样的话，就可以划分为内外两个球体，以及16个子空间了。拿实际的数据帧来举例就为：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/example.png" alt=""></p>
+<p>因此，我们就可以通过这种设定获得16个子空间，也被称之为16个bins。</p>
+<p>对于每一个bins，计算其中的所有点的强度直方图分布。在本文中，VLP-16的强度分布为$[0,255]$，所以，这里就需要计算16个直方图，每个直方图都需要统计对应的256个强度信息的分布情况。因此，在这一步操作结束后，可以得到以下信息：</p>
+<ul>
+<li>一共获取16个直方图</li>
+<li>每个直方图都是256个强度信息的统计分布</li>
+</ul>
+<p>这样，就可以使用这些信息进行后续的处理了。</p>
+<h4 id="2-3、描述子对齐"><a href="#2-3、描述子对齐" class="headerlink" title="2.3、描述子对齐"></a>2.3、描述子对齐</h4><p>在上面，我们设定了一帧点云的划分方法，可以得到16个直方图。然而，并没有设定划分的坐标轴。这是因为相邻帧间存在着一定的姿态变换，如果按照坐标轴划分的话，姿态变换会造成不同的子空间内的点云分布不相似，这样的话，在进行直方图比较的时候，就会出现问题。</p>
+<p>为了解决上面的问题，使用了主成分析法（PCA）来进行坐标轴的确定。该方法基于最近邻协方差矩阵的特征值分解和总最小二乘估计。在获得参考框架之后，将条带边界与轴对齐，并为每个点赋予一个附加功能，以描述唯一的bins。</p>
+<p>这样的话，就可以基于获取的坐标轴进行bins的划分，统计每个bins内的点，得到直方图，最终得到16个直方图，每个直方图内有着256个强度信息的统计分布。</p>
+<p>因此，在这一步之后，可以尽可能的将点云对齐，保证每个bins的点云分布保持统一。</p>
+<h4 id="2-4、候选帧匹配"><a href="#2-4、候选帧匹配" class="headerlink" title="2.4、候选帧匹配"></a>2.4、候选帧匹配</h4><p>再经过了2.2的描述子结构搭建和2.3的描述子对齐后，每一帧数据都可以获取16个直方图。剩下的就是如何使用这些带有强度信息的直方图进行匹配，来鉴别两帧之间的相似性。</p>
+<p>假设有两帧点云，其得到的描述子分别为：$A$和$B$。</p>
+<p>则其相似度的计算公式为：</p>
+<script type="math/tex; mode=display">S_{A B}^{i}=\sum_{k=1}^{I_{bins}} \frac{2 \cdot(A(k)^i-B(k)^i)^{2}}{A(k)^i+B(k)^i}</script><p>其中，$S^i_{AB}$表示的是描述子$A$和描述子$B$中第$i$个bins的直方图相似度。$A(k)^i$和$B(k)^i$分别表示了描述子$A$和描述子$B$中第$i$个bins的直方图中的第$k$个强度信息的统计分布。</p>
+<p>这样的话，对于两帧数据，就可以计算出$m$个直方图，在本文中，使用的是VLP-16的激光雷达，所以，$m = 16$。</p>
+<script type="math/tex; mode=display">S_{AB} =\frac{ \sum_{i=1}^{m} {S_{AB}^{i}}}{m}</script><p>这样的话，就可以得到两帧之间的相似度信息了。</p>
+<p><strong>但是，我们如何确保每个bins内的点就是按正确的顺序排列的呢？</strong></p>
+<p>我们知道，在2.3中，使用了主成分析法（PCA）来进行坐标轴的确定。那么这个过程是有着歧义的，为了消除这个过程造成的干扰，我们需要找到一种方法，来进行正确的坐标轴对齐。</p>
+<p>在三维空间中，有着三个坐标轴$[x,y,z]$，如果对其进行枚举的话，会很消耗时间。因此，本文只用确定两个坐标轴$[x,z]$，然后，通过叉积的方法，来确定$[y]$。这样，就可以实现三维坐标系下的坐标轴的确定了。</p>
+<p>因此，枚举两个坐标轴的话，就变得非常简单了，只需要进行$x$轴指向左边还是右边，$z$轴指向上面还是下面的枚举就可以了。</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/coordinate.png" style="zoom:75%;"></p>
+<p>上面就是我们通过枚举得到的坐标系的俯视图。黑色代表了在$x-y$平面之上的数据，而红色代表了在$x-y$平面之下的数据。可以看到，一共有四种情况：</p>
+<ul>
+<li>坐标系0：常规坐标系，$[x,y,z]$：[右，前，上]​</li>
+<li>坐标系1：变换坐标轴，$[x,y,z]$：[左，后，上]</li>
+<li>坐标系2：变换坐标轴，$[x,y,z]$：[右，后，下]</li>
+<li>坐标系3：变换坐标轴，$[x,y,z]$：[左，前，下]</li>
+</ul>
+<p>在四种坐标变换中，其对应的bins内的相似度对比也不相同，按照坐标系顺序举例为：</p>
+<ul>
+<li>{5,13,1,9} -&gt; {7,15,3,11} -&gt; {14,6,10,2} -&gt; {12,4,8,0}</li>
+<li>{4,12,0,8} -&gt; {6,14,2,10} -&gt; {15,7,11,3} -&gt; {13,5,9,1}</li>
+<li>{2,10,6,14} -&gt; {0,8,4,12} -&gt; {9,1,13,5} -&gt; {11,3,15,7}</li>
+<li>{3,11,7,15} -&gt; {1,9,5,13} -&gt; {8,0,12,4} &gt; {10,2,14,6}</li>
+</ul>
+<p>这样的话，我们就需要统计这四种坐标轴下的帧间相似度，选择最小的作为两帧之间的相似度信息。</p>
+<p>$S_{AB} = \min \{S_{AB}^0,S_{AB}^I, S_{AB}^{II},S_{AB}^{III}\}$</p>
+<p>这样的话，就可以得到两帧之间的相似度信息了。</p>
+<p>对于当前时刻的观测帧：$P_i^L$，可以得到其描述子信息$P_i^L $，对于全局地图数据：$M_i= \{P_1^W,P_2^W,…,P_i^W\}$，可以得到描述子序列{$P_1^W,P_2^W,…,P_i^W$}，这样，我们需要做的就是找到观测帧和全局地图的最小相似度信息就可以得到最终的全局定位候选帧了。</p>
+<h3 id="3、全局定位流程"><a href="#3、全局定位流程" class="headerlink" title="3、全局定位流程"></a>3、全局定位流程</h3><p>一般来说，全局描述子是无法进行姿态解算的。所以，前面使用DELIGHT过程也只是选出了候选帧。那么如何对候选帧进行姿态解算，来得到最终的结果呢？</p>
+<p>基于描述子的方法主要可以分为两大类：</p>
+<ul>
+<li>全局描述子(Global Descriptor)</li>
+<li>局部描述子(Local Descriptor)</li>
+</ul>
+<p>全局描述子可以判别两帧之间的相似度，却无法精确计算两帧之间的位姿关系。</p>
+<p>而局部描述子则可以计算两帧之间的位姿关系。</p>
+<p>因此，全局定位流程图如下所示：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/全局定位.png" alt="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/%E5%85%A8%E5%B1%80%E5%AE%9A%E4%BD%8D.png" style="zoom:75%;"></p>
+<ul>
+<li>通过DELIGHT描述子进行候选帧的选取，得到全局定位的候选帧；</li>
+<li>基于当前帧和候选帧，使用局部描述子SHOT，提取描述子信息；</li>
+<li>将两帧的SHOT描述子信息输入RANSAC中，筛除几何不一致的信息，得到粗匹配结果；</li>
+<li>使用ICP算法，基于粗定位的结果，对当前帧和候选帧进行匹配，得到精确的全局定位结果。</li>
+</ul>
+<p>因此，就可以得到全局定位的结果了。</p>
+<p>其实，在实际的使用中，到RANSAC这一步基本就可以得到比较优秀的结果了，比如说SegMatch就是使用RANSAC得到最终的姿态变换。</p>
+<p>不过，加了ICP的话，应该可以得到更加精准的定位结果。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/DELIGHT/" rel="tag"># DELIGHT</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/01/LeetCode/4-1-有效括号的嵌套深度/" rel="next" title="4.1-有效括号的嵌套深度">
+                <i class="fa fa-chevron-left"></i> 4.1-有效括号的嵌套深度
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/shuimen.png"
+                alt="sysuzyc" />
+            
+              <p class="site-author-name" itemprop="name">sysuzyc</p>
+              <p class="site-description motion-element" itemprop="description">开开心心每一天</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">45</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、论文框架"><span class="nav-number">1.</span> <span class="nav-text">1、论文框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、DELIGHT描述子"><span class="nav-number">2.</span> <span class="nav-text">2、DELIGHT描述子</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1、强度的原理"><span class="nav-number">2.1.</span> <span class="nav-text">2.1、强度的原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2、描述子结构"><span class="nav-number">2.2.</span> <span class="nav-text">2.2、描述子结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3、描述子对齐"><span class="nav-number">2.3.</span> <span class="nav-text">2.3、描述子对齐</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4、候选帧匹配"><span class="nav-number">2.4.</span> <span class="nav-text">2.4、候选帧匹配</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、全局定位流程"><span class="nav-number">3.</span> <span class="nav-text">3、全局定位流程</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">sysuzyc</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
