@@ -91,7 +91,9 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/equation-4.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/multiple.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/imu.png">
-<meta property="og:updated_time" content="2020-04-22T10:16:20.572Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/r-lns-loam.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/equation-4.png">
+<meta property="og:updated_time" content="2020-04-27T16:38:37.822Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="R-LINS论文详解">
 <meta name="twitter:description" content="当单纯的激光雷达传感器无法胜任大规模场景下的地图构建时候，需要考虑使用不同的传感器，获取多种数据来进行传感器的融合，实现位姿的矫正，最终完成复杂大规模场景下的地图构建，这种方法也被称之为多传感器融合。 本篇文章要讲述的是发表在ICRA2020上的一篇多传感器融合实现点云地图构建的文章。 论文：R-LINS: A Robocentric Lidar-Inertial State Estimator">
@@ -480,12 +482,72 @@
 <p>其中，有个关系，大家需要注意：</p>
 <p>估计值 = 测量值 - 偏差</p>
 <p>通过上面的公式(1)，我们可以得到：</p>
-<p>$\delta x_{t_\tau} = (I + F_{t_\tau} \Delta t) \delta x_{t_{\tau-1}}$</p>
-<p>$P_{t_\tau} = (I + F_{t_\tau} \Delta t) P_{t_\tau -1}(I + F_{t_\tau} \Delta t)^T + (G_{t_\tau}\Delta t) Q (G_{t_\tau}\Delta t)^T$</p>
-<p>$\Delta t = t_\tau - t_{\tau-1}$</p>
-<p>其中$t_\tau$和$t_{\tau-1}$是IMU的时间戳，$Q$是$w$的协方差矩阵。</p>
+<p>$\delta x_{t_\tau} = (I + F_{t_\tau} \Delta t) \delta x_{t_{\tau-1}} \tag2$</p>
+<p>$P_{t_\tau} = (I + F_{t_\tau} \Delta t) P_{t_\tau -1}(I + F_{t_\tau} \Delta t)^T + (G_{t_\tau}\Delta t) Q (G_{t_\tau}\Delta t)^T \tag 3$</p>
+<p>其中$\Delta t = t_\tau - t_{\tau-1}$，$t_\tau$和$t_{\tau-1}$是IMU的时间戳，$Q$是$w$的协方差矩阵。</p>
 <p>这里只是得到了误差状态向量$\delta x$的递推公式，想要预测先验状态$^-x_{b_{k+1}}^{b_k}$的话，需要使用离散事件递推模型，如果有兴趣的话，可以参考“Robocentric visual-inertial odometry”或“Quaternion kinematics for the error-state kalman filter”。</p>
-<h5 id="3-3、状态更新"><a href="#3-3、状态更新" class="headerlink" title="3.3、状态更新"></a>3.3、状态更新</h5><h3 id="4、实验效果展示"><a href="#4、实验效果展示" class="headerlink" title="4、实验效果展示"></a>4、实验效果展示</h3><p>reference:<a href="http://www.jintiankansha.me/t/3E47E32QnT" target="_blank" rel="noopener">http://www.jintiankansha.me/t/3E47E32QnT</a></p>
+<h5 id="3-3、状态更新"><a href="#3-3、状态更新" class="headerlink" title="3.3、状态更新"></a>3.3、状态更新</h5><p>我们知道，<strong>卡尔曼滤波（KF）</strong>是有着五大方程的，分别是：</p>
+<ul>
+<li>预测：状态预测方程，协方差预测方程</li>
+<li>更新：状态更新方程，协方差更新方程</li>
+<li>卡尔曼增益方程</li>
+</ul>
+<p><strong>误差状态卡尔曼滤波（ESKF）</strong>也有着上面的五大方程组。唯一的区别在于卡尔曼滤波针对的是物体的运动状态$x$，而误差状态卡尔曼滤波针对的是物体运动状态的误差状态$\delta  x$。</p>
+<p>在前面3.2部分，我们已经得到了状态预测方程（公式2）和协方差预测方程（公式3）。剩下的就是要得到状态更新方程，协方差更新方程和卡尔曼增益方程了。</p>
+<p>本文用的是<strong>迭代卡尔曼滤波（IKF）</strong>。这里就可以将状态更新问题变成了一个优化问题：</p>
+<p>$\min_{\delta x} ||\delta x||_{P(k)^-} + ||f(^-x_{b_{k+1}}^{b_k} 田 \delta x)||_{(J_kM_kJ_k^T)^-} \tag 4$</p>
+<p>其中，$||\cdot||$表示的是M范数，$J_k$是$f(^-x_{b_{k+1}}^{b_k} 田 \delta x)$的测量噪声，而$M_k$则是测量噪声的协方差矩阵。$f(\cdot)$表示的是一个基于ICP的残差方程。</p>
+<p>其实这个式子也是比较容易理解的，可以分为两部分。</p>
+<ul>
+<li>$\min_{\delta x} ||\delta x||_{P(k)^-}$：求误差状态最小。</li>
+<li>$||f(^-x_{b_{k+1}}^{b_k} 田 \delta x)||_{(J_kM_kJ_k^T)^-}$：求$b_k$和$b_{k+1}$的姿态解算偏差最小</li>
+</ul>
+<p>前面部分很好理解。主要是后面的部分。后面的部分改写一下就很好理解了：</p>
+<p>$||f(^-x_{b_{k+1}}^{b_k} 田 \delta x)||_{(J_kM_kJ_k^T)^-} = ||f(x_{b_{k+1}}^{b_k} )||_{(J_kM_kJ_k^T)^-}$</p>
+<p>这里其实就是LOAM的点线距离和点面距离的公式了：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/r-lns-loam.png" alt=""></p>
+<p>其中，涉及到了点的姿态变换。我们可以发现，这个变换为将点$p_i^{l_{k+1}}$转变为$\hat p_i^{l_k}$。涉及到的变换信息为：</p>
+<ul>
+<li>$R_l^b$和$p_l^b$为雷达和IMU的姿态变换</li>
+<li>$R_{b_{k+1}}^{b_k}$和$p_{b_{k+1}}^{b_k}$为帧$b_{k+1}$和$b_k$之间的姿态变换。</li>
+</ul>
+<p>所以，上面的式子其实可以拆解为：</p>
+<p>$R_l^b \hat p_i^{l_k} + p_l^b = R_{b_{k+1}}^{b_k}(R_l^bp_i^{l_{k+1}} + p_l^b) +p_{b_{k+1}}^{b_k}$</p>
+<p>这样看的话，其实就能理解上面公式是什么意思了。</p>
+<p>其中，ESKF的卡尔曼增益方程和状态更新方程：</p>
+<p>$K_{k,j} = P_kH^T_{k,j}(H_{k,j}P_kH^T_{k,j} + J_{k,j}M_kJ^T_{k,j})^- \tag 5$</p>
+<p>$\delta x_{j+1} = \delta x_j + K_{k,j}(H_{k,j}\delta x_j - f(^-x_{b_{k+1}}^{b_k} 田 \delta x)) \tag 6$</p>
+<p>其中，$H_{k,j}$是$f(^-x_{b_{k+1}}^{b_k} 田 \delta x)$的雅可比矩阵。</p>
+<p>使用公式5和公式6去求解公式4，对问题进行优化求解。</p>
+<p><strong>需要注意的是：在每次迭代中，都会找到新的匹配边和匹配面，进一步最小化度量误差，然后计算新的$H_{k,j},J_{k,j}$和$K_{k,j}$。</strong></p>
+<p>这就是迭代的卡尔曼滤波和常规的卡尔曼滤波的区别之处。</p>
+<p>当迭代终止的时候，假定终止下标为$n$，我们就可以算出协方差更新方程为：</p>
+<p>$P_{k+1} = (I -K_{k,n}H_{k,n})P_k(I -K_{k,n}H_{k,n})^T + K_{k,n}M_kK_{k,n}^T \tag7$</p>
+<p>这样，就可以进行ESKF的下一次迭代计算了。</p>
+<p>其中，公式2，3，5，6，7就是ESKF的五个方程组。</p>
+<p>通过ESKF的迭代，我们可以得到$\delta x_{j+1}$。所以，通过观测，先验和误差的关系：</p>
+<p><img src="https://raw.githubusercontent.com/sysuzyc/Picture/master/Blog/equation-4.png" alt=""></p>
+<p>就可以得到精确的$x_{b_{k+1}}^{b_k}$了。并将该信息运用到下一时刻上：</p>
+<p>我们设定下一时刻为$x_{b_{k+2}}^{b_{k+1}}$：</p>
+<p>$x_{b_{k+2}}^{b_{k+1}} = \begin{bmatrix}0_3,v_{b_{k+1}}^{b_{k+1}},q_0,b_{a_{k+1}},b_{g_{k+1}} \end{bmatrix}$</p>
+<p>其中$q_0$是单位四元数，$v_{b_{k+1}}^{b_{k+1}} = R_{b_{k}}^{b_{k+1}}v_{b_{k}}^{b_{k+1}}$ ，协方差矩阵中，关于速度和偏差的部分保持不变，关于相对位姿的部分（位移p和四元数q）重置为0，也就是以机器人为中心的参照系本身没有不确定性。</p>
+<h4 id="3-4-状态合成"><a href="#3-4-状态合成" class="headerlink" title="3.4 状态合成"></a>3.4 状态合成</h4><p>我们前面算出来的是以机器人为中心的参照系下的位姿信息。所以，为了得到全局坐标信息，需要进行状态合成，合成公式为：</p>
+<p>$x_w^{b_{k+1}} = \begin{bmatrix}p_w^{b_{k+1}} \\q_w^{b_{k+1}} \end{bmatrix} = \begin{bmatrix}R_{b_k}^{b_{k+1}}(p_w^{b_{k}} - p_{b_{k+1}}^{b_k}) \\ q_{b_k}^{b_{k+1}}\bigotimes q_w^{b_k}  \end{bmatrix}$</p>
+<p>这里需要留意的就是这三者之间的关系：</p>
+<ul>
+<li>$R_{b_k}^{b_{k+1}}$和$q_{b_k}^{b_{k+1}}$是指的是从$b_k$帧到$b_{k+1}$帧的姿态变换</li>
+<li>$ p_{b_{k+1}}^{b_k}$是指$b_{k+1}$坐标原点投影在$b_k $坐标系下的坐标</li>
+<li>$p_w^{b_{k+1}}$是指全局坐标原点在$b_{k+1}$坐标系下的坐标信息</li>
+</ul>
+<p>我们需要掌握的就是三个坐标系的原点信息：$w$系，$b_k$系和$b_{k+1}$系。然后就可以很简单的得到上面的逻辑关系了。</p>
+<h4 id="3-5、初始化"><a href="#3-5、初始化" class="headerlink" title="3.5、初始化"></a>3.5、初始化</h4><p>我们使用的传感器为IMU和激光雷达，所以有一些参数信息需要提前知晓：</p>
+<ul>
+<li>加速度偏差$b_{a_0}$可以通过离线标定获取</li>
+<li>激光雷达-IMU标定矩阵$R_l^b,p_l^b$可以通过离线标定获取</li>
+<li>初始角速度偏差$b_{g_0}$是静止测量状态下角速度的平均值</li>
+<li>全局位姿的初始roll和pitch通过运动前无偏加速测量获取。  </li>
+</ul>
+<h3 id="4、地图构建"><a href="#4、地图构建" class="headerlink" title="4、地图构建"></a>4、地图构建</h3><p>通过前面的部分，我们已经得到了每个时刻精准的状态估计信息。就可以使用LeGO-LOAM进行地图构建，得到全局地图。我们使用这个模块导出的roll和pitch作为LIO模块的反馈，这种策略被证明可以有效地提高系统的鲁棒性</p>
 
       
     </div>
@@ -620,7 +682,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -631,7 +693,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">49</span>
+                  <span class="site-state-item-count">50</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -664,7 +726,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、论文概览"><span class="nav-number">1.</span> <span class="nav-text">1、论文概览</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、雷达里程计分类"><span class="nav-number">2.</span> <span class="nav-text">2、雷达里程计分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1、纯雷达模型"><span class="nav-number">2.1.</span> <span class="nav-text">2.1、纯雷达模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2、松耦合的LiDAR-IMU模型"><span class="nav-number">2.2.</span> <span class="nav-text">2.2、松耦合的LiDAR-IMU模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3、紧耦合的LiDAR-IMU模型"><span class="nav-number">2.3.</span> <span class="nav-text">2.3、紧耦合的LiDAR-IMU模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、LiDAR-Inertial建图"><span class="nav-number">3.</span> <span class="nav-text">3、LiDAR-Inertial建图</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3-1、状态定义"><span class="nav-number">3.0.1.</span> <span class="nav-text">3.1、状态定义</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-2、状态递推"><span class="nav-number">3.0.2.</span> <span class="nav-text">3.2、状态递推</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-3、状态更新"><span class="nav-number">3.0.3.</span> <span class="nav-text">3.3、状态更新</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、实验效果展示"><span class="nav-number">4.</span> <span class="nav-text">4、实验效果展示</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、论文概览"><span class="nav-number">1.</span> <span class="nav-text">1、论文概览</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、雷达里程计分类"><span class="nav-number">2.</span> <span class="nav-text">2、雷达里程计分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1、纯雷达模型"><span class="nav-number">2.1.</span> <span class="nav-text">2.1、纯雷达模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2、松耦合的LiDAR-IMU模型"><span class="nav-number">2.2.</span> <span class="nav-text">2.2、松耦合的LiDAR-IMU模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3、紧耦合的LiDAR-IMU模型"><span class="nav-number">2.3.</span> <span class="nav-text">2.3、紧耦合的LiDAR-IMU模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、LiDAR-Inertial建图"><span class="nav-number">3.</span> <span class="nav-text">3、LiDAR-Inertial建图</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3-1、状态定义"><span class="nav-number">3.0.1.</span> <span class="nav-text">3.1、状态定义</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-2、状态递推"><span class="nav-number">3.0.2.</span> <span class="nav-text">3.2、状态递推</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-3、状态更新"><span class="nav-number">3.0.3.</span> <span class="nav-text">3.3、状态更新</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-状态合成"><span class="nav-number">3.1.</span> <span class="nav-text">3.4 状态合成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5、初始化"><span class="nav-number">3.2.</span> <span class="nav-text">3.5、初始化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、地图构建"><span class="nav-number">4.</span> <span class="nav-text">4、地图构建</span></a></li></ol></div>
             
 
           </div>
